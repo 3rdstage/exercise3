@@ -4,5 +4,5 @@ applications:
   memory: 512M
   instances: 1
   path: target/cf.spring-0.0.1-SNAPSHOT.jar
-  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  # buildpack: https://github.com/cloudfoundry/java-buildpack.git
   # stack: cflinuxfs2
