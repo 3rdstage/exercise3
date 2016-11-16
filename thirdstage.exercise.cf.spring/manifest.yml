@@ -4,6 +4,6 @@ applications:
   memory: 512M
   host: thirdstage001
   instances: 1
-  path: target/cf.spring-0.0.1-SNAPSHOT.jar
-  # buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  path: target/cf.spring-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
   # stack: cflinuxfs2
