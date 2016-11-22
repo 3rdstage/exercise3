@@ -1,0 +1,249 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>thirdstage.exercise</groupId>
+   <artifactId>cf.scala</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      <skipTests>true</skipTests>
+      <maven.javadoc.skip>true</maven.javadoc.skip>
+      <maven.deploy.skip>true</maven.deploy.skip>
+      <findbugs.skip>true</findbugs.skip>
+      <checkstyle.skip>true</checkstyle.skip>
+      <java.version>1.8</java.version>
+      <scala.version>2.11</scala.version>
+      <spark.version>2.0.1</spark.version>
+      <slf4j.version>1.7.20</slf4j.version>
+      <logback.version>1.1.7</logback.version>
+      <spring.version>4.0.9.RELEASE</spring.version>
+      <spring-integration.version>2.1.0.RELEASE</spring-integration.version>
+      <mybatis.version>3.2.7</mybatis.version>
+      <aspectj.version>1.6.12</aspectj.version>
+      <jersey.version>1.11</jersey.version>
+      <jetty.version>9.2.19.v20160908</jetty.version>
+      <dbcp.version>1.4</dbcp.version>
+   </properties>
+
+   <repositories>
+      <repository>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>central</id>
+         <url>http://repo1.maven.org/maven2/</url>
+      </repository>
+      <repository>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>central2</id>
+         <url>http://repo2.maven.org/maven2/</url>
+      </repository>
+      <repository>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>maven2-repository.dev.java.net</id>
+         <name>Java.net Repository for Maven</name>
+         <url>http://download.java.net/maven/2/</url>
+      </repository>
+      <repository>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>thirdparty</id>
+         <name>3rd-party Repository</name>
+         <url>http://repo.expertvill.net/nexus/content/repositories/thirdparty</url>
+      </repository>
+      <repository>
+         <id>evolvis-3rdparty</id>
+         <url>http://maven-repo.evolvis.org/3rdparty</url>
+      </repository>
+   </repositories>
+
+   <build>
+      <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+      <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+      <resources>
+         <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+         </resource>
+      </resources>
+      <testResources>
+         <testResource>
+            <directory>${project.basedir}/src/test/resources</directory>
+         </testResource>
+      </testResources>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+               <execution>
+                  <phase>compile</phase>
+                  <goals>
+                     <goal>compile</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <!-- <executions> -->
+            <!-- <execution> -->
+            <!-- <id>jar-with-deps</id> -->
+            <!-- <phase>package</phase> -->
+            <!-- <goals> -->
+            <!-- <goal>single</goal> -->
+            <!-- </goals> -->
+            <!-- <configuration> -->
+            <!-- <descriptorRefs> -->
+            <!-- <descriptorRef>jar-with-dependencies</descriptorRef> -->
+            <!-- </descriptorRefs> -->
+            <!-- </configuration> -->
+            <!-- </execution> -->
+            <!-- </executions> -->
+         </plugin>
+         <plugin>
+            <groupId>net.alchim31.maven</groupId>
+            <artifactId>scala-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>scala-compile</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>add-source</goal>
+                     <goal>compile</goal>
+                  </goals>
+               </execution>
+               <execution>
+                  <id>scala-test-compile</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>testCompile</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <version>3.5.1</version>
+               <configuration>
+                  <source>${java.version}</source>
+                  <target>${java.version}</target>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-assembly-plugin</artifactId>
+               <version>2.6</version>
+            </plugin>
+
+            <plugin>
+               <groupId>net.alchim31.maven</groupId>
+               <artifactId>scala-maven-plugin</artifactId>
+               <version>3.2.2</version>
+               <configuration>
+                  <source>${java.version}</source>
+                  <target>${java.version}</target>
+                  <sourceDir>${project.build.sourceDirectory}/../scala</sourceDir>
+                  <testSourceDir>${project.build.testSourceDirectory}/../scala</testSourceDir>
+                  <args>
+                     <arg>-g:vars</arg>
+                  </args>
+                  <!-- <recompileMode>incremental</recompileMode> -->
+                  <!-- <compilerPlugins> -->
+                  <!-- <compilerPlugin> -->
+                  <!-- <groupId>com.artima.supersafe</groupId> -->
+                  <!-- <artifactId>supersafe_${scala.version}.7</artifactId> -->
+                  <!-- <version>1.1.0-RC6</version> -->
+                  <!-- </compilerPlugin> -->
+                  <!-- </compilerPlugins> -->
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.eclipse.m2e</groupId>
+               <artifactId>lifecycle-mapping</artifactId>
+               <version>1.0.0</version>
+               <configuration>
+                  <lifecycleMappingMetadata>
+                     <pluginExecutions>
+                        <pluginExecution>
+                           <pluginExecutionFilter>
+                              <groupId>net.alchim31.maven</groupId>
+                              <artifactId>scala-maven-plugin</artifactId>
+                              <versionRange>[1.0.0,)</versionRange>
+                              <goals>
+                                 <goal>add-source</goal>
+                                 <goal>compile</goal>
+                                 <goal>testCompile</goal>
+                              </goals>
+                           </pluginExecutionFilter>
+                           <action>
+                              <!-- <ignore /> -->
+                              <execute>
+                                 <!-- Do NOT change the following two line. Without those, the Eclipse project become abnormal -->
+                                 <runOnConfiguration>true</runOnConfiguration>
+                                 <runOnIncremental>true</runOnIncremental>
+                              </execute>
+                           </action>
+                        </pluginExecution>
+                     </pluginExecutions>
+                  </lifecycleMappingMetadata>
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.eclipse.jetty</groupId>
+         <artifactId>jetty-server</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.eclipse.jetty</groupId>
+         <artifactId>jetty-start</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.scalactic</groupId>
+         <artifactId>scalactic_${scala.version}</artifactId>
+         <version>2.2.6</version>
+         <scope>compile</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.scalatest</groupId>
+         <artifactId>scalatest_${scala.version}</artifactId>
+         <version>2.2.6</version>
+         <scope>compile</scope>
+      </dependency>
+   </dependencies>
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-start</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+</project>
