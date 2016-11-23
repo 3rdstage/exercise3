@@ -25,6 +25,7 @@
       <jersey.version>1.11</jersey.version>
       <jetty.version>9.2.19.v20160908</jetty.version>
       <dbcp.version>1.4</dbcp.version>
+      <jar.mainclass>thirdstage.exercise.cf.scala.GreetingsJetty</jar.mainclass>
    </properties>
 
    <repositories>
@@ -91,24 +92,6 @@
             </executions>
          </plugin>
          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <!-- <executions> -->
-            <!-- <execution> -->
-            <!-- <id>jar-with-deps</id> -->
-            <!-- <phase>package</phase> -->
-            <!-- <goals> -->
-            <!-- <goal>single</goal> -->
-            <!-- </goals> -->
-            <!-- <configuration> -->
-            <!-- <descriptorRefs> -->
-            <!-- <descriptorRef>jar-with-dependencies</descriptorRef> -->
-            <!-- </descriptorRefs> -->
-            <!-- </configuration> -->
-            <!-- </execution> -->
-            <!-- </executions> -->
-         </plugin>
-         <plugin>
             <groupId>net.alchim31.maven</groupId>
             <artifactId>scala-maven-plugin</artifactId>
             <executions>
@@ -129,6 +112,40 @@
                </execution>
             </executions>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>${jar.mainclass}</mainClass>
+                  </manifest>
+               </archive>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>jar-with-deps</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+                  <configuration>
+                     <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                     </descriptorRefs>
+                     <archive>
+                        <manifest>
+                           <mainClass>${jar.mainclass}</mainClass>
+                        </manifest>
+                     </archive>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
       <pluginManagement>
          <plugins>
@@ -141,12 +158,6 @@
                   <target>${java.version}</target>
                </configuration>
             </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-assembly-plugin</artifactId>
-               <version>2.6</version>
-            </plugin>
-
             <plugin>
                <groupId>net.alchim31.maven</groupId>
                <artifactId>scala-maven-plugin</artifactId>
@@ -167,6 +178,52 @@
                   <!-- <version>1.1.0-RC6</version> -->
                   <!-- </compilerPlugin> -->
                   <!-- </compilerPlugins> -->
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <version>2.3.2</version>
+               <configuration>
+                  <!-- For more on Maven archiver, refer http://maven.apache.org/shared/maven-archiver/index.html -->
+                  <archive>
+                     <addMavenDescriptor>false</addMavenDescriptor>
+                     <forced>true</forced>
+                     <index>true</index>
+                     <manifest>
+                        <addClasspath>false</addClasspath>
+                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+                        <addExtensions>false</addExtensions>
+                        <classpathLayoutType>simple</classpathLayoutType>
+                     </manifest>
+                     <manifestEntries>
+                        <Source-Revision>${project.svn.revision}</Source-Revision>
+                     </manifestEntries>
+                  </archive>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-assembly-plugin</artifactId>
+               <version>3.0.0</version>
+               <configuration>
+                  <!-- For more on Maven archiver, refer http://maven.apache.org/shared/maven-archiver/index.html -->
+                  <archive>
+                     <addMavenDescriptor>false</addMavenDescriptor>
+                     <forced>true</forced>
+                     <index>true</index>
+                     <manifest>
+                        <addClasspath>false</addClasspath>
+                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        <addExtensions>false</addExtensions>
+                        <classpathLayoutType>simple</classpathLayoutType>
+                     </manifest>
+                     <manifestEntries>
+                        <Source-Revision>${project.svn.revision}</Source-Revision>
+                     </manifestEntries>
+                  </archive>
                </configuration>
             </plugin>
             <plugin>

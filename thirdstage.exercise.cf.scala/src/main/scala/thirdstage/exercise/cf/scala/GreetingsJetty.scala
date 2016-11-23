@@ -12,7 +12,7 @@ object GreetingsJetty {
 
   def main(args: Array[String]) {
 
-    val port = Integer.valueOf(System.getenv("PORT"))
+    val port = Integer.valueOf(System.getenv("PORT")) + 5
     val server = new org.eclipse.jetty.server.Server(port)
 
     server.setHandler(new AbstractHandler() {
