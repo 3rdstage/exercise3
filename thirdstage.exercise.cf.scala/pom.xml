@@ -268,6 +268,11 @@
          <version>${slf4j.version}</version>
       </dependency>
       <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
          <groupId>org.eclipse.jetty</groupId>
          <artifactId>jetty-server</artifactId>
       </dependency>
@@ -275,7 +280,6 @@
          <groupId>org.eclipse.jetty</groupId>
          <artifactId>jetty-start</artifactId>
       </dependency>
-
       <dependency>
          <groupId>org.scalactic</groupId>
          <artifactId>scalactic_${scala.version}</artifactId>

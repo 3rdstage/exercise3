@@ -12,7 +12,7 @@ object GreetingsJetty {
 
   def main(args: Array[String]) {
 
-    val port = Integer.valueOf(System.getenv("PORT")) + 5
+    val port = Integer.valueOf(System.getenv("PORT"))
     val server = new org.eclipse.jetty.server.Server(port)
 
     server.setHandler(new AbstractHandler() {
@@ -24,5 +24,9 @@ object GreetingsJetty {
         resp.getWriter().println("<h1>Greetings by Jetty in Scala on Bluemix")
       }
     });
+    
+    server.start();
+    server.join();
+    
   }
 }
