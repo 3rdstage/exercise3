@@ -1,0 +1,8 @@
+{
+  "name" : "SolidityExercise",
+  "version" : "0.0.1",
+  "dependencies" : {
+    "solc" : "^0.4.0"
+  }
+}
+  
