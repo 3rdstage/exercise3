@@ -5,7 +5,7 @@ contract Ballot{
    //https://solidity.readthedocs.io/en/develop/solidity-by-example.html#voting
    
    struct Voter {
-      unit weight;
+      uint weight;
       bool voted;
       address delegate;
       uint vote;
@@ -13,7 +13,7 @@ contract Ballot{
    
    
    struct Proposal{
-      byte32 name;
+      bytes32 name;
       uint voteCount;
    }
    
@@ -46,7 +46,7 @@ contract Ballot{
    }
    
    function delegate(address to){
-      Voter sender = voter[msg.sender];
+      Voter sender = voters[msg.sender];
       
       if(sender.voted){
          throw;

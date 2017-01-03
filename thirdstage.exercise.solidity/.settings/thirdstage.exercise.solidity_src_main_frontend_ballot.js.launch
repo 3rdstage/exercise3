@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.wst.jsdt.js.node.NodeLaunchConfigurationType">
-<booleanAttribute key="attr_add_network_console_field" value="true"/>
+<booleanAttribute key="attr_add_network_console_field" value="false"/>
 <stringAttribute key="attr_app_arguments" value=""/>
 <stringAttribute key="attr_app_path" value="${workspace_loc:/thirdstage.exercise.solidity/src/main/frontend/ballot.js}"/>
 <stringAttribute key="attr_app_project" value="thirdstage.exercise.solidity"/>

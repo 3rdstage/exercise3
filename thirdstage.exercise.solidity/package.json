@@ -1,0 +1,8 @@
+{
+  "name": "insert-title-here",
+  "version": "0.0.1",
+  "description": "Insert description here",
+  "scripts": {
+   	"start": "node app.js"
+  }
+}

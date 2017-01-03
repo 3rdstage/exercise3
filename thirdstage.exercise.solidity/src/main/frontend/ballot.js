@@ -7,6 +7,7 @@ fs.readFile('./contracts/ballot.sol', 'utf8', (err, data) => {
    console.log(data);
    
    var output = solc.compile(data, 1);
+   if(output.errors) throw output.errors;
    for(var name in output.contracts){
 
       console.log(name + ': ' + output.contracts[name].bytecode);
