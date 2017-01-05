@@ -3,12 +3,13 @@
 #  - https://hub.docker.com/r/jboss/base/~/dockerfile/
 #  - https://hub.docker.com/r/jboss/base-jdk/~/dockerfile/
 #  - https://github.com/jboss-dockerfiles/wildfly/blob/10.1.0.Final/Dockerfile
+#  - https://github.com/jboss-dockerfiles/wildfly/tree/10.1.0.Final#extending-the-image
 
 FROM centos:7
 MAINTAINER 3rdstage
 
 RUN yum update -y && \
-   yum -y install xmlstartlet saxon augeas bsdtar unzip install java-1.7.0-openjdk-devel && \
+   yum -y install xmlstartlet saxon augeas bsdtar unzip java-1.8.0-openjdk-devel && \
    yum clean all
 
 RUN groupadd -r jboss -g 1000 && \
@@ -33,8 +34,10 @@ RUN cd $HOME && \
    
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
-EXPOSE 8080
+EXPOSE 8080 9990
 
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
+RUN /opt/jboss/wildfly/bin/add-user.sh admin !wildfly1234 --silent
+
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
    
    
