@@ -9,8 +9,12 @@ FROM centos:7
 MAINTAINER 3rdstage
 
 RUN yum update -y && \
-   yum -y install xmlstartlet saxon augeas bsdtar unzip java-1.8.0-openjdk-devel && \
+   yum -y install xmlstartlet saxon augeas bsdtar unzip wget java-1.8.0-openjdk-devel && \
    yum clean all
+
+RUN wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+
+RUN yum -y install apache-maven
 
 RUN groupadd -r jboss -g 1000 && \
     useradd -u 1000 -r -g jboss -m -d /opt/jboss -s /sbin/nologin -c "JBoss User" jboss && \
@@ -38,6 +42,8 @@ EXPOSE 8080 9990
 
 RUN /opt/jboss/wildfly/bin/add-user.sh admin !wildfly1234 --silent
 
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+USER root
+
+# CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
    
    
