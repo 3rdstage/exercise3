@@ -7,21 +7,49 @@
 
 FROM centos:7
 MAINTAINER 3rdstage
+ENV container docker
 
+# enable 'systemd' - for details, refer 'https://hub.docker.com/r/centos/systemd/~/dockerfile/'.
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+    rm -f /lib/systemd/system/multi-user.target.wants/*;\
+    rm -f /etc/systemd/system/*.wants/*;\
+    rm -f /lib/systemd/system/local-fs.target.wants/*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+    rm -f /lib/systemd/system/basic.target.wants/*;\
+    rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+
+# install basic utilities and JDK 8
 RUN yum update -y && \
-   yum -y install xmlstartlet saxon augeas bsdtar unzip wget java-1.8.0-openjdk-devel && \
-   yum clean all
+    yum -y install xmlstartlet saxon augeas bsdtar unzip wget java-1.8.0-openjdk-devel && \
+    yum clean all
 
+
+# install maven
 RUN wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-
 RUN yum -y install apache-maven
 
+# install OpenSSH server and clients
+RUN yum -y install openssh openssh-server openssh-clients
+RUN cp /etc/ssh/sshd_config /etc/ssh/sshd_config.default && \
+    sed -i 's/^#Port 22/Port 2022/' /etc/ssh/sshd_config && \
+    sed -i 's/^#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config && \
+    sed -i '$ a AllowUsers jboss' /etc/ssh/sshd_config
+EXPOSE 2022
+
+# add a user for nomal operation who can login from remote
+# for more on 'useradd', refer 'https://linux.die.net/man/8/useradd'.
+RUN useradd - u 510 -g users -m -d /home/argon -s /bin/bash -c "Normal User" argon && \
+    
+
+
+# install WildFly
+# add a user for WildFly
 RUN groupadd -r jboss -g 1000 && \
     useradd -u 1000 -r -g jboss -m -d /opt/jboss -s /sbin/nologin -c "JBoss User" jboss && \
     chmod 755 /opt/jboss
-
 WORKDIR /opt/jboss
-
 USER jboss
     
 ENV JAVA_HOME /usr/lib/jvm/java
@@ -30,20 +58,24 @@ ENV WILDFLY_SHA1 9ee3c0255e2e6007d502223916cefad2a1a5e333
 ENV JBOSS_HOME /opt/jboss/wildfly
 
 RUN cd $HOME && \
-   curl -O https://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz && \
-   sha1sum wildfly-$WILDFLY_VERSION.tar.gz && \
-   tar xf wildfly-$WILDFLY_VERSION.tar.gz && \
-   mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME && \
-   rm wildfly-$WILDFLY_VERSION.tar.gz
+    curl -O https://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz && \
+    sha1sum wildfly-$WILDFLY_VERSION.tar.gz && \
+    tar xf wildfly-$WILDFLY_VERSION.tar.gz && \
+    mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME && \
+    rm wildfly-$WILDFLY_VERSION.tar.gz
    
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
-
 EXPOSE 8080 9990
-
 RUN /opt/jboss/wildfly/bin/add-user.sh admin !wildfly1234 --silent
+# end of 'install WildFly'
+
 
 USER root
+WORKDIR /root
 
+CMD ["/usr/sbin/init"]
 # CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+
+# Typical 'docker run' command to run this image : 'docker run -dP --rm --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro wildfly:0.9 wildbutter'
    
    
