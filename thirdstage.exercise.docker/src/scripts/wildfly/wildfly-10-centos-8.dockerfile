@@ -22,8 +22,15 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
 
 # install basic utilities and JDK 8
 RUN yum update -y && \
-    yum -y install xmlstartlet saxon augeas bsdtar unzip wget java-1.8.0-openjdk-devel && \
+    yum -y install xmlstartlet saxon augeas bsdtar unzip wget sudo java-1.8.0-openjdk-devel && \
     yum clean all
+
+
+# add a user for nomal operation who can login from remote
+# for more on 'useradd', refer 'https://linux.die.net/man/8/useradd'.
+RUN useradd -u 531 -g users -m -d /home/argon -s /bin/bash -c "Normal User" argon && \
+    echo 'argon:!argon1234' | chpasswd && \
+    usermod -aG wheel argon
 
 
 # install maven
@@ -33,15 +40,13 @@ RUN yum -y install apache-maven
 # install OpenSSH server and clients
 RUN yum -y install openssh openssh-server openssh-clients
 RUN cp /etc/ssh/sshd_config /etc/ssh/sshd_config.default && \
-    sed -i 's/^#Port 22/Port 2022/' /etc/ssh/sshd_config && \
-    sed -i 's/^#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config && \
-    sed -i '$ a AllowUsers jboss' /etc/ssh/sshd_config
-EXPOSE 2022
-
-# add a user for nomal operation who can login from remote
-# for more on 'useradd', refer 'https://linux.die.net/man/8/useradd'.
-RUN useradd - u 510 -g users -m -d /home/argon -s /bin/bash -c "Normal User" argon && \
-    
+    sed -i 's/^#Port 22/Port 22/' /etc/ssh/sshd_config && \   
+    sed -i -r 's/^#?PermitRootLogin (\w)*/PermitRootLogin no/' /etc/ssh/sshd_config && \
+    sed -i -r 's/^#?UsePAM (\w)*/UsePAM no/' /etc/ssh/sshd_config && \
+    sed -i '$ a AllowUsers argon' /etc/ssh/sshd_config && \
+    chkconfig sshd on && \
+    systemctl enable sshd.service
+EXPOSE 22
 
 
 # install WildFly
@@ -71,11 +76,12 @@ RUN /opt/jboss/wildfly/bin/add-user.sh admin !wildfly1234 --silent
 
 
 USER root
+RUN usermod -aG jboss argon
 WORKDIR /root
 
 CMD ["/usr/sbin/init"]
 # CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
 
-# Typical 'docker run' command to run this image : 'docker run -dP --rm --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro wildfly:0.9 wildbutter'
+# Typical 'docker run' command to run this image in development phase : 'docker run -itP --rm --privileged -v /sys/fs/cgroup --name butterfly wildfly:0.9'
    
    
