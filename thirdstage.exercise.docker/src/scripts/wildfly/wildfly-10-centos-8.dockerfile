@@ -18,7 +18,7 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
     rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
     rm -f /lib/systemd/system/basic.target.wants/*;\
     rm -f /lib/systemd/system/anaconda.target.wants/*;
-
+VOLUME /sys/fs/cgroup
 
 # install basic utilities and JDK 8
 RUN yum update -y && \
@@ -36,6 +36,7 @@ RUN useradd -u 531 -g users -m -d /home/argon -s /bin/bash -c "Normal User" argo
 # install maven
 RUN wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
 RUN yum -y install apache-maven
+
 
 # install OpenSSH server and clients
 RUN yum -y install openssh openssh-server openssh-clients
@@ -71,17 +72,23 @@ RUN cd $HOME && \
    
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
 EXPOSE 8080 9990
-RUN /opt/jboss/wildfly/bin/add-user.sh admin !wildfly1234 --silent
+RUN $JBOSS_HOME/bin/add-user.sh admin !wildfly1234 --silent
 # end of 'install WildFly'
 
 
 USER root
-RUN usermod -aG jboss argon
+ENV JBOSS_HOME /opt/jboss/wildfly
 WORKDIR /root
+VOLUME /var/opt/jboss/wildfly/deployments
+RUN usermod -aG jboss argon
+RUN sed -i "$ a su -s /bin/sh jboss '-c cd && $JBOSS_HOME/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 &'" /etc/rc.d/rc.local && \
+    sed -i "$ a $JBOSS_HOME/bin/jboss-cli.sh -c command='/subsystem=deployment-scanner/scanner=external:add(path=\"/var/opt/jboss/wildfly/deployments\",scan-enabled=true,scan-interval=5000,auto-deploy-zipped=true,auto-deploy-exploded=true)'"  /etc/rc.d/rc.local && \
+    chmod +x /etc/rc.d/rc.local && \ 
+    chown -R jboss:jboss /var/opt/jboss/
+#    $JBOSS_HOME/bin/jboss-cli.sh -c command='/subsystem=deployment-scanner/scanner=external:add(path="/var/opt/jboss/wildfly/deployments",scan-enabled=true,scan-interval=5000,auto-deploy-zipped=true,auto-deploy-exploded=true)'
 
 CMD ["/usr/sbin/init"]
-# CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
 
-# Typical 'docker run' command to run this image in development phase : 'docker run -itP --rm --privileged -v /sys/fs/cgroup --name butterfly wildfly:0.9'
-   
-   
+# Typical build command would be 'docker build -t wildfly:0.13 -f wildfly-10-centos-8.dockerfile .'
+# Typical 'docker run' command to run this image in development phase : 'docker run -itP --rm --privileged -v /sys/fs/cgroup --name butterfly wildfly:0.13'
+
