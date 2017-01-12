@@ -81,8 +81,9 @@ ENV JBOSS_HOME /opt/jboss/wildfly
 WORKDIR /root
 VOLUME /var/opt/jboss/wildfly/deployments
 RUN usermod -aG jboss argon
-RUN sed -i "$ a su -s /bin/sh jboss '-c cd && $JBOSS_HOME/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 &'" /etc/rc.d/rc.local && \
-    sed -i "$ a $JBOSS_HOME/bin/jboss-cli.sh -c command='/subsystem=deployment-scanner/scanner=external:add(path=\"/var/opt/jboss/wildfly/deployments\",scan-enabled=true,scan-interval=5000,auto-deploy-zipped=true,auto-deploy-exploded=true)'"  /etc/rc.d/rc.local && \
+RUN su -s /bin/sh jboss '-c cp $JBOSS_HOME/standalone/configuration/standalone.xml $JBOSS_HOME/standalone/configuration/standalone.xml.default' && \
+    sed -i "/urn:jboss:domain:deployment-scanner/ a <deployment-scanner name=\"external\" path=\"/var/opt/jboss/wildfly/deployments\" scan-enabled=\"true\" scan-interval=\"5000\" auto-deploy-zipped=\"true\" auto-deploy-exploded=\"true\"/>" $JBOSS_HOME/standalone/configuration/standalone.xml && \
+    sed -i "$ a su -s /bin/sh jboss '-c cd && $JBOSS_HOME/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 &'" /etc/rc.d/rc.local && \
     chmod +x /etc/rc.d/rc.local && \ 
     chown -R jboss:jboss /var/opt/jboss/
 #    $JBOSS_HOME/bin/jboss-cli.sh -c command='/subsystem=deployment-scanner/scanner=external:add(path="/var/opt/jboss/wildfly/deployments",scan-enabled=true,scan-interval=5000,auto-deploy-zipped=true,auto-deploy-exploded=true)'
