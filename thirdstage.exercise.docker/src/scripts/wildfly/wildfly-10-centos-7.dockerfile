@@ -22,7 +22,7 @@ VOLUME /sys/fs/cgroup
 
 # install basic utilities and JDK 8
 RUN yum update -y && \
-    yum -y install xmlstartlet saxon augeas bsdtar unzip wget sudo java-1.8.0-openjdk-devel && \
+    yum -y install xmlstartlet saxon augeas bsdtar unzip wget sudo iproute java-1.8.0-openjdk-devel && \
     yum clean all
 
 
@@ -72,7 +72,7 @@ RUN cd $HOME && \
    
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
 EXPOSE 8080 9990
-RUN $JBOSS_HOME/bin/add-user.sh admin !wildfly1234 --silent
+RUN $JBOSS_HOME/bin/add-user.sh -u admin -p !wildfly1234 --silent
 # end of 'install WildFly'
 
 
@@ -80,13 +80,12 @@ USER root
 ENV JBOSS_HOME /opt/jboss/wildfly
 WORKDIR /root
 VOLUME /var/opt/jboss/wildfly/deployments
-RUN usermod -aG jboss argon
-RUN su -s /bin/sh jboss '-c cp $JBOSS_HOME/standalone/configuration/standalone.xml $JBOSS_HOME/standalone/configuration/standalone.xml.default' && \
+RUN usermod -aG jboss argon && \
+    su -s /bin/sh jboss '-c cp $JBOSS_HOME/standalone/configuration/standalone.xml $JBOSS_HOME/standalone/configuration/standalone.xml.default' && \
     sed -i "/urn:jboss:domain:deployment-scanner/ a <deployment-scanner name=\"external\" path=\"/var/opt/jboss/wildfly/deployments\" scan-enabled=\"true\" scan-interval=\"5000\" auto-deploy-zipped=\"true\" auto-deploy-exploded=\"true\"/>" $JBOSS_HOME/standalone/configuration/standalone.xml && \
     sed -i "$ a su -s /bin/sh jboss '-c cd && $JBOSS_HOME/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 &'" /etc/rc.d/rc.local && \
     chmod +x /etc/rc.d/rc.local && \ 
     chown -R jboss:jboss /var/opt/jboss/
-#    $JBOSS_HOME/bin/jboss-cli.sh -c command='/subsystem=deployment-scanner/scanner=external:add(path="/var/opt/jboss/wildfly/deployments",scan-enabled=true,scan-interval=5000,auto-deploy-zipped=true,auto-deploy-exploded=true)'
 
 CMD ["/usr/sbin/init"]
 
