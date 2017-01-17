@@ -2,7 +2,6 @@
 @ echo off
 setLocal enableDelayedExpansion
 
-
 if not exist "%SystemRoot%\System32\drivers\etc\hosts" (
    echo.
    echo Can't find 'hosts' file under '%SystemRoot%\System32\drivers'
@@ -10,13 +9,25 @@ if not exist "%SystemRoot%\System32\drivers\etc\hosts" (
    goto :END
 )
 
+set DOCKERHOST_DEFINED=false
 for /f "tokens=*" %%l in (%SystemRoot%\System32\drivers\etc\hosts) do (
-   echo %%l
+   rem echo %%l
 
-   for /f "tokens=1,2* delims=' '" %%a in ("%%l") do (
-      echo %%a ","
+   for /f "tokens=1,2" %%a in ("%%l") do (
+      if "%%a" neq "#" (
+         echo %%a : %%b
+         if "%%a" equ "dockerhost" goto :DOCKERHOST_DEFINED
+         if "%%b" equ "com.skcc.bigdata00" goto :DOCKERHOST_DEFINED
+      )
    )
 )
+
+echo 'hosts' file contains no item for dockerhost, so adding '....'
+
+
+:DOCKERHOST_DEFINED
+
+echo 'dockerhost' is set to '...' in 'hosts' file.
 
 goto :END
 
