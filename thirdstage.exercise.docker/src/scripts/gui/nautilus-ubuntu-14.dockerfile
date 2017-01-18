@@ -3,7 +3,7 @@
 
 FROM ubuntu:14.04
 
-RUN apt-get update && apt-get install -y firefox
+RUN apt-get update && apt-get install -y nautilus firefox
 
 RUN export uid=1000 gid=1000 && \
     mkdir -p /home/developer && \
@@ -15,5 +15,9 @@ RUN export uid=1000 gid=1000 && \
     
 USER developer
 ENV HOME /home/developer
-CMD /usr/bin/firefox 
+CMD nautilus .
+
+
+# Typical build command would be 'docker build -t nautilus -f nautilus-ubuntu-14.dockerfile'.
+
     

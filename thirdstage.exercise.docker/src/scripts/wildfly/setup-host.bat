@@ -47,6 +47,9 @@ mkdir c:\var
 docker-machine ssh default sudo mkdir /c/var
 
 docker-machine ssh defalut sudo mount -t vboxsf -o uid=1000,gid=50 c/var /c/var
+   
+
+:: choco -y install xming --version 6.9.0.31
 
 :END
 endLocal
