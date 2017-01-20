@@ -1,0 +1,1 @@
+docker run -ti --rm --privileged --name nome -p 20022:22 -v /sys/fs/cgroup gnome

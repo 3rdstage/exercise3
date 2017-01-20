@@ -8,4 +8,3 @@ docker run -itP --rm --privileged --name butterfly \
   wildfly:0.13
   
 
- 
