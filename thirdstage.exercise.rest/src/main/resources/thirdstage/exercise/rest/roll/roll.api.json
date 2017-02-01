@@ -1,0 +1,38 @@
+{
+   "swagger" : "2.0",
+
+   "info" : {
+      "title" : "API for authentication and authorization",
+      "description" : "The is a API service to manage users, organizations and their authentications and authorizations",
+      "contact" : {
+         "name" : "Sangmoon Oh",
+         "email" : "halfface@chollian.net"
+      },
+      "version" : "0.7"
+   }
+
+   "paths" : {
+      "/users" : {
+         "get" : {
+            "description" : "",
+            "produces" : ["appliction/json"],
+            "responses" : {
+               "200" : {
+                  "description" : "a list of all users including inactive users",
+                  "schema" : {
+                     "type" : "array",
+                     "items" : {
+                        "$ref" : "#/definitions/user"
+                     }
+                  }
+               }
+            }
+         }
+         
+         
+      }
+      
+      
+      
+   }
+}
