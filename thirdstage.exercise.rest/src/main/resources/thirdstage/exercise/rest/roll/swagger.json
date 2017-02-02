@@ -1,0 +1,158 @@
+{
+   "swagger": "2.0",
+   "info": {
+      "title": "API for authentication and authorization",
+      "description": "The is a API service to manage users, organizations and their authentications and authorizations",
+      "contact": {
+         "name": "Sangmoon Oh",
+         "email": "halfface@chollian.net"
+      },
+      "version": "0.7"
+   },
+   "basePath": "/roll/v1",
+   "schemas": [
+      "https"
+   ],
+   "consumes": [
+      "application/json"
+   ],
+   "produces": [
+      "application/json"
+   ],
+   "paths": {
+      "/users": {
+         "post": {
+            "description": "Adds a new user",
+            "parameters": {
+               "name": "user",
+               "in": "body",
+               "description": "the user to add",
+               "schema": {
+                  "$ref": "#/definitions/user"
+               }
+            },
+            "responses": {
+               "204": {
+                  "description": "a user successfully added"
+               }
+            }
+         },
+         "get": {
+            "description": "Lists all users including invalid users",
+            "responses": {
+               "200": {
+                  "description": "list of all users",
+                  "schema": {
+                     "$schema": "http://json-schema.org/draft-04/schema#",
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/user"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/users/valid": {
+         "get": {
+            "description": "Lists all valid users",
+            "responses": {
+               "200": {
+                  "description": "list of all valid users",
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/user"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/users/invalid": {
+         "get": {
+            "description": "Lists all invalid users",
+            "responses": {
+               "200": {
+                  "description": "list of all invalid users",
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/user"
+                     }
+                  }
+               }
+            }
+         }
+      }
+   },
+   "defintions": {
+      "user": {
+         "type": "object",
+         "required": [
+            "id",
+            "name"
+         ],
+         "properties": {
+            "id": {
+               "description": "unique identifier of the user",
+               "type": "string"
+            },
+            "name": {
+               "description": "name of the user",
+               "type": "string",
+               "maxLength": 256
+            },
+            "isValid": {
+               "description": "whether this user is valid and approved to access the system or not",
+               "type": "boolean",
+               "default": false
+            },
+            "passwordExpired": {
+               "description": "whether or not the password of this user is expired and so the password rest is necessary",
+               "type": "boolean",
+               "default": false
+            },
+            "registeredAt": {
+               "description": "the date-time when the user is registered - the value is in UTC00:00 or ",
+               "type": "string",
+               "format": "date-time",
+               "pattern": "[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z"
+            },
+            "expireAt": {
+               "description": "the date-time when the user will be expired",
+               "type": "string",
+               "format": "date-time"
+            },
+            "email": {
+               "description": "most favorite email address of the user",
+               "type": "string",
+               "format": "email"
+            },
+            "extraEmails": {
+               "description": "extra email addresses of the user",
+               "type": "array",
+               "items": {
+                  "type": "string",
+                  "format": "email"
+               }
+            },
+            "emailValidations": {
+               "description": "email validation history of the user"
+            },
+            "phoneNumber": {
+               "type": "string"
+            },
+            "extraPhoneNumbers": {
+               "type": "array",
+               "items": {
+                  "type": "string"
+               }
+            },
+            "phoneNumberValidations": {
+               
+            }
+         }
+      }
+   }
+}
