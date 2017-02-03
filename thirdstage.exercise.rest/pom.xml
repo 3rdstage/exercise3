@@ -1,5 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
    <modelVersion>4.0.0</modelVersion>
+
+   <!--
+      For more parent POM, refer
+
+      * http://central.maven.org/maven2/org/springframework/boot/spring-boot-starter-parent/1.5.1.RELEASE/spring-boot-starter-parent-1.5.1.RELEASE.pom
+      * http://central.maven.org/maven2/org/springframework/boot/spring-boot-dependencies/1.5.1.RELEASE/spring-boot-dependencies-1.5.1.RELEASE.pom
+   -->
+   <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>1.5.1.RELEASE</version>
+   </parent>
    <groupId>thirdstage.exercise</groupId>
    <artifactId>rest</artifactId>
    <version>0.0.1-SNAPSHOT</version>
@@ -18,16 +31,9 @@
       <findbugs.skip>true</findbugs.skip>
       <checkstyle.skip>true</checkstyle.skip>
       <java.version>1.7</java.version>
-      <slf4j.version>1.7.21</slf4j.version>
-      <logback.version>1.1.7</logback.version>
-      <junit.version>4.8.2</junit.version>
       <testng.version>6.9.10</testng.version>
-      <mockito.version>2.6.9</mockito.version>
       <commons.lang3.version>3.4</commons.lang3.version>
-      <spring.version>4.3.6.RELEASE</spring.version>
-      <springboot.version>1.5.0.RELEASE</springboot.version>
       <mybatis.version>3.4.0</mybatis.version>
-      <jackson.version>2.7.4</jackson.version>
       <springfox.version>2.6.1</springfox.version>
    </properties>
 
@@ -75,7 +81,6 @@
       </pluginRepository>
    </pluginRepositories>
 
-
    <reporting>
       <plugins>
       </plugins>
@@ -112,6 +117,11 @@
                </ignoredDependencies>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+         </plugin>
+
       </plugins>
       <pluginManagement>
          <plugins>
@@ -322,41 +332,9 @@
          <version>5.2.4.Final</version>
       </dependency>
       <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-         <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>jcl-over-slf4j</artifactId>
-         <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-         <version>${logback.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.codehaus.janino</groupId>
-         <artifactId>janino</artifactId>
-         <version>2.7.8</version>
-      </dependency>
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>${junit.version}</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <version>${testng.version}</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.mockito</groupId>
-         <artifactId>mockito-core</artifactId>
-         <version>${mockito.version}</version>
          <scope>test</scope>
       </dependency>
       <dependency>
@@ -365,66 +343,8 @@
          <version>${commons.lang3.version}</version>
       </dependency>
       <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-core</artifactId>
-         <version>${spring.version}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>commons-logging</groupId>
-               <artifactId>commons-logging</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-beans</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-context</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-expression</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-aspects</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-jdbc</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-tx</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-web</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-webmvc</artifactId>
-         <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-test</artifactId>
-         <version>${spring.version}</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
          <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter</artifactId>
-         <version>${springboot.version}</version>
+         <artifactId>spring-boot-starter-web</artifactId>
       </dependency>
       <dependency>
          <groupId>io.springfox</groupId>
