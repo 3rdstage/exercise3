@@ -121,7 +121,66 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
          </plugin>
-
+         <plugin>
+            <groupId>com.github.kongchen</groupId>
+            <artifactId>swagger-maven-plugin</artifactId>
+            <configuration>
+               <apiSources>
+                  <apiSource>
+                     <springmvc>true</springmvc>
+                     <locations>thirdstage.exercise.rest.roll.control</locations>
+                     <schemes>https</schemes>
+                     <host>api.skcc.com:8080</host>
+                     <basePath>/roll/v1</basePath>
+                     <info>
+                        <title>User Management Service REST API</title>
+                        <version>v1</version>
+                     </info>
+                     <swaggerDirectory>${project.build.directory}</swaggerDirectory>
+                     <outputFormats>json,yaml</outputFormats>
+                  </apiSource>
+               </apiSources>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>generate-swagger-api</id>
+                  <phase>compile</phase>
+                  <goals>
+                     <goal>generate</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-codegen-maven-plugin</artifactId>
+            <configuration>
+               <inputSpec>${project.build.directory}/swagger.json</inputSpec>
+               <output>${project.build.directory}/generated-sources/swagger/html</output>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>generate-rest-apidoc-static</id>
+                  <goals>
+                     <goal>generate</goal>
+                  </goals>
+                  <configuration>
+                     <language>html</language>
+                     <output>${project.build.directory}/generated-sources/swagger/html</output>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>generate-rest-apidoc-dynamic</id>
+                  <goals>
+                     <goal>generate</goal>
+                  </goals>
+                  <configuration>
+                     <language>dynamic-html</language>
+                     <output>${project.build.directory}/generated-sources/swagger/dynamic-html</output>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
       <pluginManagement>
          <plugins>
@@ -147,6 +206,17 @@
                      <version>2.0</version>
                   </dependency>
                </dependencies>
+            </plugin>
+            <!-- sources -->
+            <plugin>
+               <groupId>com.github.kongchen</groupId>
+               <artifactId>swagger-maven-plugin</artifactId>
+               <version>3.1.4</version>
+            </plugin>
+            <plugin>
+               <groupId>io.swagger</groupId>
+               <artifactId>swagger-codegen-maven-plugin</artifactId>
+               <version>2.2.1</version>
             </plugin>
             <!-- packaging -->
             <plugin>
@@ -291,6 +361,19 @@
                                  <goal>add-source</goal>
                                  <goal>compile</goal>
                                  <goal>testCompile</goal>
+                              </goals>
+                           </pluginExecutionFilter>
+                           <action>
+                              <ignore />
+                           </action>
+                        </pluginExecution>
+                        <pluginExecution>
+                           <pluginExecutionFilter>
+                              <groupId>com.github.kongchen</groupId>
+                              <artifactId>swagger-maven-plugin</artifactId>
+                              <versionRange>[1.0.0,)</versionRange>
+                              <goals>
+                                 <goal>generate</goal>
                               </goals>
                            </pluginExecutionFilter>
                            <action>
