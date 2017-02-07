@@ -156,27 +156,16 @@
             <artifactId>swagger-codegen-maven-plugin</artifactId>
             <configuration>
                <inputSpec>${project.build.directory}/swagger.json</inputSpec>
-               <output>${project.build.directory}/generated-sources/swagger/html</output>
             </configuration>
             <executions>
                <execution>
-                  <id>generate-rest-apidoc-static</id>
+                  <id>generate-rest-api-doc</id>
                   <goals>
                      <goal>generate</goal>
                   </goals>
                   <configuration>
-                     <language>html</language>
-                     <output>${project.build.directory}/generated-sources/swagger/html</output>
-                  </configuration>
-               </execution>
-               <execution>
-                  <id>generate-rest-apidoc-dynamic</id>
-                  <goals>
-                     <goal>generate</goal>
-                  </goals>
-                  <configuration>
-                     <language>dynamic-html</language>
-                     <output>${project.build.directory}/generated-sources/swagger/dynamic-html</output>
+                     <language>html2</language>
+                     <output>${project.build.directory}/generated-sources/swagger/html2</output>
                   </configuration>
                </execution>
             </executions>
