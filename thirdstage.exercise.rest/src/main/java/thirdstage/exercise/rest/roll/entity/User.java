@@ -26,7 +26,7 @@ public class User{
 
    private java.util.Date expireAt;
 
-   @ApiModelProperty(position = 1, required = true, value = "auto generated unique identifier for this user")
+   @ApiModelProperty(required = true, value = "auto generated unique identifier for this user")
    @XmlAttribute(required = true)
    public String getId(){
       return this.id;
@@ -37,7 +37,7 @@ public class User{
       return this;
    }
 
-   @ApiModelProperty(position = 2, required = true, value = "login ID or login Name for this user")
+   @ApiModelProperty(required = true, value = "login ID or login Name for this user")
    @XmlAttribute(required = true)
    public String getLoginId(){
       return this.id;
@@ -48,7 +48,7 @@ public class User{
       return this;
    }
 
-   @ApiModelProperty(position = 3, required = true, value = "real name for this user")
+   @ApiModelProperty(required = true, value = "real name for this user")
    @XmlAttribute(required = true)
    public String getName(){
       return this.name;
@@ -59,7 +59,7 @@ public class User{
       return this;
    }
 
-   @ApiModelProperty(name = "isValid", position = 4, required = false, value = "whether of not this user is valid and granted to access")
+   @ApiModelProperty(name = "isValid", required = false, value = "whether of not this user is valid and granted to access")
    public boolean isValid(){
       return this.isValid;
    }
@@ -69,6 +69,8 @@ public class User{
       return this;
    }
 
+   @ApiModelProperty(required = false,
+         value = "the date when this user was added or registered to the system")
    public Date getRegisteredAt(){
       return this.registeredAt;
    }
@@ -78,4 +80,14 @@ public class User{
       return this;
    }
 
+   @ApiModelProperty(required = false,
+         value = "the date when this user become invalid automatically")
+   public Date getExpireAt(){
+      return this.expireAt;
+   }
+
+   public User setExpireAt(Date at){
+      this.expireAt = at;
+      return this;
+   }
 }
