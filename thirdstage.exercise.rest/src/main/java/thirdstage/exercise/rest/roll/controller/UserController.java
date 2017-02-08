@@ -7,6 +7,7 @@ import org.apache.commons.lang3.Validate;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +17,7 @@ import thirdstage.exercise.rest.roll.entity.User;
 
 @Api("User")
 @RestController
-@RequestMapping(value = "/users", 
-      produces = {MediaType.APPLICATION_JSON_VALUE}, 
-      consumes = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/users", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}, consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 public class UserController{
 
    @ApiOperation("List all users including invalid users")
@@ -26,13 +25,13 @@ public class UserController{
    public List<User> findAllUsers(){
       return new ArrayList<>();
    }
-   
+
    @ApiOperation("Find a user of the specified ID")
    @RequestMapping(method = RequestMethod.GET, value = "/{userId}")
-   public User findUserById(@PathVariable("userId") String id){
+   public User findUserById(@PathVariable("userId") final String id){
       return new User();
    }
-   
+
    @ApiOperation("List all valid users")
    @RequestMapping(method = RequestMethod.GET, value = "/valid")
    public List<User> findValidUsers(){
@@ -44,30 +43,38 @@ public class UserController{
    public List<User> findInvalidUsers(){
       return new ArrayList<>();
    }
-   
+
    @ApiOperation("Add a new user")
    @RequestMapping(method = RequestMethod.POST)
-   public User addUser(User user){
+   public User addUser(final User user){
       Validate.isTrue(user != null, "The user to add should be specified");
-      
+
       return new User();
    }
-   
+
    @ApiOperation("Make a user invalid")
-   @RequestMapping(method = RequestMethod.PATCH, value="{userId}/invalid")
-   public User setUserInvalid(@NotEmpty @PathVariable("userId") String id){
+   @RequestMapping(method = RequestMethod.PATCH, value = "{userId}/invalid")
+   public User setUserInvalid(@NotEmpty @PathVariable("userId") final String id){
       Validate.isTrue(StringUtils.isNotEmpty(id), "The user ID should be specified");
-      
+
       return new User();
    }
 
    @ApiOperation("Make a user valid")
-   @RequestMapping(method = RequestMethod.PATCH, value="{userId}/valid")
-   public User setUserValid(@NotEmpty @PathVariable("userId") String id){
+   @RequestMapping(method = RequestMethod.PATCH, value = "{userId}/valid")
+   public User setUserValid(@NotEmpty @PathVariable("userId") final String id){
       Validate.isTrue(StringUtils.isNotEmpty(id), "The user ID should be specified");
-      
+
       return new User();
    }
-   
-   
+
+   @ApiOperation("Update a user")
+   @RequestMapping(method = RequestMethod.POST, value = "{userId}")
+   public User updateUser(@NotEmpty @PathVariable("userId") final String id, @RequestBody final User user){
+      Validate.isTrue(StringUtils.isNotEmpty(id), "The user ID should be specified.");
+      Validate.isTrue(user != null, "The user data to update shoud be specified.");
+
+      return new User();
+   }
+
 }
