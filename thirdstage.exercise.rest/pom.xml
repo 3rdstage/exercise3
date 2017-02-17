@@ -125,6 +125,7 @@
         <groupId>com.github.kongchen</groupId>
         <artifactId>swagger-maven-plugin</artifactId>
         <configuration>
+          <!-- For more, refer https://github.com/kongchen/swagger-maven-plugin -->
           <apiSources>
             <apiSource>
               <springmvc>true</springmvc>
@@ -254,10 +255,10 @@
             <links>
               <link>http://docs.oracle.com/javase/7/docs/api/</link>
               <link>http://docs.oracle.com/javaee/6/api/</link>
-              <link>http://jsr-305.googlecode.com/svn/trunk/javadoc/</link>
+              <link>http://www.javadoc.io/doc/com.google.code.findbugs/jsr305/3.0.1</link>
               <link>http://docs.jboss.org/hibernate/beanvalidation/spec/1.1/api/</link>
               <link>http://docs.jboss.org/hibernate/validator/5.2/api/</link>
-              <link>http://commons.apache.org/proper/commons-lang/javadocs/api-3.3.2/</link>
+              <link>http://commons.apache.org/proper/commons-lang/javadocs/api-${commons.lang3.version}/</link>
               <link>http://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
               <link>http://docs.spring.io/spring/docs/4.0.x/javadoc-api/</link>
             </links>
@@ -400,19 +401,19 @@
 
   <dependencies>
     <dependency>
-         <!-- JSR 305 annotations which includes also JCIP annotations -->
+         <!-- JSR 305: Annotations for Software Defect Detection -->
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>2.0.3</version>
     </dependency>
     <dependency>
-         <!-- JSR 330 annotations -->
+         <!-- JSR 330: Dependency Injection for Java -->
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>1</version>
     </dependency>
     <dependency>
-         <!-- JSR 349 annotations -->
+         <!-- JSR 349: Bean Validation 1.1 -->
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <version>1.1.0.Final</version>
