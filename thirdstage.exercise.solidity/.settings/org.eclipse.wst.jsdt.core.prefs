@@ -122,7 +122,7 @@ org.eclipse.wst.jsdt.core.formatter.indent_statements_compare_to_block=true
 org.eclipse.wst.jsdt.core.formatter.indent_statements_compare_to_body=true
 org.eclipse.wst.jsdt.core.formatter.indent_switchstatements_compare_to_cases=true
 org.eclipse.wst.jsdt.core.formatter.indent_switchstatements_compare_to_switch=false
-org.eclipse.wst.jsdt.core.formatter.indentation.size=3
+org.eclipse.wst.jsdt.core.formatter.indentation.size=2
 org.eclipse.wst.jsdt.core.formatter.insert_new_line_after_annotation=insert
 org.eclipse.wst.jsdt.core.formatter.insert_new_line_after_comma_in_objlit_initializer=insert
 org.eclipse.wst.jsdt.core.formatter.insert_new_line_after_opening_brace_in_array_initializer=do not insert
@@ -306,7 +306,7 @@ org.eclipse.wst.jsdt.core.formatter.number_of_blank_lines_at_beginning_of_method
 org.eclipse.wst.jsdt.core.formatter.number_of_empty_lines_to_preserve=1
 org.eclipse.wst.jsdt.core.formatter.put_empty_statement_on_new_line=true
 org.eclipse.wst.jsdt.core.formatter.tabulation.char=space
-org.eclipse.wst.jsdt.core.formatter.tabulation.size=3
+org.eclipse.wst.jsdt.core.formatter.tabulation.size=2
 org.eclipse.wst.jsdt.core.formatter.use_tabs_only_for_leading_indentations=false
 org.eclipse.wst.jsdt.core.formatter.wrap_before_binary_operator=true
 semanticValidation=enabled
