@@ -30,6 +30,7 @@
     <commons.lang3.version>3.5</commons.lang3.version>
     <mybatis.version>3.4.0</mybatis.version>
     <springfox.version>2.6.1</springfox.version>
+    <jackson.verion>2.8.7</jackson.verion>
   </properties>
 
   <repositories>
@@ -399,5 +400,10 @@
       <artifactId>springfox-swagger-ui</artifactId>
       <version>${springfox.version}</version>
     </dependency>
+    <dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    <version>${jackson.verion}</version>
+</dependency>
   </dependencies>
 </project>
