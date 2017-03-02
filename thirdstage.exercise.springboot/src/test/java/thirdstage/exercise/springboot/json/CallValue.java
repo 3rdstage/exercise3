@@ -2,7 +2,7 @@ package thirdstage.exercise.springboot.json;
 
 import java.util.Date;
 
-public class Call{
+public class CallValue{
 
   public enum Direction{
     INBOUND, OUTBOUND;

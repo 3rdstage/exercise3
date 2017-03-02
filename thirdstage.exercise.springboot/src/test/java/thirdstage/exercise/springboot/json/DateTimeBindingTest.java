@@ -1,5 +1,6 @@
 package thirdstage.exercise.springboot.json;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -13,20 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.test.context.junit4.SpringRunner;
-import thirdstage.exercise.springboot.json.Activity.Type;
-import thirdstage.exercise.springboot.json.Call.Direction;
+import thirdstage.exercise.springboot.json.ActivityValue.Type;
+import thirdstage.exercise.springboot.json.CallValue.Direction;
 
 @RunWith(SpringRunner.class)
 @JsonTest
-public class JacksonMapperTest{
+public class DateTimeBindingTest{
 
   private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
-  private JacksonTester<Call> callParser;
+  private JacksonTester<CallValue> callParser;
 
   @Autowired
-  private JacksonTester<Activity> activityParser;
+  private JacksonTester<ActivityValue> activityParser;
 
   @BeforeClass
   public static void beforeClass(){
@@ -113,7 +114,7 @@ public class JacksonMapperTest{
 
     String callJson = "{\"id\" : \"1000\", \"direction\" : \"INBOUND\", \"userId\" : \"100\", \"startAt\" : \"2017-02-24T13:00:00Z\", \"endAt\" : \"2017-02-24T13:30:00\"}";
 
-    Call call = callParser.parse(callJson).getObject();
+    CallValue call = callParser.parse(callJson).getObject();
 
     Assert.assertEquals(call.getId(), "1000");
     Assert.assertEquals(call.getDirection(), Direction.INBOUND);
@@ -150,7 +151,7 @@ public class JacksonMapperTest{
 
     String callJson = "{\"id\" : \"1000\", \"direction\" : \"INBOUND\", \"userId\" : \"100\", \"startAt\" : \"2017-02-24T13:00:00+09:00\", \"endAt\" : \"2017-02-24T13:30:00+0900\"}";
 
-    Call call = callParser.parse(callJson).getObject();
+    CallValue call = callParser.parse(callJson).getObject();
 
     Assert.assertEquals(call.getId(), "1000");
     Assert.assertEquals(call.getDirection(), Direction.INBOUND);
@@ -187,7 +188,7 @@ public class JacksonMapperTest{
     String callJson = "{\"id\" : \"1000\", \"direction\" : \"INBOUND\", \"userId\" : \"100\", \"startAt\" : \"20170224T130000Z\", \"endAt\" : \"20170224T133000\"}";
 
     //Default JSON parser couldn't parse 20170224T130000Z into date type field.
-    Call call = callParser.parse(callJson).getObject();
+    CallValue call = callParser.parse(callJson).getObject();
 
     Assert.assertEquals(call.getId(), "1000");
     Assert.assertEquals(call.getDirection(), Direction.INBOUND);
@@ -223,13 +224,19 @@ public class JacksonMapperTest{
 
     String activityJson = "{\"id\" : \"1000\", \"type\" : \"WALK\", \"amount\" : 10000, \"from\" : \"2017-02-24T13:00:00Z\", \"to\" : \"2017-02-24T13:30:00\"}";
 
-    Activity activity = activityParser.parse(activityJson).getObject();
+    ActivityValue activity = activityParser.parse(activityJson).getObject();
 
-    Assert.assertEquals(activity.getId(), "1000");
-    Assert.assertEquals(activity.getType(), Type.WALK);
-    Assert.assertEquals(activity.getAmount(), Integer.valueOf(10000));
+    Assert.assertEquals("1000", activity.getId());
+    Assert.assertEquals(Type.WALK, activity.getType());
+    Assert.assertEquals(Integer.valueOf(10000), activity.getAmount());
 
+    LocalDateTime d1 = LocalDateTime.of(2017, 2, 24, 13, 0, 0);
+    LocalDateTime d2 = LocalDateTime.of(2017, 2, 24, 13, 30, 0);
 
+    Assert.assertEquals(d1, activity.getFrom());
+    Assert.assertEquals(d2, activity.getTo());
   }
+
+
 
 }

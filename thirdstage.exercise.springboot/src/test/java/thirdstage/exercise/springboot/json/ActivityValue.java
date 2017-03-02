@@ -12,7 +12,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Activity{
+public class ActivityValue{
 
   enum Type{
     WALK,
@@ -33,7 +33,7 @@ public class Activity{
     return id;
   }
 
-  public Activity setId(final String id){
+  public ActivityValue setId(final String id){
     this.id = id;
     return this;
   }
@@ -42,7 +42,7 @@ public class Activity{
     return type;
   }
 
-  public Activity setType(final Type type){
+  public ActivityValue setType(final Type type){
     this.type = type;
     return this;
   }
@@ -51,7 +51,7 @@ public class Activity{
     return amount;
   }
 
-  public Activity setAmount(final Integer amount){
+  public ActivityValue setAmount(final Integer amount){
     this.amount = amount;
     return this;
   }
@@ -60,7 +60,7 @@ public class Activity{
     return from;
   }
 
-  public Activity setFrom(final LocalDateTime from){
+  public ActivityValue setFrom(final LocalDateTime from){
     this.from = from;
     return this;
   }
@@ -69,7 +69,7 @@ public class Activity{
     return to;
   }
 
-  public Activity setTo(final LocalDateTime to){
+  public ActivityValue setTo(final LocalDateTime to){
     this.to = to;
     return this;
   }
