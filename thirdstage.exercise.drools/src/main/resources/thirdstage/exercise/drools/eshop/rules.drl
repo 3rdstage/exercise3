@@ -1,0 +1,26 @@
+//created on: 2017. 3. 24
+package thirdstage.exercise.drools.eshop
+
+//list any import classes here.
+import thirdstage.exercise.drools.eshop.model.Item
+import thirdstage.exercise.drools.eshop.model.Item.Category
+//declare any global variables here
+
+
+rule "Your First Rule"
+
+    when
+        $i : Item(cost < 200)
+    then
+        $i.setCategory(Category.LOW_RANGE)
+
+end
+
+rule "Your Second Rule"
+    //include attributes such as "salience" here...
+    when
+        //conditions
+    then
+        //actions
+
+end
