@@ -14,7 +14,7 @@
     <version>1.5.1.RELEASE</version>
   </parent>
   <groupId>thirdstage.exercise</groupId>
-  <artifactId>rest</artifactId>
+  <artifactId>thirdstage-exercise-rest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <prerequisites>
