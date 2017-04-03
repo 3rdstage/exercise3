@@ -10,58 +10,32 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Item{
+public class Customer{
   
   public enum Category{
-    LOW_RANGE, HIGH_RANGE;
+    SILVER,
+    NA;
   }
-
+  
   private long id;
   
   private String name; 
   
-  private double cost;
-  
-  private double salePrice;
-  
   private Category category;
   
-  public Item(final String name, double cost){
-    this.name = name;
-    this.cost = cost;
-  }
   
   public long getId(){ return this.id; }
   
   public void setId(long id){ this.id = id; }
   
   public String getName(){ return this.name; }
+  
+  public void setName(String name){ this.name = name; }
+  
+  public Category getCategory(){ return this.category; }
+  
+  public void setCategory(Category cat){ this.category = cat; }
+  
+  
 
-  public double getCost(){
-    return cost;
-  }
-
-  public void setCost(double cost){
-    this.cost = cost;
-  }
-  
-  public double getSalePrice(){
-    return salePrice;
-  }
-  
-  public void setSalePrice(double price){
-    this.salePrice = price;
-  }
-
-  public Category getCategory(){
-    return category;
-  }
-
-  public void setCategory(Category category){
-    this.category = category;
-  }
-  
-  
-  
-  
 }

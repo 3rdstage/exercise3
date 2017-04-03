@@ -7,13 +7,12 @@ import thirdstage.exercise.drools.eshop.model.Item.Category
 //declare any global variables here
 
 
-rule "Your First Rule"
+rule "Classfy Item - Low Range"
 
     when
         $i : Item(cost < 200)
     then
-        $i.setCategory(Category.LOW_RANGE)
-
+        $i.setCategory(Category.LOW_RANGE);
 end
 
 rule "Your Second Rule"
