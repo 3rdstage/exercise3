@@ -11,6 +11,8 @@ import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Immutable
 public class DateRangeValue{
@@ -19,7 +21,9 @@ public class DateRangeValue{
 
   private LocalDate to;
 
-  public DateRangeValue(LocalDate from, LocalDate to){
+  //@NOTE For 'JsonCreator' refer http://www.cowtowncoder.com/blog/archives/2010/08/entry_409.html
+  @JsonCreator
+  public DateRangeValue(@JsonProperty("from") LocalDate from, @JsonProperty("to") LocalDate to){
     this.from = from;
     this.to= to;
   }
