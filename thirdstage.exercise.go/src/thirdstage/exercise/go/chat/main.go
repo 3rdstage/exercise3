@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 	"text/template"
+	"github.com/gorilla/websocket"
 )
 
 type templateHandler struct {
@@ -21,6 +22,16 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	t.templ.Execute(w, r)
 
+}
+
+type room struct {
+	forward chan []byte
+}
+
+type client struct {
+	socket *websocket.Conn
+	send chan []byte
+	room *room
 }
 
 func main() {
