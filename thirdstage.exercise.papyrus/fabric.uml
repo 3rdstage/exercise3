@@ -60,4 +60,17 @@
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Nodk4Bm0EeeGsJzuy4Ofdg" value="*"/>
     </ownedEnd>
   </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_1BbIcBnZEeeGsJzuy4Ofdg" name="Node"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_3F0pIBnZEeeGsJzuy4Ofdg" name="Client">
+    <generalization xmi:type="uml:Generalization" xmi:id="__4Eh4BnZEeeGsJzuy4Ofdg" general="_1BbIcBnZEeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_56QfoBnZEeeGsJzuy4Ofdg" name="Peer">
+    <generalization xmi:type="uml:Generalization" xmi:id="_AdjNgBnaEeeGsJzuy4Ofdg" general="_1BbIcBnZEeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_7LxK0BnZEeeGsJzuy4Ofdg" name="Orderer">
+    <generalization xmi:type="uml:Generalization" xmi:id="_BASuMBnaEeeGsJzuy4Ofdg" general="_1BbIcBnZEeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_OZVy8BnaEeeGsJzuy4Ofdg" name="Endorse">
+    <generalization xmi:type="uml:Generalization" xmi:id="_PxuiMBnaEeeGsJzuy4Ofdg" general="_56QfoBnZEeeGsJzuy4Ofdg"/>
+  </packagedElement>
 </uml:Model>
