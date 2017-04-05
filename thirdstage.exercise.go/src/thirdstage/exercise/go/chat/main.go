@@ -1,3 +1,4 @@
+//For complete code, refer https://github.com/matryer/goblueprints/blob/master/chapter1/chat/main.go
 package main
 
 import (
@@ -6,7 +7,6 @@ import (
 	"path/filepath"
 	"sync"
 	"text/template"
-	"github.com/gorilla/websocket"
 )
 
 type templateHandler struct {
@@ -24,18 +24,13 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
-type room struct {
-	forward chan []byte
-}
-
-type client struct {
-	socket *websocket.Conn
-	send chan []byte
-	room *room
-}
-
 func main() {
-	http.Handle("/", &templateHandler{filename: "chat.html"})
+	r := newRoom()
+
+	http.Handle("/", &templateHanlder{filename : "chat.html"})
+	http.Handle("/room", r)
+
+	go r.run()
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
