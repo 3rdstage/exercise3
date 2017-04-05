@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_XHxp4BmyEeeGsJzuy4Ofdg" name="RootElement">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_XKuQMBmyEeeGsJzuy4Ofdg">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_jdIdABmyEeeGsJzuy4Ofdg" name="Ledger">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_uK1V0BmyEeeGsJzuy4Ofdg" name="chain" type="_mLReQBmyEeeGsJzuy4Ofdg" association="_uKxEYBmyEeeGsJzuy4Ofdg"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_9JDMIhmzEeeGsJzuy4Ofdg" name="statedatabase" type="_6xSgABmyEeeGsJzuy4Ofdg" association="_9JClEBmzEeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_mLReQBmyEeeGsJzuy4Ofdg" name="Chain">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_-erXwBmyEeeGsJzuy4Ofdg" name="blocks" type="_3oEFQBmyEeeGsJzuy4Ofdg" aggregation="composite" association="_-eqJoBmyEeeGsJzuy4Ofdg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_mebOUBmzEeeGsJzuy4Ofdg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_meqe4BmzEeeGsJzuy4Ofdg" value="*"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_uKxEYBmyEeeGsJzuy4Ofdg" memberEnd="_uK1V0BmyEeeGsJzuy4Ofdg _uK1V0RmyEeeGsJzuy4Ofdg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_uKzgoBmyEeeGsJzuy4Ofdg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_uK0HsBmyEeeGsJzuy4Ofdg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_uK1V0RmyEeeGsJzuy4Ofdg" name="ledger" type="_jdIdABmyEeeGsJzuy4Ofdg" association="_uKxEYBmyEeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_3oEFQBmyEeeGsJzuy4Ofdg" name="Block"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_6xSgABmyEeeGsJzuy4Ofdg" name="StateDatabase"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_-eqJoBmyEeeGsJzuy4Ofdg" memberEnd="_-erXwBmyEeeGsJzuy4Ofdg _-erXwRmyEeeGsJzuy4Ofdg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_-eqwsBmyEeeGsJzuy4Ofdg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_-eqwsRmyEeeGsJzuy4Ofdg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_-erXwRmyEeeGsJzuy4Ofdg" name="chain" type="_mLReQBmyEeeGsJzuy4Ofdg" association="_-eqJoBmyEeeGsJzuy4Ofdg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_qSjnQBmzEeeGsJzuy4Ofdg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_qSq8ABmzEeeGsJzuy4Ofdg" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_9JClEBmzEeeGsJzuy4Ofdg" memberEnd="_9JDMIhmzEeeGsJzuy4Ofdg _9JFoYBmzEeeGsJzuy4Ofdg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_9JDMIBmzEeeGsJzuy4Ofdg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_9JDMIRmzEeeGsJzuy4Ofdg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_9JFoYBmzEeeGsJzuy4Ofdg" name="ledger" type="_jdIdABmyEeeGsJzuy4Ofdg" association="_9JClEBmzEeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_BkNv4Bm0EeeGsJzuy4Ofdg" name="Peer">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_KRclwxm0EeeGsJzuy4Ofdg" name="channels" type="_FRYlMBm0EeeGsJzuy4Ofdg" association="_KRclwBm0EeeGsJzuy4Ofdg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_L0eewBm0EeeGsJzuy4Ofdg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_L0oPwBm0EeeGsJzuy4Ofdg" value="*"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_FRYlMBm0EeeGsJzuy4Ofdg" name="Channel">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_G-MFQhm0EeeGsJzuy4Ofdg" name="ledger" type="_jdIdABmyEeeGsJzuy4Ofdg" association="_G-LeMBm0EeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_G-LeMBm0EeeGsJzuy4Ofdg" memberEnd="_G-MFQhm0EeeGsJzuy4Ofdg _G-PIkBm0EeeGsJzuy4Ofdg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_G-MFQBm0EeeGsJzuy4Ofdg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_G-MFQRm0EeeGsJzuy4Ofdg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_G-PIkBm0EeeGsJzuy4Ofdg" name="channel" type="_FRYlMBm0EeeGsJzuy4Ofdg" association="_G-LeMBm0EeeGsJzuy4Ofdg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_KRclwBm0EeeGsJzuy4Ofdg" memberEnd="_KRclwxm0EeeGsJzuy4Ofdg _KRea8Bm0EeeGsJzuy4Ofdg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_KRclwRm0EeeGsJzuy4Ofdg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_KRclwhm0EeeGsJzuy4Ofdg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_KRea8Bm0EeeGsJzuy4Ofdg" name="peers" type="_BkNv4Bm0EeeGsJzuy4Ofdg" association="_KRclwBm0EeeGsJzuy4Ofdg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_NoVCABm0EeeGsJzuy4Ofdg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Nodk4Bm0EeeGsJzuy4Ofdg" value="*"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Model>
