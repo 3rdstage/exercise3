@@ -1,3 +1,4 @@
+# From http://hyperledger-fabric.readthedocs.io/en/latest/Setup/Chaincode-setup.html#option-3-docker-toolbox
 
 membersrvc:
   image: hyperledger/fabric-membersrvc
