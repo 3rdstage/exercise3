@@ -21,6 +21,6 @@ curl "http://${dmip}:7050/chaincode" -d @- << REQUEST_BODY
         "args":["a", "1000", "b", "2000"]
     }
   },
-  "id": 2
+  "id": 3
 }
 REQUEST_BODY
