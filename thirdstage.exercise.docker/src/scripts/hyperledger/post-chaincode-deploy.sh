@@ -12,15 +12,16 @@ curl "http://${dmip}:7050/chaincode" -d @- << REQUEST_BODY
   "method": "deploy",
   "params": {
     "type": 1,
-    "chaincodeID":{
-      "name":"official-example02",
-        "path":"github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02"
+    "chaincodeID": {
+      "name": "official-example02",
+      "path": "github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02"
     },
     "ctorMsg": {
-        "function":"init",
-        "args":["a", "1000", "b", "2000"]
-    }
+      "function": "init",
+      "args": ["a", "1000", "b", "2000"]
+    },
+    "secureContext": "lukas"
   },
-  "id": 3
+  "id": 1
 }
 REQUEST_BODY
