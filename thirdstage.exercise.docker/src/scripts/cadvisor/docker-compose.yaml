@@ -1,0 +1,46 @@
+# This file follows the setup flows described at https://www.brianchristner.io/how-to-setup-docker-monitoring/
+
+version: '2.1'
+
+services:
+  influx:  
+    image: tutum/influxdb
+    container_name: influxsrv
+    # For configuring InfluxDB image, refer https://hub.docker.com/r/tutum/influxdb/
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+    expose: ["8090", "8099"]
+    volumes:
+      - /var/influxdb:/data
+    environment:
+      ADMIN_USER: root
+      PRE_CREATE_DB: cadvisor       
+      
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisorsrv  
+    command: -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influxsrv:8086    
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    links:
+      - influxsrv:influxsrv
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    links:
+      - influxsrv:influxsrv
+    environment:
+      INFLUXDB_HOST: localhost
+      INFLUXDB_PORT: 8086
+      INFLUXDB_NAME: cadvisor
+      INFLUXDB_USER: root
+      INFLUXDB_PASS: root  
+        
