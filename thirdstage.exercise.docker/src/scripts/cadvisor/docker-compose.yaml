@@ -3,9 +3,8 @@
 version: '2.1'
 
 services:
-  influx:  
+  influxsrv:
     image: tutum/influxdb
-    container_name: influxsrv
     # For configuring InfluxDB image, refer https://hub.docker.com/r/tutum/influxdb/
     ports:
       - "8083:8083"
@@ -15,12 +14,12 @@ services:
       - /var/influxdb:/data
     environment:
       ADMIN_USER: root
-      PRE_CREATE_DB: cadvisor       
-      
+      PRE_CREATE_DB: cadvisor
+
   cadvisor:
     image: google/cadvisor:latest
-    container_name: cadvisorsrv  
-    command: -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influxsrv:8086    
+    # For more on cAdvisor and InfluxDB, refer https://github.com/google/cadvisor/blob/master/docs/storage/influxdb.md
+    command: -storage_driver=influxdb -storage_driver_host=influxsrv:8086 -storage_driver_db=cadvisor -storage_driver_user=root -storage_driver_password=root -storage_driver_secure=false
     ports:
       - "8080:8080"
     volumes:
@@ -32,15 +31,19 @@ services:
       - influxsrv:influxsrv
   grafana:
     image: grafana/grafana
-    container_name: grafana
+    # For more on Grafana configuration, refer http://docs.grafana.org/installation/configuration/
     ports:
       - "3000:3000"
     links:
       - influxsrv:influxsrv
     environment:
+      GF_AUTH_ANONYMOUS_ENABLED: 'false'
+      GF_AUTH_GITHUB_ENABLED: 'false'
+      GF_AUTH_GOOGLE_ENABLED: 'false'
+      GF_AUTH_BASIC_ENABLED: 'true'
+      GF_AUTH_LDAP_ENABLED: 'false'
       INFLUXDB_HOST: localhost
       INFLUXDB_PORT: 8086
       INFLUXDB_NAME: cadvisor
       INFLUXDB_USER: root
-      INFLUXDB_PASS: root  
-        
+      INFLUXDB_PASS: root

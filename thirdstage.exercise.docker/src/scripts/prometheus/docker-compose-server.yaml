@@ -1,0 +1,24 @@
+# For more, refer https://prometheus.io/docs/introduction/install/#using-docker
+
+version: '2.1'
+
+services:
+  prometheus:
+    image: prom/prometheus   # https://hub.docker.com/r/prom/prometheus/
+    ports:
+      - "9090:9090"
+    volumes:
+      - ~/docker/etc/prometheus:/etc/prometheus
+      - ~/docker/prometheus:/prometheus
+    #command: -config.file=/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana
+    # For more on Grafana configuration, refer http://docs.grafana.org/installation/configuration/
+    ports:
+      - "3000:3000"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: 'false'
+      GF_AUTH_GITHUB_ENABLED: 'false'
+      GF_AUTH_GOOGLE_ENABLED: 'false'
+      GF_AUTH_BASIC_ENABLED: 'true'
+      GF_AUTH_LDAP_ENABLED: 'false'
