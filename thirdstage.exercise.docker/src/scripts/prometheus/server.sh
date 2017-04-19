@@ -7,5 +7,6 @@ fi
 
 docker-compose -f docker-compose-server.yaml up -d
 
+sleep 1
 firefox --new-tab http://localhost:${PROMETHEUS_GUI_PORT:-9090}/consoles/node.html
 firefox --new-tab http://localhost:${GRAFANA_GUI_PORT:-3000}/
