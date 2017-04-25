@@ -29,6 +29,12 @@ if [ "$VER" != $UBUNTU_VER ]; then
  return 1
 fi
 
+# Check installed softwares
+# VER=$(go version)
+# VER=$(docker version)
+# VER=$(nodejs -v)
+# VER=$(python -V)
+
 echo "Updating apt package list"
 sudo apt update
 
@@ -41,9 +47,12 @@ if [ $CNT -lt 1 ]; then
   sudo add-apt-repository ppa:longsleep/golang-backports
   sudo apt-get update
   sudo apt-get install -y golang-$GO_VER-go=$GO_VER*
+  # Add GOPATH env. variable
+  mkdir ~/go
+  sed -i '$ a \\n' ~/.bashrc # add blank line after last line
+  sed -i "$ a export GOPATH=\$HOME/go" ~/.bashrc
+  sed -i "$ a export PATH=\$PATH:\$GOPATH/bin" ~/.bashrc
 fi
-
-# TODO Check $GOPATH
 
 # Install Docker, if necessary
 CNT=$(sudo dpkg --get-selections | grep -v deinstall | grep docker-ce | wc -l)
@@ -56,6 +65,18 @@ if [ $CNT -lt 1 ]; then
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   sudo apt-get update
   sudo apt-get install -y docker-ce=$DOCKER_VER*
+
+  # For below post-installation steps, refer https://docs.docker.com/engine/installation/linux/linux-postinstall/
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
+fi
+
+# Check whether or not Docker can be run by current user
+docker run hello-world
+if [ $? -ne 0 ]; then
+  echo "Docker can't be run successfully by current user. Check Docker installation or confiuration."
+else
+  echo "Docker can be run successfully by current user."
 fi
 
 # Install Node.js, if necessary
@@ -83,22 +104,40 @@ fi
 # References
 #  - https://github.com/prometheus/node_exporter
 #  - https://www.digitalocean.com/community/tutorials/how-to-install-prometheus-using-docker-on-ubuntu-14-04#step-2-%E2%80%94-setting-up-node-exporter
-docker run -d -p ${NODE_EXPORTER_PORT:-9100}:9100 \
-  -v "/proc:/host/proc" -v "/sys:/host/sys" -v "/:/rootfs" --net="host" \
-  prom/node-exporter \
-  -collector.procfs /host/proc \
-  -collector.sysfs /host/proc \
-  -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)" \
-  -collectors.enabled diskstats,filesystem,meminfo,sockstat,stat,time \
-  -web.listen-address :9100
+#docker run -d -p ${NODE_EXPORTER_PORT:-9100}:9100 \
+#  -v "/proc:/host/proc" -v "/sys:/host/sys" -v "/:/rootfs" --net="host" \
+#  prom/node-exporter \
+#  -collector.procfs /host/proc \
+#  -collector.sysfs /host/proc \
+#  -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)" \
+#  -collectors.enabled diskstats,filesystem,meminfo,sockstat,stat,time \
+#  -web.listen-address :9100
+
+# Install Prometheus Node Exporter, if necessary
+# Ubuntu 16.04 official repository provides Node Exporter 0.11 which is somewhat older
+# References
+#   - https://github.com/prometheus/node_exporter/tree/0.11.0
+CNT=$(sudo dpkg --get-selections | grep -v deinstall | grep prometheus-node-exporter | wc -l)
+
+if [ $CNT -lt 1 ]; then
+  echo "Installing Prometheus Node Exporter"
+  sudo apt-get install -y prometheus-node-exporter
+  sudo cp /etc/default/prometheus-node-exporter /etc/default/prometheus-node-exporter.default
+  unset ARG
+  sudo sed -i '$ a \' /etc/default/prometheus-node-exporter
+  sudo sed -i "$ a ARGS=\$ARGS' -collectors.enabled=diskstats,filesystem,meminfo,netdev,stat,time'" /etc/default/prometheus-node-exporter
+  sudo sed -i "$ a ARGS=\$ARGS' -log.level=warn'" /etc/default/prometheus-node-exporter
+  # sudo sed -i "$ a ARGS=\$ARGS' -auth.user=agent -auth.pass=agent!@34'" /etc/default/prometheus-node-exporter # for production env.
+  # Installing Node Exporter makes init.d can control(start/stop/restart) it
+  sudo /etc/init.d/prometheus-node-exporter restart
+fi
 
 sleep 1
 
 CODE=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:${NODE_EXPORTER_PORT:-9100})
-
 if [ $CODE -eq 200 ]; then
-  echo "Successfully loaded 'prom/node-exporter' container. Check http://localhost:${NODE_EXPORTER_PORT:-9100}/"
+  echo "Successfully loaded Prometheus Node Exporter. Check http://localhost:${NODE_EXPORTER_PORT:-9100}/"
 else
-  echo "Fail to load 'prom/node-exporter' container. Check Docker logs."
+  echo "Fail to load Prometheus Node Exporter. Check logs."
 fi
 
