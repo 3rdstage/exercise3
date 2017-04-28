@@ -69,6 +69,11 @@ if [ $CNT -lt 1 ]; then
   # For below post-installation steps, refer https://docs.docker.com/engine/installation/linux/linux-postinstall/
   sudo groupadd docker
   sudo usermod -aG docker $USER
+
+  # Install Docker Compose
+  # For more refer https://docs.docker.com/compose/install/
+  curl -L https://github.com/docker/compose/releases/download/1.13.0-rc1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
 fi
 
 # Check whether or not Docker can be run by current user
