@@ -1,0 +1,19 @@
+{
+  "name": "thirdstage.exercise.fabricclient",
+  "version": "0.1.0",
+  "description": "thirdstage.exercise.fabricclient",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "repository": "",
+  "engines": {
+    "node": ">=6.9.0 <7.0",
+    "npm": ">=3.10.0"
+  },
+  "engine-strict": true,
+  "engineStrict": true,
+  "dependencies" : {
+    "fabric-client": ">=1.0.0-alpha <1.0.0-alpha.10"
+  }
+}
