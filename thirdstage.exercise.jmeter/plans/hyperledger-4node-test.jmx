@@ -15,10 +15,10 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">12</stringProp>
+          <stringProp name="LoopController.loops">20</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">40</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
+        <stringProp name="ThreadGroup.num_threads">120</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">15</stringProp>
         <longProp name="ThreadGroup.start_time">1493190960000</longProp>
         <longProp name="ThreadGroup.end_time">1493190960000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -101,6 +101,7 @@
             </value>
           </objProp>
           <stringProp name="filename"></stringProp>
+          <boolProp name="ResultCollector.success_only_logging">true</boolProp>
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
@@ -180,10 +181,10 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">10</stringProp>
+          <stringProp name="LoopController.loops">12</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">12</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">12</stringProp>
+        <stringProp name="ThreadGroup.num_threads">400</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">50</stringProp>
         <longProp name="ThreadGroup.start_time">1493284775000</longProp>
         <longProp name="ThreadGroup.end_time">1493284775000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -271,6 +272,42 @@
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -454,7 +491,7 @@
           <stringProp name="-1616783654">INVOKER</stringProp>
         </collectionProp>
         <collectionProp name="UserParameters.thread_values">
-          <collectionProp name="-331304803">
+          <collectionProp name="-404318575">
             <stringProp name="-55540322">10.250.46.57</stringProp>
             <stringProp name="1627548">5100</stringProp>
             <stringProp name="3118">c1</stringProp>
@@ -464,12 +501,12 @@
             <stringProp name="1628509">5200</stringProp>
             <stringProp name="3119">c2</stringProp>
           </collectionProp>
-          <collectionProp name="-336922358">
+          <collectionProp name="-1857109181">
             <stringProp name="-55540322">10.250.46.57</stringProp>
             <stringProp name="1629470">5300</stringProp>
             <stringProp name="3120">c3</stringProp>
           </collectionProp>
-          <collectionProp name="414712484">
+          <collectionProp name="-1857079389">
             <stringProp name="-55540322">10.250.46.57</stringProp>
             <stringProp name="1630431">5400</stringProp>
             <stringProp name="3121">c4</stringProp>
