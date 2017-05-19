@@ -25,7 +25,9 @@ services:
     ports:
       - "${GRAFANA_GUI_PORT:-3000}:3000"
     volumes:
+      # - ~/docker/etc/grafana:/etc/grafana
       - ~/docker/var/lib/grafana:/var/lib/grafana
+      # - ~/docker/var/log/grafana:/var/log/grafana
     environment:
       GF_SECURITY_ADMIN_PASSWORD: 'admin!@34'
       GF_AUTH_ANONYMOUS_ENABLED: 'false'
