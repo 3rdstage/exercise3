@@ -19,7 +19,12 @@ if [ -z $GOPATH ]; then
 fi
 
 # Install fabric-ca-client
-go get -u github.com/hyperledger/fabric-ca/cmd/fabric-ca-client
+go get github.com/hyperledger/fabric-ca/cmd/fabric-ca-client
+cd $GOPATH/src/github.com/hyperledger/fabric-ca/cmd/fabric-ca-client
+git checkout ${FABRIC_VERSION:-v1.0.0-alpha2}
+go build
+
+
 
 
 
