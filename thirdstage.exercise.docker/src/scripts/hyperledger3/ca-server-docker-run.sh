@@ -22,10 +22,10 @@ while getopts ":n:p:rh" opt; do
   case $opt in
     n)
       #echo "-n option for docker container name is set to $name."
-      name=${optarg%% }
+      name=${OPTARG%% }
       ;;
     p)
-      port=${optarg%% }
+      port=${OPTARG%% }
       ;;
     r)
       #echo "-r option for refresh is set and all pervious data in host will be removed before starting the docker container."
@@ -36,13 +36,13 @@ while getopts ":n:p:rh" opt; do
       exit 0
       ;;
     \?)
-      echo "Invalid option: -$optarg" >&2
-      echo "See 'run-ca-server.sh -h'." >&2
+      echo "Invalid option: -$OPTARG" >&2
+      echo "See '${0##*/} -h'." >&2
       exit 1
       ;;
     :)
-      echo "Missing option argument: -$optarg requires an argument." >&2
-      echo "See 'run-ca-server.sh -h'." >&2
+      echo "Missing option argument: -$OPTARG requires an argument." >&2
+      echo "See '${0##*/} -h'." >&2
       exit 1
       ;;
   esac
@@ -50,7 +50,7 @@ done
 
 if [ -z $name ] ; then
   echo "Missing mandatory option: -n name." >&2
-  echo "See 'run-ca-server.sh -h'." >&2
+  echo "See '${0##*/} -h'." >&2
   exit 1
 fi
 
@@ -77,7 +77,6 @@ if [ $refresh ]; then
     fi
     sudo mkdir $config_basedir_host/archived 2>/dev/null
     sudo mv -f $config_basedir_host/$name $config_basedir_host/archived/$name
-    #rm -Rf $config_basedir_host/$name
   fi
 fi
 
