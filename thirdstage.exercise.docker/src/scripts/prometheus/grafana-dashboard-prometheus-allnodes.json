@@ -5,7 +5,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "4.2.0"
+      "version": "4.3.0-beta1"
     },
     {
       "type": "panel",
@@ -17,7 +17,7 @@
   "annotations": {
     "list": []
   },
-  "description": "Monitoring system resources (CPU, RAM, Network IO) for all peer machines in a single board",
+  "description": "Monitoring system resources (CPU, RAM, Network IO) for all physical nodes in a single board",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -33,6 +33,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "$datasource",
           "fill": 1,
           "id": 1,
@@ -54,16 +56,18 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "100 -  (avg by (instance) (irate(node_cpu{job=\"node\",mode=\"idle\"}[2m])) * 100)",
+              "expr": "100 - (avg(irate(node_cpu{job=\"node\",mode=\"idle\"}[2m])) by (instance)) * 100",
+              "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "CPU Usage[{{instance}}]",
               "refId": "A",
-              "step": 4
+              "step": 2
             }
           ],
           "thresholds": [
@@ -92,6 +96,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -119,6 +124,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "$datasource",
           "fill": 1,
           "id": 4,
@@ -140,16 +147,18 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "expr": "(node_memory_MemTotal - (node_memory_MemFree + node_memory_Buffers + node_memory_Cached))/ node_memory_MemTotal * 100",
+              "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "Used RAM[[{{instance}}]",
+              "legendFormat": "Used RAM[{{instance}}]",
               "refId": "A",
-              "step": 4
+              "step": 2
             }
           ],
           "thresholds": [
@@ -178,6 +187,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -219,6 +229,8 @@
         {
           "aliasColors": {},
           "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": "$datasource",
           "fill": 1,
           "id": 5,
@@ -240,30 +252,25 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by(instance) (node_network_receive_bytes{job='node'})",
+              "expr": "rate(node_network_transmit_bytes{job=\"node\",device=~\"lo|^eth.*\"}[2m])",
+              "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "Network Received[{{instance}}]",
+              "legendFormat": "{{instance}} / {{device}}",
               "refId": "A",
-              "step": 4
-            },
-            {
-              "expr": "sum by(instance)(node_network_transmit_bytes{job='node'})",
-              "intervalFactor": 2,
-              "legendFormat": "Network Sent[{{instance}}]",
-              "refId": "B",
-              "step": 4
+              "step": 2
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network Traffic",
+          "title": "Network Traffic - Sent",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -271,6 +278,7 @@
           },
           "type": "graph",
           "xaxis": {
+            "buckets": null,
             "mode": "time",
             "name": null,
             "show": true,
@@ -279,7 +287,84 @@
           "yaxes": [
             {
               "format": "decbytes",
-              "label": "Bytes",
+              "label": "Bytes/sec",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "fill": 1,
+          "id": 6,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "rate(node_network_receive_bytes{job=\"node\",device=~\"lo|^eth.*\"}[2m])",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{instance}} / {{device}}",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Traffic - Received",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "decbytes",
+              "label": "Bytes/sec",
               "logBase": 1,
               "max": null,
               "min": null,
@@ -326,7 +411,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -356,6 +441,6 @@
     ]
   },
   "timezone": "browser",
-  "title": "Fabric Cluster - All Peer Machines",
-  "version": 6
+  "title": "All Nodes Monitoring",
+  "version": 9
 }
