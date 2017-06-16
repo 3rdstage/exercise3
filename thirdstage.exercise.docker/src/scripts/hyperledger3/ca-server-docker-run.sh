@@ -107,6 +107,3 @@ docker run -itd \
 hyperledger/fabric-ca:${FABRIC_CA_VERSION:-x86_64-1.0.0-alpha2} \
 fabric-ca-server start -b admin:admin1234 \
 --ca.certfile=$name-cert.pem --ca.keyfile=$name-key.pem
-
-
-
