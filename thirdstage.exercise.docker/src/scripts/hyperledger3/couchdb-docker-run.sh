@@ -4,8 +4,9 @@
 #   -http://docs.couchdb.org/en/2.0.0/config/
 #   -http://docs.couchdb.org/en/2.0.0/config-ref.html : CouchDB configuration reference
 
-name=couchdb0
-port=${COUCHDB_PORT:-5984}
+name=${1:-couch0}
+port=${2:-5984}
+fabric_version=${4:-x86_64-1.0.0-alpha}
 
 sudo rm -rf ~/docker/opt/couchdb/$name
 
@@ -14,7 +15,7 @@ docker run -itd \
 -p $port:5984 \
 -v ~/docker/opt/couchdb/$name/data:/opt/couchdb/data \
 -v ~/docker/opt/couchdb/$name/var/log:/opt/couchdb/var/log \
-hyperledger/fabric-couchdb /bin/bash
+hyperledger/fabric-couchdb:$fabric_version /bin/bash
 
 echo "Waiting 2 seconds for CouchDB to be launched completely."
 sleep 2
@@ -29,7 +30,7 @@ HERE"
 echo "Waiting 2 seconds for 'docker exec' to be completed."
 sleep 2
 
-docker exec -itd $name "/opt/couchdb/bin/couchdb"
+docker exec -itd $name /docker-entrypoint.sh /opt/couchdb/bin/couchdb
 
 if [ $? -eq 0 ]; then
   echo ""
