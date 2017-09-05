@@ -11,7 +11,7 @@ services:
       - "${PROMETHEUS_GUI_PORT:-9090}:9090"
     volumes:
       - ~/docker/etc/prometheus:/etc/prometheus
-      - ~/docker/prometheus:/prometheus
+      # - ~/docker/prometheus:/prometheus
     #command: -config.file=/etc/prometheus/prometheus.yml -storage.local.path=/prometheus -storage.local.memory-chunks=10000 #causes error on 'http://localhost:9090/consoles/node.html'
     command:
       - -config.file=/etc/prometheus/prometheus.yml
@@ -25,9 +25,11 @@ services:
     ports:
       - "${GRAFANA_GUI_PORT:-3000}:3000"
     volumes:
+      # - ~/docker/etc/grafana:/etc/grafana
       - ~/docker/var/lib/grafana:/var/lib/grafana
+      # - ~/docker/var/log/grafana:/var/log/grafana
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: 'admin'
+      GF_SECURITY_ADMIN_PASSWORD: 'admin!@34'
       GF_AUTH_ANONYMOUS_ENABLED: 'false'
       GF_AUTH_GITHUB_ENABLED: 'false'
       GF_AUTH_GOOGLE_ENABLED: 'false'

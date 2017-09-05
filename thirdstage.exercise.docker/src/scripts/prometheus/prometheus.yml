@@ -1,4 +1,7 @@
-# https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus.yml
+# For more on Prometheus configuration, refer
+#
+#   - https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus.yml
+#   - https://prometheus.io/docs/operating/configuration/
 
 # my global config
 global:
@@ -30,6 +33,7 @@ scrape_configs:
 
   - job_name: 'node'
     scrape_interval: '5s'
+    # For more on 'static_configs', refer https://prometheus.io/docs/operating/configuration/#%3Cstatic_config%3E
     static_configs: #'target_groups' are renamed to 'static_configs'
-      - targets: ['172.17.0.1:9100']
+      - targets: ['172.17.0.1:9100', '10.250.46.57:9100', '10.250.46.237:9100', '10.250.46.137:9100', '10.250.46.64:9100']
 
