@@ -1,0 +1,282 @@
+{
+  "host-arch" : "x86_64",
+  "fabric-version" : "1.0.1",
+  "fabric-images" : [],
+  "host-account" : { "username" : "administrator" },
+
+  "host-prerequisite": {
+    "ubuntu-versions" : ["16.04"],
+    "go-version" : {"min" : "1.8"},
+    "docker-version" : {},
+    "docker-compose-version" : {},
+    "nodejs-version" : {},
+    "npm-version" : {},
+    "apt-packages" : ["tcpdump", "parallel"]
+  },
+
+  "hosts": [
+    { "id" : "m1", "address" : "169.56.94.167", "hostname" : "brick01" },
+    { "id" : "m2", "address" : "169.56.94.173", "hostname" : "brick02" },
+    { "id" : "m3", "address" : "169.56.94.162", "hostname" : "brick03" },
+    { "id" : "m4", "address" : "169.56.94.168", "hostname" : "brick04" },
+    { "id" : "m5", "address" : "169.56.94.183", "hostname" : "brick05" },
+    { "id" : "m6", "address" : "169.56.94.165", "hostname" : "brick06" },
+    { "id" : "m7", "address" : "169.56.94.174", "hostname" : "brick07" },
+    { "id" : "m8", "address" : "169.56.94.181", "hostname" : "brick08" },
+    { "id" : "m9", "address" : "169.56.94.166", "hostname" : "brick09" },
+    { "id" : "m10", "address" : "169.56.94.178", "hostname" : "brick10" },
+    { "id" : "m11", "address" : "169.56.94.182", "hostname" : "brick11" },
+    { "id" : "m12", "address" : "169.56.94.188", "hostname" : "brick12" },
+    { "id" : "m13", "address" : "169.56.94.186", "hostname" : "brick13" },
+    { "id" : "m14", "address" : "169.56.94.172", "hostname" : "brick14" },
+    { "id" : "m15", "address" : "169.56.94.169", "hostname" : "brick15" },
+    { "id" : "m16", "address" : "169.56.94.170", "hostname" : "brick16" },
+    { "id" : "m17", "address" : "169.56.94.184", "hostname" : "brick17" },
+    { "id" : "m18", "address" : "169.56.94.185", "hostname" : "brick18" },
+    { "id" : "m19", "address" : "169.56.94.180", "hostname" : "brick19" },
+    { "id" : "m20", "address" : "169.56.94.177", "hostname" : "brick20" },
+    { "id" : "m21", "address" : "169.56.94.187", "hostname" : "brick21" },
+    { "id" : "m22", "address" : "169.56.94.175", "hostname" : "brick22" },
+    { "id" : "m23", "address" : "169.56.94.189", "hostname" : "brick23" },
+    { "id" : "m24", "address" : "169.56.94.190", "hostname" : "brick24" },
+    { "id" : "m25", "address" : "169.56.94.163", "hostname" : "brick25" },
+    { "id" : "m26", "address" : "169.56.94.164", "hostname" : "brick26" },
+    { "id" : "m27", "address" : "169.56.94.171", "hostname" : "brick27" },
+    { "id" : "m28", "address" : "169.56.69.138", "hostname" : "brick28" },
+    { "id" : "m29", "address" : "169.56.90.141", "hostname" : "brick29" },
+    { "id" : "m30", "address" : "169.56.90.131", "hostname" : "brick30" }
+  ],
+
+  "docker-swarm": {
+    "name" : "lego-4"
+  },
+
+  "orderer-orgs" : [
+    { "name" : "org0" }
+  ],
+
+  "peer-orgs" : [
+    { "name" : "org1" },
+    { "name" : "org2" }
+  ],
+
+  "zookeepers" : [
+    {
+      "name" : "zk1",
+      "host-id" : "m1",
+      "id" : "1",
+      "config" : {
+          "tick-time" : 2000,
+          "init-limit": 10,
+          "sync-limit":5,
+          "client-port" : 2181,
+          "quorum-port" : 2888,
+          "election-port" : 3888
+        },
+        "docker" : {
+          "host-ports" : {
+            "client-port" : 2181,
+            "quorum-port" : 2888,
+            "election-port" : 3888
+          }
+        }
+      },
+      { "name" : "zk2", "host-id" : "m1", "id" : "2",
+        "config" : {
+          "tick-time" : 2000,
+          "init-limit": 10,
+          "sync-limit":5,
+          "client-port" : 2181,
+          "quorum-port" : 2888,
+          "election-port" : 3888
+        },
+        "docker" : {
+          "host-ports" : {
+            "client-port" : 2191,
+            "quorum-port" : 2898,
+            "election-port" : 3898
+          }
+        }
+      },
+      { "name" : "zk3", "host-id" : "m1", "id" : "3",
+        "docker" : {
+          "host-ports" : {
+            "client-port" : 2171,
+            "quorum-port" : 2878,
+            "election-port" : 3878
+          }
+        }
+      }
+  ],
+
+  "zookeeper-config-default" : {
+    "tick-time" : 1000,
+    "init-limit": 5,
+    "sync-limit":5,
+    "client-port": 2181,
+    "quorum-port" : 2888,
+    "election-port" : 3888
+  },
+
+  "kafkas" : [
+      { "name" : "kafka1",
+        "host-id" : "m1",
+        "broker-id" : "1",
+        "config" : {
+          "listener-address": "0.0.0.0",
+          "listener-port": 9092
+        },
+        "docker" : {
+          "host-ports" : {
+            "listener-port" : 9092,
+            "jmx-port" : 9999
+          }
+        }
+      },
+      { "name" : "kafka2",
+        "host-id" : "m1",
+        "broker-id" : "2",
+        "config" : {
+          "listener-address": "0.0.0.0",
+          "listener-port": 9092
+        },
+        "docker" : {
+          "host-ports" : {
+            "listener-port" : 9082,
+            "jmx-port" : 9989
+          }
+        }
+      },
+      { "name" : "kafka3",
+        "host-id" : "m1",
+        "broker-id" : "3",
+        "config" : {
+          "listener-address": "0.0.0.0",
+          "listener-port": 9092
+        },
+        "docker" : {
+          "host-ports" : {
+            "listener-port" : 9072,
+            "jmx-port" : 9979
+          }
+        }
+      },
+      { "name" : "kafka4",
+        "host-id" : "m1",
+        "broker-id" : "4",
+        "config" : {
+          "listener-address": "0.0.0.0",
+          "listener-port": 9092
+        },
+        "docker" : {
+          "host-ports" : {
+            "listener-port" : 9062,
+            "jmx-port" : 9969
+          }
+        }
+      }
+  ],
+
+  "kafka-config-default" : {
+    "listener-address": "0.0.0.0",
+    "listener-port": "9092",
+    "jmx-port": "9999",
+    "unclean-leader-election-enable": false,
+    "min-insync-replicas": 2,
+    "default-replication-factor": 3,
+    "max-message-bytes": 6000000,
+    "replica-fetch-max-bytes": 6000000,
+    "zookeeper-connection-timeout-ms": 6000,
+    "verbose": false,
+    "log4j-rootlogger": "INFO",
+    "metrics-recording-level": "INFO",
+    "jvm-opts": {
+      "heap-opts": "-Xms1024m -Xmx1024m",
+      "performance-opts": "-server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+DisableExplicitGC -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true",
+      "jmx-opts": "-Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false",
+      "gc-log-opts": " "
+    }
+  },
+
+  "orderers" : [
+    { "name" : "orderer1", "org-name" : "org0", "host-id" : "m1"},
+    { "name" : "orderer2", "org-name" : "org0", "host-id" : "m1"}
+  ],
+
+  "peers" : [
+    {
+      "name" : "peer1",
+      "org-name" : "org1",
+      "host-id" : "m1",
+      "gossip" : {
+        "org-leader" : true,
+        "external-endpoint": "",
+        "bootstrap": ""
+      },
+      "couchdb" : {
+        "name" : "couch1"
+      }
+    },
+    {
+      "name" : "peer2",
+      "org-name" : "org1",
+      "host-id" : "m2",
+      "gossip" : {
+        "org-leader" : false,
+        "external-endpoint": "",
+        "bootstrap": ""
+      },
+      "couchdb" : {
+        "name" : "couch2"
+      }
+    },
+    {
+      "name" : "peer3",
+      "org-name" : "org2",
+      "host-id" : "m3",
+
+      "gossip" : {
+        "org-leader" : false,
+        "external-endpoint": "",
+        "bootstrap": ""
+      },
+      "couchdb" : {
+        "name" : "couch3"
+      }
+    }
+  ],
+
+  "peer-config-default" : {
+    "port" : 7051,
+    "chaincode-port" : 7052,
+    "event-port" : 7053,
+
+    "logging-levels" : {
+      "defalut" : "info",
+      "cauthdsl" : "warning",
+      "gossip": "warning",
+      "ledger": "warning",
+      "msp": "warning",
+      "policies": "warning",
+      "grpc": "error",
+      "committer": "debug"
+    },
+    "gossip" : {
+      "org-leader" : false
+    },
+    "chaincode" : {
+      "keepalive" : 10,
+      "logging-level": "warning"
+    }
+  },
+
+  "couchdb-config-default" : {
+    "bind-address" : "0.0.0.0",
+    "port" : 5984
+  },
+
+  "ca-servers" : [],
+
+
+  "fabric-channels" : []
+}
