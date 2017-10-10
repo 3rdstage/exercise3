@@ -62,9 +62,9 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request){
 
 func newRoom() *room {
 	return &room {
-		foward: make(chan []byte),
-		join: make(chan, *client),
-		leave: make(chan, *client),
+		forward: make(chan []byte),
+		join: make(chan *client),
+		leave: make(chan *client),
 		clients: make(map[*client]bool),
 	}
 }
