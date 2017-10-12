@@ -8,7 +8,7 @@
 <listEntry value="1"/>
 </listAttribute>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="ANT_HOME" value="C:\tools\eclipse-4.6.1\plugins\org.apache.ant_1.9.6.v201510161327"/>
+<mapEntry key="ANT_HOME" value="C:\tools\eclipse-4.5.1\plugins\org.apache.ant_1.9.4.v201504302020"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="EUC-KR"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
@@ -16,7 +16,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.eclipse.ant.internal.launching.remote.InternalAntRunner"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="thirdstage.exercise.go"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_ANT_TARGETS" value="chat.run.x86,"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_ANT_TARGETS" value="chat.build.x86,"/>
 <booleanAttribute key="org.eclipse.ui.externaltools.ATTR_INCLUDE_REFERENCED_PROJECTS" value="false"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${project}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/thirdstage.exercise.go/build.xml}"/>

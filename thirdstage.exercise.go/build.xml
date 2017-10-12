@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="thirdstage.exercise.go" basedir="." default="echo.env" xmlns:artifact="antlib:org.apache.maven.artifact.ant" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:contrib="antlib:net.sf.antcontrib">
+<project name="thirdstage.exercise.go" basedir="." 
+   default="echo.env" 
+   xmlns:artifact="antlib:org.apache.maven.artifact.ant" 
+   xmlns:antelope="antlib:ise.antelope.tasks" 
+   xmlns:contrib="antlib:net.sf.antcontrib">
 
   <!-- Ant references :
       Manual : http://ant.apache.org/manual/index.html
@@ -37,9 +41,15 @@
   <taskdef name="var" classname="ise.antelope.tasks.Variable" uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
   <taskdef name="unset" classname="ise.antelope.tasks.Unset" uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
 
+  <antelope:if name="env.GOPATH" exists="true">
+     <property name="gopath" value="${env.GOPATH};${basedir}"/>
+     <else>
+        <property name="gopath" value="${basedir}"/>
+     </else>
+  </antelope:if>
+   
   <target name="echo.env">
     <echo>Defined properties : </echo>
-    <property name="gopath" value="${env.GOPATH};${basedir}"/>
     <echoproperties />
   </target>
 
@@ -54,7 +64,7 @@
       <arg value="build" />
       <arg value="-o" />
       <arg value="chat.exe" />
-      <env key="GOPATH" value="${env.GOPATH};${basedir}" />
+      <env key="GOPATH" value="${gopath}" />
     </exec>
   </target>
 
