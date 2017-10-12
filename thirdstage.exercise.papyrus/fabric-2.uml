@@ -133,12 +133,18 @@
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7ojm0Fr7EeeQUp0TbgxCSw" source="org.eclipse.papyrus">
       <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7ojm0Vr7EeeQUp0TbgxCSw" key="nature" value="UML_Nature"/>
     </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_7ojm01r7EeeQUp0TbgxCSw" name="user" type="_GtZCsFr7EeeQUp0TbgxCSw" association="_7oeHQFr7EeeQUp0TbgxCSw"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_7ojm01r7EeeQUp0TbgxCSw" name="user" type="_GtZCsFr7EeeQUp0TbgxCSw" association="_7oeHQFr7EeeQUp0TbgxCSw">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_gkva8FuaEeeQUp0TbgxCSw" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_gkxQIFuaEeeQUp0TbgxCSw" value="*"/>
+    </ownedEnd>
   </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_8gGS0Fr7EeeQUp0TbgxCSw" memberEnd="_8gHg8Fr7EeeQUp0TbgxCSw _8gHg8Vr7EeeQUp0TbgxCSw">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_8gG54Fr7EeeQUp0TbgxCSw" source="org.eclipse.papyrus">
       <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_8gG54Vr7EeeQUp0TbgxCSw" key="nature" value="UML_Nature"/>
     </eAnnotations>
-    <ownedEnd xmi:type="uml:Property" xmi:id="_8gHg8Vr7EeeQUp0TbgxCSw" name="node" type="_UgV4UFbhEeeijqFGFpkrnQ" association="_8gGS0Fr7EeeQUp0TbgxCSw"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_8gHg8Vr7EeeQUp0TbgxCSw" name="node" type="_UgV4UFbhEeeijqFGFpkrnQ" association="_8gGS0Fr7EeeQUp0TbgxCSw">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_a9XiwFuaEeeQUp0TbgxCSw" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_a9b0MFuaEeeQUp0TbgxCSw" value="*"/>
+    </ownedEnd>
   </packagedElement>
 </uml:Model>

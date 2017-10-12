@@ -12,12 +12,11 @@ RUN export uid=1000 gid=1000 && \
     echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
     chmod 0440 /etc/sudoers.d/developer && \
     chown ${uid}:${gid} -R /home/developer
-    
+
 USER developer
 ENV HOME /home/developer
-CMD /usr/bin/firefox 
+CMD /usr/bin/firefox
 
 
-# Typical build command would be 'docker build -t firefox -f firefox-ubuntu-14.dockerfile'.
+# Typical build command would be 'docker build -t firefox -f firefox-ubuntu-14.dockerfile .'.
 
-    

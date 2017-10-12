@@ -3,6 +3,10 @@
 ## Check whether the headerquarter host prepared (required softwares are installed) or not
 ## and make it prepared, if necessary.
 
+# TODO libraries which may be necessary
+#  - net-tools (nestat)
+
+
 # Install 'jq', if not installed yet
 #   - https://stedolan.github.io/jq/
 #   - https://github.com/stedolan/jq
