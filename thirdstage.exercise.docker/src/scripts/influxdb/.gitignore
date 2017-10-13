@@ -1,1 +1,4 @@
 NOAA_data.txt
+*.log
+*.jtl
+*.png
