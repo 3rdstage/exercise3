@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func main(){
+func main() {
 	var a []int
 	a = []int{1, 2, 3}
 
@@ -10,4 +10,3 @@ func main(){
 
 	fmt.Println(a)
 }
-
