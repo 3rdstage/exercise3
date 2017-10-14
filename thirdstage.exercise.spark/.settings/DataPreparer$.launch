@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="scala.application">
+<listAttribute key="StepOutExcludePkgsOrClasses"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/thirdstage.exercise.spark/src/main/scala/thirdstage/exercise/spark/parallelism/DataPreparer.scala"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="euc-kr"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="thirdstage.exercise.spark.parallelism.DataPreparer"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="thirdstage.exercise.spark"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -XX:MaxPermSize=512M -XX:+CMSClassUnloadingEnabled -DworkDir=${project_loc}/target/parallelism"/>
+</launchConfiguration>

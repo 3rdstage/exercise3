@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<configuration scan="true" scanPeriod="180 seconds">
+
+   <property name="_LOG_FILE_DIR" value="${log.file.dir:-${TEMP:-${user.home}}}" />
+   <property name="_LOG_FILE_NAME" value="${log.file.name:-logback.log}" />
+   <property name="_LOG_LEVEL_ROOT" value="${log.level.root:-DEBUG}"/>
+
+   <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+         <level>DEBUG</level>
+      </filter>
+      <encoder>
+         <pattern>%-4r [%t] %-5p %c - %m%n</pattern>
+      </encoder>
+   </appender>
+   <appender name="DRFA" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>${_LOG_FILE_DIR}/${_LOG_FILE_NAME}</file>
+      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+         <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+         <maxHistory>10</maxHistory>
+      </rollingPolicy>
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+         <level>DEBUG</level>
+      </filter>
+      <encoder>
+         <pattern>%-4r [%t] %-5p %c - %m%n</pattern>
+      </encoder>
+   </appender>
+
+   <root level="${_LOG_LEVEL_ROOT}">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </root>
+</configuration>

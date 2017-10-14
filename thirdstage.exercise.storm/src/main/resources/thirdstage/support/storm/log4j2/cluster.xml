@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is Log4j 2 configuration for cluster related vms(such as nimbus, supervisor, drpc ...).
+From Storm 0.10.0, Storm switched logger implementation from Logback to Log4j 2.
+
+The Log4j 2 configuration in Storm 0.10.0-beta1 needs more flexibility and even has bug.
+
+This file is usually located in 'log4j2' directory under STORM_HOME and named 'cluster.xml'
+-->
+
+<configuration monitorInterval="60">
+   <properties>
+      <property name="pattern">%d{yy/MM/dd HH:mm:ss}[%p,%c{1.}]%msg%n</property>
+      <property name="patternMetris">%d %-8r %m%n</property>
+      <property name="log.level.root">info</property>
+      <property name="log.level.storm.drpc">info</property>
+   </properties>
+   <appenders>
+      <RollingFile name="A1"
+         fileName="${sys:storm.home}/logs/${sys:logfile.name}"
+         filePattern="${sys:storm.home}/logs/${sys:logfile.name}.%i">
+         <PatternLayout>
+            <pattern>${pattern}</pattern>
+         </PatternLayout>
+         <Policies>
+            <SizeBasedTriggeringPolicy size="10 MB" />
+         </Policies>
+         <DefaultRolloverStrategy max="9" />
+      </RollingFile>
+      <RollingFile name="ACCESS"
+         fileName="${sys:storm.home}/logs/access.log"
+         filePattern="${sys:storm.home}/logs/access.log.%i">
+         <PatternLayout>
+            <pattern>${pattern}</pattern>
+         </PatternLayout>
+         <Policies>
+            <SizeBasedTriggeringPolicy size="10 MB" />
+         </Policies>
+         <DefaultRolloverStrategy max="9" />
+      </RollingFile>
+      <RollingFile name="METRICS"
+         fileName="${sys:storm.home}/logs/metrics.log"
+         filePattern="${sys:storm.home}/logs/metrics.log.%i">
+         <PatternLayout>
+            <pattern>${patternMetris}</pattern>
+         </PatternLayout>
+         <Policies>
+            <SizeBasedTriggeringPolicy size="2 MB" />
+         </Policies>
+         <DefaultRolloverStrategy max="9" />
+      </RollingFile>
+      <Syslog name="syslog" format="RFC5424" host="localhost" port="514" protocol="UDP"
+         appName="[${sys:daemon.name}]" mdcId="mdc" includeMDC="true"
+         facility="LOCAL5" enterpriseNumber="18060" newLine="true"
+         exceptionPattern="%rEx{full}" messageId="[${sys:user.name}:S0]" id="storm" />
+   </appenders>
+   <loggers>
+      <Logger name="backtype.storm.security.auth.authorizer" level="info">
+         <AppenderRef ref="ACCESS" />
+      </Logger>
+      <Logger name="backtype.storm.metric.LoggingMetricsConsumer" level="info">
+         <AppenderRef ref="METRICS" />
+      </Logger>
+
+      <root level="${sys:log.level.root}">
+         <appender-ref ref="A1" />
+         <appender-ref ref="syslog" />
+      </root>
+      <Logger name="backtype.storm.daemon.drpc" level="${sys:log.level.storm.drpc}" additivity="false">
+         <appender-ref ref="A1" />
+      </Logger>
+   </loggers>
+</configuration>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.testng.eclipse.launchconfig">
+<stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="EUC-KR"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.testng.remote.RemoteTestNG"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="thirdstage.exercise.storm"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.library.path=${env_var:OPENCV_DIR}\..\..\java\x${system_property:sun.arch.data.model};${env_var:OPENCV_DIR}\..\..\java\${system_property:os.arch}"/>
+<mapAttribute key="org.testng.eclipse.ALL_CLASS_METHODS">
+<mapEntry key="thirdstage.exercise.opencv.case1.SystemTest" value=""/>
+</mapAttribute>
+<listAttribute key="org.testng.eclipse.CLASS_TEST_LIST">
+<listEntry value="thirdstage.exercise.opencv.case1.SystemTest"/>
+</listAttribute>
+<listAttribute key="org.testng.eclipse.GROUP_LIST"/>
+<listAttribute key="org.testng.eclipse.GROUP_LIST_CLASS"/>
+<stringAttribute key="org.testng.eclipse.LOG_LEVEL" value="2"/>
+<listAttribute key="org.testng.eclipse.METHOD_TEST_LIST"/>
+<listAttribute key="org.testng.eclipse.PACKAGE_TEST_LIST"/>
+<mapAttribute key="org.testng.eclipse.PARAMETERS"/>
+<stringAttribute key="org.testng.eclipse.PRE_DEFINED_LISTENERS" value=""/>
+<intAttribute key="org.testng.eclipse.TYPE" value="1"/>
+</launchConfiguration>

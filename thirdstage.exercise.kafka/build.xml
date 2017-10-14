@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="thirdstage.exercise.kafka" basedir="." default="echo.env" xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+ xmlns:antelope="antlib:ise.antelope.tasks" xmlns:contrib="antlib:net.sf.antcontrib">
+
+  <property environment="env" />
+
+  <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+   uri="antlib:org.apache.maven.artifact.ant"
+   classpath="lib/maven-ant-tasks-2.1.3.jar">
+  </typedef>
+
+  <artifact:dependencies pathId="ant.tasks.classpath">
+    <!-- libraries only necessary for Ant task not application. -->
+    <!-- Ant-Contrib tasks. For more, refer http://ant-contrib.sourceforge.net/tasks/ -->
+    <dependency groupId="ant-contrib" artifactId="ant-contrib" version="1.0b3" />
+    <!-- Antelope tasks. For more, refer http://antelope.stage.tigris.org/nonav/docs/manual/index.html -->
+    <dependency groupId="ise.antelope" artifactId="ant-antelope-tasks" version="3.5.0" />
+    <!-- TestNG tasks. For more, refer http://testng.org/doc/ant.html -->
+    <dependency groupId="org.testng" artifactId="testng" version="6.8.21" />
+    <dependency groupId="org.mortbay.jetty" artifactId="jetty-runner" version="7.6.9.v20130131" />
+    <dependency groupId="org.eclipse.jetty" artifactId="jetty-jmx" version="7.6.9.v20130131" />
+    <dependency groupId="org.eclipse.jetty" artifactId="jetty-start" version="7.6.9.v20130131" />
+    <dependency groupId="org.umlgraph" artifactId="umlgraph" version="5.6.6" />
+    <dependency groupId="com.lunatech.jax-doclets" artifactId="doclets" version="0.10.0" />
+    <remoteRepository id="centeral2" url="http://repo2.maven.org/maven2/" />
+    <remoteRepository id="maven2-repository.dev.java.net" url="http://download.java.net/maven/2/" />
+  </artifact:dependencies>
+
+  <!-- Define Ant-Contrib tasks -->
+  <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib"
+   classpathref="ant.tasks.classpath" />
+
+  <!-- Define Antelope tasks -->
+  <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+  <taskdef name="if" classname="ise.antelope.tasks.IfTask"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+  <taskdef name="var" classname="ise.antelope.tasks.Variable"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+  <taskdef name="unset" classname="ise.antelope.tasks.Unset"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+
+  <!-- Define SvnAnt tasks -->
+  <typedef resource="org/tigris/subversion/svnant/svnantlib.xml"
+   classpathref="ant.tasks.classpath" />
+
+  <!-- Define TestNG tasks -->
+  <taskdef resource="testngtasks" classpathref="ant.tasks.classpath" />
+
+  <artifact:pom id="project.pom" file="${basedir}/pom.xml" />
+  <artifact:dependencies pomRefId="project.pom" pathId="project.classpath" />
+
+  <target name="echo.env">
+    <!-- @todo How to sort the list -->
+    <pathconvert pathsep="${line.separator}" refid="project.classpath" property="project.classpath.list">
+      <mapper type="regexp" from="(.*\\\.m2\\repository\\)?(.*)" to="  \2" />
+    </pathconvert>
+
+    <echo>Defined properties : </echo>
+    <echoproperties />
+    <echo>
+    </echo>
+    <echo>Classpath : </echo>
+    <echo>${project.classpath.list}</echo>
+  </target>
+
+  <target name="check.env">
+    <fail unless="env.MAVEN_HOME">Environment variable MAVEN_HOME should be specified properly.</fail>
+  </target>
+
+   <target name="zookeeper.start">
+      <delete dir="${project.pom.build.directory}/zookeeper"/>
+      <mkdir dir="${project.pom.build.directory}/zookeeper"/>
+      <antelope:stringutil string="${project.pom.build.directory}/zookeeper" property="zookeeper.datadir">
+         <replace regex="\\" replacement="/"/>
+      </antelope:stringutil>
+      <echo>${zookeeper.datadir}</echo>
+      <concat destfile="${project.pom.build.directory}/zoo.cfg" append="no" overwrite="yes">
+         <resources>
+            <file file="${basedir}/src/test/resources/thirdstage/exercise/kafka/zoo.cfg"/>
+            <string>${line.separator}${line.separator}dataDir=${zookeeper.datadir}</string>
+         </resources>
+      </concat>
+
+      <java classname="org.apache.zookeeper.server.ZooKeeperServerMain"
+         classpathref="project.classpath" fork="false" failonerror="true">
+         <sysproperty key="zookeeper.jmx.log4j.disable" value="true"/>
+         <arg value='${project.pom.build.directory}/zoo.cfg'/>
+      </java>
+   </target>
+
+   <target name="kafka-manager.start">
+      <fail message="Kafka Manager should be installed and environment varialbe of 'KAFKA_MANAGER_HOME' for it should be defined to run this target">
+         <condition>
+            <or>
+               <not><isset property="env.KAFKA_MANAGER_HOME"/></not>
+               <not><available file="${env.KAFKA_MANAGER_HOME}\bin\kafka_manager.bat"/></not>
+            </or>
+         </condition>
+      </fail>
+      <exec executable="cmd" dir="${env.KAFKA_MANAGER_HOME}">
+         <arg value="/c"/>
+         <arg value="bin\kafka_manager.bat"/>
+         <arg value="-Dhttp.port=9000"/>   <!-- default value -->
+      </exec>
+      <echo>The Kafka Manager has started successfully. Check 'http://127.0.0.1:9000/'</echo>
+   </target>
+
+</project>

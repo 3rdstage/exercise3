@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="thirdstage.exercise.storm" basedir="." default="echo.env" xmlns:artifact="antlib:org.apache.maven.artifact.ant" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:antcontrib="antlib:net.sf.antcontrib">
+
+   <!-- Ant reference : http://ant.apache.org/manual/index.html -->
+   <description>Ant build file for thirdstage.exercise.storm project</description>
+
+   <property environment="env" />
+
+   <!-- Define Maven-Ant tasks -->
+   <!-- For more on Maven-Ant tasks, refer http://maven.apache.org/ant-tasks/ -->
+   <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpath="lib/maven-ant-tasks-2.1.3.jar">
+   </typedef>
+
+   <artifact:dependencies pathId="ant-only.classpath">
+      <!-- libraries only necessary for Ant task not application. -->
+      <!-- Ant-Contrib tasks. For more, refer http://ant-contrib.sourceforge.net/tasks/ -->
+      <dependency groupId="ant-contrib" artifactId="ant-contrib" version="1.0b3" />
+      <!-- Antelope tasks , For more, refer http://antelope.stage.tigris.org/nonav/docs/manual/index.html -->
+      <dependency groupId="ise.antelope" artifactId="ant-antelope-tasks" version="3.5.0" />
+      <dependency groupId="org.mortbay.jetty" artifactId="jetty-runner" version="7.6.9.v20130131" />
+      <dependency groupId="org.eclipse.jetty" artifactId="jetty-jmx" version="7.6.9.v20130131" />
+      <dependency groupId="org.eclipse.jetty" artifactId="jetty-start" version="7.6.9.v20130131" />
+      <dependency groupId="org.umlgraph" artifactId="umlgraph" version="5.6.6" />
+      <dependency groupId="com.lunatech.jax-doclets" artifactId="doclets" version="0.10.0" />
+      <remoteRepository id="centeral2" url="http://repo2.maven.org/maven2/" />
+      <remoteRepository id="maven2-repository.dev.java.net" url="http://download.java.net/maven/2/" />
+      <remoteRepository id="evolvis-3rdparty" url="http://maven-repo.evolvis.org/3rdparty" layout="default" />
+   </artifact:dependencies>
+
+   <!-- Define Antelope tasks -->
+   <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask" uri="antlib:ise.antelope.tasks" classpathref="ant-only.classpath" />
+   <taskdef name="if" classname="ise.antelope.tasks.IfTask" uri="antlib:ise.antelope.tasks" classpathref="ant-only.classpath" />
+
+   <artifact:pom id="project.pom" file="${basedir}/pom.xml" />
+   <artifact:dependencies pomRefId="project.pom" pathId="project.classpath" />
+
+   <antelope:if name="env.ZOO_LOG_DIR" exists="true">
+      <property name="zk.log.dir">${env.ZOO_LOG_DIR}</property>
+      <else><property name="zk.log.dir">${project.pom.build.directory}/logs/zookeeper</property></else>
+   </antelope:if>
+   <antelope:stringutil string="${zk.log.dir}" property="zk.log.dir">
+      <antelope:replace regex="\\" replacement="/"/>
+   </antelope:stringutil>
+
+   <antelope:if name="env.ZOO_LOG4J_PROP" exists="true">
+      <property name="zk.log.root.logger">${env.ZOO_LOG4J_PROP}</property>
+      <else><property name="zk.log.root.logger">DEBUG, ROLLINGFILE</property></else>
+   </antelope:if>
+   <antelope:if name="env.ZOO_CFG_DIR" exists="true">
+      <property name="zk.config.dir">${env.env.ZOO_CFG_DIR}</property>
+      <else><property name="zk.config.dir">${project.pom.basedir}/src/main/config/zookeeper</property></else>
+   </antelope:if>
+
+   <artifact:dependencies pathId="zookeeper.classpath.core">
+      <dependency groupId="org.apache.zookeeper" artifactId="zookeeper" version="3.3.6">
+         <exclusion groupId="com.sun.jdmk" artifactId="jmxtools"/>
+         <exclusion groupId="javax.jms" artifactId="jms"/>
+         <exclusion groupId="com.sun.jmx" artifactId="jmxri"/>
+      </dependency>
+   </artifact:dependencies>
+   <path id="zookeeper.classpath">
+      <path refId="zookeeper.classpath.core"/>
+      <pathelement path="${zk.config.dir}"/>
+   </path>
+
+   <target name="echo.env">
+      <!-- @todo How to sort the list -->
+      <pathconvert pathsep="${line.separator}" refid="zookeeper.classpath" property="zookeeper.classpath.list">
+         <mapper type="regexp" from="(.*\\\.m2\\repository\\)?(.*)" to="\2" />
+      </pathconvert>
+
+      <echo>Defined properties : </echo>
+      <echoproperties />
+      <echo>Classpath for ZooKeeper : </echo>
+      <echo>${zookeeper.classpath.list}</echo>
+      <echo>zk.log.dir = ${zk.log.dir}</echo>
+      <echo>zk.log.root.logger = ${zk.log.root.logger}</echo>
+      <echo>zk.config.dir = ${zk.config.dir}</echo>
+   </target>
+
+   <!-- Refere zkServer.cmd in ZooKeeper distribution -->
+   <!-- The main part : java "-Dzookeeper.log.dir=%ZOO_LOG_DIR%" "-Dzookeeper.root.logger=%ZOO_LOG4J_PROP%" -cp "%CLASSPATH%" %ZOOMAIN% "%ZOOCFG%" %* -->
+   <target name="start.zookeeper">
+      <mkdir dir="${zk.log.dir}"/>
+      <java classname="org.apache.zookeeper.server.quorum.QuorumPeerMain"
+         classpathref="zookeeper.classpath" fork="true" spawn="false">
+         <sysproperty key="zookeeper.log.dir" value="${zk.log.dir}" />
+         <sysproperty key="zookeeper.root.logger" value="${zk.log.root.logger}" />
+         <arg value="${zk.config.dir}/zoo.cfg" /> <!-- "%ZOOCFG%" -->
+      </java>
+   </target>
+
+   <target name="start.zookeeper.client">
+      <mkdir dir="${zk.log.dir}"/>
+      <java classname="org.apache.zookeeper.ZooKeeperMain"
+         classpathref="zookeeper.classpath" fork="true" spawn="false">
+         <sysproperty key="zookeeper.log.dir" value="${zk.log.dir}" />
+         <sysproperty key="zookeeper.root.logger" value="${zk.log.root.logger}" />
+         <arg value="-server" />
+         <arg value="127.0.0.1:2181"/>
+      </java>
+   </target>
+
+
+</project>

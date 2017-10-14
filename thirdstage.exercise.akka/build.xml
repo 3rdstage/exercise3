@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="thirdstage.exercise.akka" basedir="." default="echo.env" xmlns:artifact="antlib:org.apache.maven.artifact.ant" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:contrib="antlib:net.sf.antcontrib">
+
+   <property environment="env" />
+
+   <!-- Define Maven-Ant tasks -->
+   <!-- For more on Maven-Ant tasks, refer http://maven.apache.org/ant-tasks/ -->
+   <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpath="lib/maven-ant-tasks-2.1.3.jar">
+   </typedef>
+
+   <artifact:dependencies pathId="ant.tasks.classpath">
+      <dependency groupId="ant-contrib" artifactId="ant-contrib" version="1.0b3" />
+      <dependency groupId="ise.antelope" artifactId="ant-antelope-tasks" version="3.5.0" />
+      <dependency groupId="org.testng" artifactId="testng" version="6.8.21" />
+      <remoteRepository id="centeral2" url="http://repo2.maven.org/maven2/" />
+      <remoteRepository id="maven2-repository.dev.java.net" url="http://download.java.net/maven/2/" />
+      <remoteRepository id="tmatesoft-releases" url="http://maven.tmatesoft.com/content/repositories/releases/" />
+      <remoteRepository id="evolvis-3rdparty" url="http://maven-repo.evolvis.org/3rdparty" layout="default" />
+   </artifact:dependencies>
+
+   <!-- Define Ant-Contrib tasks -->
+   <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib" classpathref="ant.tasks.classpath" />
+
+   <!-- Define Antelope tasks -->
+   <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask" uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+   <taskdef name="if" classname="ise.antelope.tasks.IfTask" uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+   <taskdef name="var" classname="ise.antelope.tasks.Variable" uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+   <taskdef name="unset" classname="ise.antelope.tasks.Unset" uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+
+   <artifact:pom id="project.pom" file="${basedir}/pom.xml" />
+   <artifact:dependencies pomRefId="project.pom" pathId="project.classpath" />
+
+   <artifact:dependencies pathId="extra.classpath">
+      <dependency groupId="org.apache.activemq" artifactId="activemq-web-console"
+         version="${project.pom.properties.activemq.version}" type="war"/>
+      <dependency groupId="org.apache.taglibs" artifactId="taglibs-standard-spec" version="1.2.1"/>
+      <dependency groupId="org.apache.taglibs" artifactId="taglibs-standard-impl" version="1.2.1"/>
+   </artifact:dependencies>
+
+   <target name="echo.env">
+      <!-- @todo How to sort the list -->
+      <pathconvert pathsep="${line.separator}" refid="project.classpath" property="project.classpath.list">
+         <mapper type="regexp" from="(.*\\\.m2\\repository\\)?(.*)" to="  \2" />
+      </pathconvert>
+
+      <echo>Defined properties : </echo>
+      <echoproperties />
+      <echo>
+      </echo>
+      <echo>Maven properties</echo>
+      <echo>   java.version = ${project.pom.properties.java.version}</echo>
+      <echo>   spring.version = ${project.pom.properties.spring.version}</echo>
+      <echo>   mybatis.version = ${project.pom.properties.mybatis.version}</echo>
+      <echo>   akka.version = ${project.pom.properties.akka.version}</echo>
+      <echo>   camel.version = ${project.pom.properties.camel.version}</echo>
+      <echo>   activemq.version = ${project.pom.properties.activemq.version}</echo>
+      <echo>   jetty.version = ${project.pom.properties.jetty.version}</echo>
+      <echo>
+      </echo>
+      <echo>Classpath : </echo>
+      <echo>${project.classpath.list}</echo>
+   </target>
+
+   <target name="check.env">
+      <!--
+    <fail unless="env.MAVEN_HOME">Environment variable MAVEN_HOME should be specified properly.</fail>
+    -->
+   </target>
+
+   <target name="prepare.activemq.webconsole">
+      <description>Copy a slightly modified(removed slf4j-log4j12-*.jar and log4j12-*.jar and added JSTL API and standard implementation) JAR file of ActiveMQ WebConsole and make necessary directories</description>
+      <delete file="${project.pom.build.directory}/activemq-web-console-modified.war"/>
+      <jar destfile="${project.pom.build.directory}/activemq-web-console-modified.war" update="false">
+         <zipfileset src="${org.apache.activemq:activemq-web-console:war}"
+           excludes="WEB-INF/lib/slf4j-log4j12-*.jar,WEB-INF/lib/log4j-*.jar"/>
+         <mappedresources>
+            <resources>
+               <file name="${ch.qos.logback:logback-classic:jar}"/>
+               <file name="${ch.qos.logback:logback-core:jar}"/>
+               <file name="${org.codehaus.janino:janino:jar}"/>
+            </resources>
+            <chainedmapper>
+               <flattenmapper/>
+               <globmapper from="*" to="WEB-INF/lib/*"/>
+            </chainedmapper>
+         </mappedresources>
+         <mappedresources>
+            <resources>
+               <file name="${basedir}/src/test/resources/logback-test.xml"/>
+            </resources>
+            <chainedmapper>
+               <flattenmapper/>
+               <globmapper from="logback-test.xml" to="WEB-INF/classes/logback.xml"/>
+            </chainedmapper>
+         </mappedresources>
+      </jar>
+      <copy file="${project.pom.build.directory}/activemq-web-console-modified.war"
+           todir="${env.TEMP}" overwrite="true" flatten="true"/>
+      <mkdir dir="${env.TEMP}/activemq"/>
+   </target>
+</project>

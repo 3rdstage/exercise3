@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration monitorInterval="60">
+   <properties>
+      <property name="pattern">%d{yy/MM/dd HH:mm:ss.SSS} %c{1.}[%p] %msg%n</property>
+      <property name="patternNoTime">%msg%n</property>
+      <property name="log.file.dir">${env:TEMP}/logs</property>
+      <property name="log.file.name">exercise-storm.log</property>
+      <property name="log.level.root">info</property>
+   </properties>
+   <appenders>
+      <Console name="Console" target="SYSTEM_OUT">
+         <PatternLayout pattern="${pattern}" />
+      </Console>
+      <RollingFile name="A1" fileName="${sys:log.file.dir}/${sys:log.file.name}"
+         filePattern="${sys:log.file.dir}/${sys:log.file.name}.%i.gz">
+         <PatternLayout>
+            <pattern>${pattern}</pattern>
+         </PatternLayout>
+         <Policies>
+            <SizeBasedTriggeringPolicy size="100 MB" /> <!-- Or every 100 MB -->
+         </Policies>
+         <DefaultRolloverStrategy max="9" />
+      </RollingFile>
+   </appenders>
+   <loggers>
+      <root level="${sys:log.level.root}">
+         <appender-ref ref="A1" />
+         <appender-ref ref="Console" />
+      </root>
+      <Logger name="thirdstage.exercise.storm" level="DEBUG"  additivity="false">
+         <appender-ref ref="A1" />
+         <appender-ref ref="Console" />
+      </Logger>
+   </loggers>
+</configuration>

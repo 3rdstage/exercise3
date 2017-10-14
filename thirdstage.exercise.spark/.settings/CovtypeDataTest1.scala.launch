@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="scala.scalatest">
+<stringAttribute key="SCALATEST_LAUNCH_INCLUDE_NESTED" value="false"/>
+<setAttribute key="SCALATEST_LAUNCH_TESTS_NAME"/>
+<stringAttribute key="SCALATEST_LAUNCH_TYPE" value="FILE"/>
+<listAttribute key="StepOutExcludePkgsOrClasses"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/thirdstage.exercise.spark"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="ISO-8859-1"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="/thirdstage.exercise.spark/src/main/scala/thirdstage/exercise/spark/covtype/CovtypeDataTest1.scala"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="thirdstage.exercise.spark"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -XX:MaxPermSize=512M -XX:+CMSClassUnloadingEnabled -DworkDir=${project_loc}/target/covtype"/>
+</launchConfiguration>

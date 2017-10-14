@@ -1,0 +1,75 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+   <!-- Allows us to use system properties as variables in this configuration file -->
+   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="properties">
+         <props>
+            <prop key="activemq.username">system</prop>
+            <prop key="activemq.password">manager</prop>
+            <prop key="guest.password">password</prop>
+         </props>
+      </property>
+      <!-- <property name="locations"> <value>file:${activemq.conf}/credentials.properties</value> </property> -->
+      <property name="searchSystemEnvironment" value="true" />
+      <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+   </bean>
+
+   <!-- Allows accessing the server log -->
+   <!-- <bean id="logQuery" class="io.fabric8.insight.log.log4j.Log4jLogQuery" lazy-init="false" scope="singleton" init-method="start" destroy-method="stop"> </bean> -->
+
+   <!-- The <broker> element is used to configure the ActiveMQ broker. -->
+   <!-- For 'advisorySupport' attribute, refer http://activemq.apache.org/advisory-message.html  -->
+   <broker xmlns="http://activemq.apache.org/schema/core"
+      brokerName="WordStatsBroker" dataDirectory="${TEMP}/activemq" useJmx="true" advisorySupport="true">
+      <destinationPolicy>
+         <policyMap>
+            <policyEntries>
+               <policyEntry topic=">">
+                  <!-- The constantPendingMessageLimitStrategy is used to prevent slow topic consumers to block producers and affect other consumers by limiting
+                     the number of messages that are retained For more information, see: http://activemq.apache.org/slow-consumer-handling.html -->
+                  <pendingMessageLimitStrategy>
+                     <constantPendingMessageLimitStrategy limit="1000" />
+                  </pendingMessageLimitStrategy>
+               </policyEntry>
+            </policyEntries>
+         </policyMap>
+      </destinationPolicy>
+
+      <!-- The managementContext is used to configure how ActiveMQ is exposed in JMX. By default, ActiveMQ uses the MBean server that is started by the JVM. For
+         more information, see: http://activemq.apache.org/jmx.html -->
+      <managementContext>
+         <managementContext createConnector="true" connectorPort="1099"/>
+      </managementContext>
+      <!-- Configure message persistence for the broker. The default persistence mechanism is the KahaDB store (identified by the kahaDB tag). For more information,
+         see: http://activemq.apache.org/persistence.html -->
+      <persistenceAdapter>
+         <kahaDB directory="${TEMP}/kahadb" />
+      </persistenceAdapter>
+
+      <!-- The systemUsage controls the maximum amount of space the broker will use before disabling caching and/or slowing down producers. For more information,
+         see: http://activemq.apache.org/producer-flow-control.html -->
+      <systemUsage>
+         <systemUsage>
+            <memoryUsage>
+               <memoryUsage percentOfJvmHeap="70" />
+            </memoryUsage>
+            <storeUsage>
+               <storeUsage limit="100 gb" />
+            </storeUsage>
+            <tempUsage>
+               <tempUsage limit="50 gb" />
+            </tempUsage>
+         </systemUsage>
+      </systemUsage>
+      <!-- The transport connectors expose ActiveMQ over a given protocol to clients and other brokers. For more information, see: http://activemq.apache.org/configuring-transports.html -->
+      <transportConnectors>
+         <transportConnector name="openwire" uri="tcp://#{systemProperties['activemq.openwire.address']}:#{systemProperties['activemq.openwire.port']}?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600" />
+      </transportConnectors>
+      <!-- destroy the spring context on shutdown to stop jetty -->
+      <shutdownHooks>
+         <bean xmlns="http://www.springframework.org/schema/beans" class="org.apache.activemq.hooks.SpringContextHook" />
+      </shutdownHooks>
+   </broker>
+</beans>
