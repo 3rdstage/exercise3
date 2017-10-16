@@ -28,5 +28,5 @@ docker run -d \
 -e INFLUXDB_USER=user \
 -e INFLUXDB_USER_PASSWORD=user!@34 \
 -e INFLUXDB_HTTP_PPROF_ENABLED=true \
--v /var/docker/influxdb/${container_name}:/var/lib/influxdb \
+-v /var/docker/${container_name}/var/lib/influxdb:/var/lib/influxdb \
 ${image_name}:${image_ver}

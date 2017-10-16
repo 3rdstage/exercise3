@@ -17,14 +17,14 @@ docker create \
 -p ${port}:5984 \
 -p 4369:4369 \
 -p 9110:9100 \
--v /var/docker/couchdb/${container_name}/data:/opt/couchdb/data \
+-v /var/docker/${container_name}/data:/opt/couchdb/data \
 ${image_name}:${image_ver}
 
 docker cp ${script_dir}/couchdb.ini couch1:/opt/couchdb/etc/local.d/docker.ini
 
 docker start couch1
 
-readonly wait_sec=2
+readonly wait_sec=5
 echo "Waiting ${wait_sec} seconds for 'docker exec' to be completed."
 sleep ${wait_sec}
 
@@ -36,7 +36,8 @@ curl -H 'Content-Type: application/json' \
 
 curl -H 'Content-Type: application/json' \
 --data '{"action":"finish_cluster"}' \
-"http://admin:admin%21%4034@127.0.0.1:${port}/_cluster_setup"
+--user admin:admin!@34 \
+"http://127.0.0.1:${port}/_cluster_setup"
 
 result=$?
 
@@ -44,7 +45,7 @@ if [ $result -eq 0 ]; then
   echo ""
   echo "CouchDB container named '${container_name}' in single node has launched successfully."
   echo "Access 'http://localhost:${port}/_utils' to manage ${container_name}."
-  echo "Data files : '/var/docker/couchdb/${container_name}/opt/couchdb/data' in host filesystem."
+  echo "Data files : '/var/docker/${container_name}/opt/couchdb/data' in host filesystem."
   echo ""
 else
   echo ""
