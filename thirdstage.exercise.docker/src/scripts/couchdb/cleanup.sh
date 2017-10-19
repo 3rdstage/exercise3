@@ -5,5 +5,5 @@
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 
-rm -f ${script_dir}/NOAA_data.txt
+rm -f ${script_dir}/1987.csv
 rm -f ${script_dir}/cpuprofile.png
