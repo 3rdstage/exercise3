@@ -58,15 +58,3 @@ else
   echo ""
   exit $result
 fi
-
-# Downloading sample data for performance test from web site
-# The file contains more than 76,000 lines
-# For more, refer https://docs.influxdata.com/influxdb/v1.2/query_language/data_download/
-
-if [ ! -f ${script_dir}/1987.csv ]; then
-   echo "Downloading sample data from remote web server. This may take a few minutes."
-   curl http://stat-computing.org/dataexpo/2009/1987.csv.bz2 -o ${script_dir}/1987.csv.bz2
-   bzip2 -d ${script_dir}/1987.csv.bz2
-fi
-
-
