@@ -2,7 +2,6 @@
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 
-
 # Downloading sample data for performance test from web site
 # The file contains more than 76,000 lines
 # For more, refer https://docs.influxdata.com/influxdb/v1.2/query_language/data_download/
@@ -16,7 +15,6 @@ if [ `(sudo dpkg -l | awk '{print$2}' | grep ^p7zip-full$ | wc -l)` -eq 0 ]; the
   echo "Installing 'p7zip' to unzip .7z file"
   sudo apt-get -y install p7zip-full
 fi
-
 
 # Downloading sample data for performance test from Stock Exchange site
 # The file contains more than 76,000 lines
@@ -32,7 +30,3 @@ if [ ! -f ${script_dir}/Posts.xml ]; then
       echo "Fail to decompress the Post file from 'bitcoin.stackexchange.com.7z'"
    fi
 fi
-
-
-
-
