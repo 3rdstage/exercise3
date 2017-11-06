@@ -458,14 +458,14 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">10</stringProp>
+          <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
         <longProp name="ThreadGroup.start_time">1508806708000</longProp>
         <longProp name="ThreadGroup.end_time">1508806708000</longProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.duration"></stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">300</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
@@ -482,22 +482,6 @@
           <stringProp name="shareMode">shareMode.all</stringProp>
         </CSVDataSet>
         <hashTree/>
-        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Think Time" enabled="true">
-          <intProp name="ActionProcessor.action">1</intProp>
-          <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">0</stringProp>
-        </TestAction>
-        <hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-            <stringProp name="ConstantTimer.delay">0</stringProp>
-          </ConstantTimer>
-          <hashTree/>
-          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Uniform Random Timer" enabled="false">
-            <stringProp name="ConstantTimer.delay">10</stringProp>
-            <stringProp name="RandomTimer.range">10</stringProp>
-          </UniformRandomTimer>
-          <hashTree/>
-        </hashTree>
         <kg.apc.jmeter.samplers.DummySampler guiclass="kg.apc.jmeter.samplers.DummySamplerGui" testclass="kg.apc.jmeter.samplers.DummySampler" testname="Dummy Sampler" enabled="true">
           <boolProp name="WAITING">true</boolProp>
           <boolProp name="SUCCESFULL">true</boolProp>
@@ -612,6 +596,15 @@
           <boolProp name="IfController.evaluateAll">false</boolProp>
         </IfController>
         <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="false">
+            <stringProp name="ConstantTimer.delay">0</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Uniform Random Timer" enabled="false">
+            <stringProp name="ConstantTimer.delay">10</stringProp>
+            <stringProp name="RandomTimer.range">10</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Insert Request" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -621,7 +614,7 @@
                   <stringProp name="Argument.value">{&#xd;
   &quot;id&quot; : ${id},&#xd;
   &quot;creationDate&quot; : &quot;${creationDate}&quot;,&#xd;
-  &quot;body&quot; : &quot;${__escapeHtml(${body})}&quot;,&#xd;
+  &quot;body&quot; : &quot;${__urlencode(${body})}&quot;,&#xd;
   &quot;title&quot;: &quot;${__escapeHtml(${title})}&quot;,&#xd;
   &quot;tags&quot;: &quot;${__escapeHtml(${tags})}&quot;,&#xd;
   &quot;answerCnt&quot;: ${answerCnt},&#xd;
