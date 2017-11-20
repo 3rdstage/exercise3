@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+    - name : Print the OS type using Ansible magic 
+      debug: 
+        msg: |
+          OS Type : {{ ansible_distribution }}
+          OS Major Version : {{ ansible_distribution_major_version }}
