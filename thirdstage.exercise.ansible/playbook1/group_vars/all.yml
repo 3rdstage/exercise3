@@ -1,0 +1,12 @@
+--- # Global variables
+# For more, refer followings 
+#   - http://docs.ansible.com/ansible/latest/intro_inventory.html#splitting-out-host-and-group-specific-data
+#   - http://docs.ansible.com/ansible/latest/intro_inventory.html#default-groups
+
+host:
+  requirement:
+    go:
+      ver:
+        min: "1.8"
+        recommanded: "1.9"
+      ppas: ["ppa:longsleep/golang-backports"]

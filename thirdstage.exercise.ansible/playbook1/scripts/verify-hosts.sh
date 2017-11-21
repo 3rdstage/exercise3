@@ -64,7 +64,7 @@ if [ $updates_apt ]; then
   sudo apt-get update -yq
 fi
 
-# Checks whether Golang is installed an configured properly or not
+# Checks whether Golang is installed and configured properly or not
 if [ $(sudo dpkg -l | awk '{print $2}' | grep -E '^golang-(1\.8-)?go$' | wc -l) -lt 1 ]; then
   echo ""
   echo "Golang 1.8 or higher should be installed."
@@ -167,5 +167,7 @@ docker_ver_minor=$(echo ${docker_ver} | grep -oE '[1-9][0-9]*$')
 
 # TODO Checks Fabric Docker images
 
+
+# TODO Checks whether NTP server is setup or not
 
 
