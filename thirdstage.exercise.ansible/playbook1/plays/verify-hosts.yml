@@ -7,6 +7,13 @@
           - "host.requirement.go.ver.min : {{ host.requirement.go.ver.min }}"
           - "host.requirement.go.ver.recommanded : {{ host.requirement.go.ver.recommanded }}"
           - "host.requirement.go.ppas: {{ host.requirement.go.ppas }}"
+
+    - name : Update APT cache and install a few packages including 'bc'
+      apt: 
+        name: bc # 'bc' is necessary to compare versions of installed packages with requirements
+        update_cache: yes
+        cache_valid_time: "{{ 3600 * 24 }}"
+      become: true  
     
     - name: Verify that the OS is Ubuntu
       assert:
@@ -32,12 +39,11 @@
         fi
         if [ ! `which go` ]; then exit 103; fi
 
-        go_ver=$(go version | sed 's/.*go\([1-9]\.[1-9][0-9]*\).*/\1/')
-        go_ver_major=$(echo ${go_ver} | sed 's/\([1-9]\)\.[1-9][0-9]*/\1/')
-        go_ver_minor=$(echo ${go_ver} | sed 's/[1-9]\.\([1-9][0-9]*\)/\1/')
-        if [ ${go_ver_major} -lt 1 ] || ([ ${go_ver_major} -eq 1 ] && [ ${go_ver_minor} -lt 8 ]); then
-          exit 104 # Go verion is not proper
-        fi
+        readonly go_ver=`go version | sed 's/.*go\([1-9]\.[1-9][0-9]*\).*/\1/'`
+        echo ${go_ver}
+        if [ `bc <<< "${go_ver} < {{ host.requirement.go.ver.min }}"` -eq 1 ]; then
+          exit 104 # Go is too old
+        fi 
       args:
         executable: /bin/bash
       register: go_verification
@@ -49,14 +55,21 @@
     - name: Fail if 'GOPATH' enviroment varialble is not set or empty
       fail: msg="'GOPATH' enviroment varialble is not set or empty."
       when: go_verification.rc == 102
-    - name: Fail if go executable is not on 'PATH'
+    - name: Fail if Go executable is not on 'PATH'
       fail: msg="Go executable is not on 'PATH'"
       when: go_verification.rc == 103
+    - name: Fail if installed Go is too old
+      fail: msg="Go is too old. At least verion {{ host.requirement.go.ver.min }} is required."
+      when: go_verification.rc == 104
 
-      
-    - name : Update APT cache
-      apt: 
-        update_cache: yes
-        cache_valid_time: "{{ 3600 * 24 }}"
+    - name: Check whether Node.js is installed and configured properly or not
+      shell: |
+        . ~/.profile
         
+      args:
+        executable: /bin/bash
+      register: nodejs_verification
+      become: false
+      ignore_errors: true
+      
       
