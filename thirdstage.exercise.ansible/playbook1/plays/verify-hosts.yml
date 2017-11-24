@@ -13,7 +13,7 @@
         name: bc # 'bc' is necessary to compare versions of installed packages with requirements
         update_cache: yes
         cache_valid_time: "{{ 3600 * 24 }}"
-      become: true  
+      become: true
     
     - name: Verify that the OS is Ubuntu
       assert:
@@ -29,7 +29,7 @@
     - name: Check whether Go is installed and configured properly or not
       shell: |
         . ~/.profile
-        if [ `sudo dpkg -l | awk '{print $2}' | grep -E '^golang-(1\.8-)?go$' | wc -l` -lt 1 ]; then
+        if [ `sudo dpkg -l | awk '{print $2}' | grep -E '^golang-(1\.[1-9]-)?go$' | wc -l` -lt 1 ]; then
           exit 101 # Go is not installed
         fi
         
@@ -37,10 +37,10 @@
           echo "GOPATH = $GOPATH" 
           exit 102;  # 'GOPATH' environment variable 
         fi
-        if [ ! `which go` ]; then exit 103; fi
+        if [ ! `which go` ]; then exit 103; fi # Go executable is not on 'PATH' 
 
         readonly go_ver=`go version | sed 's/.*go\([1-9]\.[1-9][0-9]*\).*/\1/'`
-        echo ${go_ver}
+        # echo ${go_ver}
         if [ `bc <<< "${go_ver} < {{ host.requirement.go.ver.min }}"` -eq 1 ]; then
           exit 104 # Go is too old
         fi 
@@ -49,27 +49,102 @@
       register: go_verification
       become: false
       ignore_errors: true
+      tags: ['go']
     - name: Fail if Go is not intalled
       fail: msg="Go is not installed."
       when: go_verification.rc == 101
+      tags: ['go']
     - name: Fail if 'GOPATH' enviroment varialble is not set or empty
       fail: msg="'GOPATH' enviroment varialble is not set or empty."
       when: go_verification.rc == 102
+      tags: ['go']
     - name: Fail if Go executable is not on 'PATH'
       fail: msg="Go executable is not on 'PATH'"
       when: go_verification.rc == 103
+      tags: ['go']
     - name: Fail if installed Go is too old
       fail: msg="Go is too old. At least verion {{ host.requirement.go.ver.min }} is required."
       when: go_verification.rc == 104
-
+      tags: ['go']
+      
     - name: Check whether Node.js is installed and configured properly or not
+      # https://hyperledger-fabric.readthedocs.io/en/release/prereqs.html
       shell: |
         . ~/.profile
+        if [ `sudo dpkg -l | awk '{print $2}' | grep -E '^nodejs$' | wc -l` -lt 1 ]; then
+          exit 101 # Node.js is not installed
+        fi
         
+        if [ ! `which node` ]; then exit 102; fi # Node.js executable is not on 'PATH'
+
+        readonly nodejs_ver=`node -v | sed 's/v\(.*\)/\1/'`
+        echo ${nodejs_ver}
+        if [[ ! ${nodejs_ver} =~ {{ host.requirement.nodejs.ver.pattern }} ]]; then
+          exit 103 # Installed Node.js is not proper version
+        fi
+        
+        readonly npm_ver=`npm --version -g`
+        if [[ ! ${npm_ver} =~ {{ host.requirement.npm.ver.pattern }} ]]; then
+          exit 104 # npm is not proper version
+        fi
       args:
         executable: /bin/bash
       register: nodejs_verification
       become: false
       ignore_errors: true
+      tags: ['nodejs']
       
+    - name: Fail if Node.js is not intalled
+      fail: msg="Node.js is not installed."
+      when: nodejs_verification.rc == 101
+      tags: ['nodejs']
+    - name: Fail if Node.js executable is not on 'PATH'
+      fail: msg="Node.js executable is not on 'PATH'"
+      when: nodejs_verification.rc == 102
+      tags: ['nodejs']
+    - name: Fail if installed Node.js is not proper version
+      fail: msg="Node.js is not proper version. Verion between {{ host.requirement.nodejs.ver.min }} and {{ host.requirement.nodejs.ver.max }} is required."
+      when: nodejs_verification.rc == 103
+      tags: ['nodejs']
+    - name: Fail if npm is not proper version
+      fail: msg="npm is not proper version. Verion {{ host.requirement.npm.ver.pattern }} is required."
+      when: nodejs_verification.rc == 104
+      tags: ['nodejs']
       
+
+    - name: Check whether Docker is installed and configured properly or not
+      # https://hyperledger-fabric.readthedocs.io/en/release/prereqs.html
+      shell: |
+        . ~/.profile
+        if [ `sudo dpkg -l | awk '{print $2}' | grep -E '^docker-ce$' | wc -l` -lt 1 ]; then
+          exit 101 # Docker is not installed
+        fi
+        
+        if [ ! `which docker` ]; then exit 102; fi # Docker executable is not on 'PATH'
+
+        # version in 'major.minor' format without incremen number
+        readonly docker_ver=`docker --version | sed 's/Docker version \([1-9][0-9]*\.[0-9][0-9]*\)\..*/\1/'`
+        echo ${docker_ver}
+        if [[ `bc <<< "${docker_ver} < {{ host.requirement.docker.ver.min }}"` -eq 1 ]]; then
+          exit 103 # Installed Docker is not proper version
+        fi
+      args:
+        executable: /bin/bash
+      register: docker_verification
+      become: false
+      ignore_errors: true
+      tags: ['docker']
+
+    - name: Fail if Docker CE is not intalled
+      fail: msg="Docker CE is not installed."
+      when: docker_verification.rc == 101
+      tags: ['docker']
+    - name: Fail if Docker executable is not on 'PATH'
+      fail: msg="Docker executable is not on 'PATH'"
+      when: docker_verification.rc == 102
+      tags: ['docker']
+    - name: Fail if installed Docker is not proper version
+      fail: msg="Docker is not proper version. At least version {{ host.requirement.docker.ver.min }} is required."
+      when: docker_verification.rc == 103
+      tags: ['docker']      
+            
