@@ -1,0 +1,26 @@
+---
+- hosts: all
+  tasks:
+    - name: Update APT cache
+      apt: 
+        update_cache: yes
+        cache_valid_time: "{{ 3600 * 24 }}"
+      become: true
+
+    - name: Check APT repositories to add
+      debug:
+        msg: "{{ item }}"
+      with_items: "{{ host.requirement.apt.repos }}" 
+      tags: ['debug']
+
+    # Prepare Node.js of proper version
+    # Refer https://github.com/nodesource/distributions#manual-installation
+    - name: Remove old PPA for Node.js if it exists
+      apt_repository:
+        repo: 'ppa:chris-lea/node.js'
+        state: absent
+        filename: 'chris-lea-node_js-*'
+      become: true
+      tags: ['nodejs']
+          
+

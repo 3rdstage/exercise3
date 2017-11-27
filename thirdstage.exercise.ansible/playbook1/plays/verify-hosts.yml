@@ -7,8 +7,9 @@
           - "host.requirement.go.ver.min : {{ host.requirement.go.ver.min }}"
           - "host.requirement.go.ver.recommanded : {{ host.requirement.go.ver.recommanded }}"
           - "host.requirement.go.ppas: {{ host.requirement.go.ppas }}"
+      tags: ['debug']
 
-    - name : Update APT cache and install a few packages including 'bc'
+    - name: Update APT cache and install a few packages including 'bc'
       apt: 
         name: bc # 'bc' is necessary to compare versions of installed packages with requirements
         update_cache: yes
@@ -110,7 +111,6 @@
       fail: msg="npm is not proper version. Verion {{ host.requirement.npm.ver.pattern }} is required."
       when: nodejs_verification.rc == 104
       tags: ['nodejs']
-      
 
     - name: Check whether Docker is installed and configured properly or not
       # https://hyperledger-fabric.readthedocs.io/en/release/prereqs.html
@@ -147,4 +147,28 @@
       fail: msg="Docker is not proper version. At least version {{ host.requirement.docker.ver.min }} is required."
       when: docker_verification.rc == 103
       tags: ['docker']      
+
+
+    - name: Check whether NTP is installed and is running as a service or not
+      # https://help.ubuntu.com/lts/serverguide/NTP.html
+      shell: |
+        . ~/.profile
+        if [ `sudo dpkg -l | awk '{print $2}' | grep -E '^ntp$' | wc -l` -lt 1 ]; then
+          exit 101 # NTP is not installed
+        fi
+        
+        # TODO Check whether ntp service is running correctly or not
+
+      args:
+        executable: /bin/bash
+      register: ntp_verification
+      become: false
+      ignore_errors: true
+      tags: ['ntp']
+
+    - name: Fail if NTP is not intalled
+      fail: msg="NTP is not installed."
+      when: ntp_verification.rc == 101
+      tags: ['ntp']
+
             
