@@ -1,26 +1,134 @@
 ---
 - hosts: all
   tasks:
-    - name: Update APT cache
-      apt: 
-        update_cache: yes
-        cache_valid_time: "{{ 3600 * 24 }}"
-      become: true
-
-    - name: Check APT repositories to add
+    - name: Check global variable for this play
       debug:
-        msg: "{{ item }}"
-      with_items: "{{ host.requirement.apt.repos }}" 
+        msg: 
+          - "host.requirement.go.apt.repos: {{ host.requirement.go.apt.repos }}"
+          - "host.requirement.nodejs.apt.keys: {{ host.requirement.nodejs.apt['keys'] }}"
       tags: ['debug']
 
+    - name: Check global variable for this play
+      debug:
+        msg: "{{ item }}" 
+      with_items:
+        - "{{ host.requirement.go.apt.repos }}"
+        - "{{ host.requirement.nodejs.apt['keys'] }}"
+        - "{{ host.requirement.nodejs.apt.repos }}"
+      tags: ['debug']
+      
+    
+    # Prepare Go of recommanded version
+    # For more, refer
+    #   - https://github.com/golang/go/wiki/Ubuntu/151aa825423ec740624969e75bf86fe15334aa7d
+    #   - https://github.com/golang/go/wiki/Ubuntu/cd1ce5cac7d7d48ee67a522c545a46c70ed57a19
+    - name: Add APT repository for Go
+      apt_repository:
+        repo: "{{ item }}"
+        update_cache: false
+      with_items: "{{ host.requirement.go.apt.repos }}"   
+      become: true
+      tags: ['go']
+    - name: Update APT list before installing Go
+      apt:
+        force_apt_get: true
+        update_cache: true
+      become: true
+      ignore_errors: true
+      tags: ['go']
+    - name: Install Go if necessary
+      apt:
+        name: "{{ host.requirement.go.apt.package }}"
+        state: present
+        force_apt_get: true
+        update_cache: false
+      become: true
+      tags: ['go']  
+    - name: Add 'GOPHATH' env. variable and update 'PATH' env. varialbe if necessary
+      vars:
+        unchanged_stdout: 'Current GOPATH and PATH env. variables are enouth. Nothing has been changed.'
+      shell: |
+        # Note that typically '.profile' calls '.bashrc' on recent bash
+        . ~/.profile
+        
+        # TODO May need to make $HOME/go, $HOME/go/bin, $HOME/go/pkg, $HOME/go/src directories manually
+        
+        if [ -z `echo $GOPATH` ]; then
+          # GOPATH is not defined
+          sed -i '$ a \\nexport GOPATH=$HOME/go\nexport PATH=$PATH:$GOPATH/bin\n' ~/.bashrc
+        else
+          if [ `echo $GOPATH | grep "$HOME/go" | wc -l` -lt 1 ]; then
+            # GOPAHT is defined but doesn't include "$HOME/go"
+            sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$PATH:$HOME/go/bin\n' ~/.bashrc
+          else
+            if [ `echo $PATH | grep "$HOME/go/bin" | wc -l` -lt 1 ]; then
+              # PATH doen't include "$HOME/go/bin"
+              sed -i '$ a \\neexport PATH=$PATH:$HOME/go/bin\n' ~/.bashrc
+            else
+              echo "{{ unchanged_stdout }}"
+            fi
+          fi
+        fi
+      become: false
+      register: add_gopath
+      changed_when: "unchanged_stdout not in add_gopath.stdout"
+      tags: ['go', 'env']
+      
     # Prepare Node.js of proper version
-    # Refer https://github.com/nodesource/distributions#manual-installation
+    # For more, refer
+    #   - Refer https://github.com/nodesource/distributions#manual-installation
     - name: Remove old PPA for Node.js if it exists
       apt_repository:
         repo: 'ppa:chris-lea/node.js'
         state: absent
         filename: 'chris-lea-node_js-*'
+        update_cache: false
       become: true
       tags: ['nodejs']
-          
+    - name: Remove APT source lists of Chris Lea's PPA for Node.js
+      shell : rm -f /etc/apt/sources.list.d/chris-lea-node_js-*.*
+      become: true
+      tags: ['nodejs']
+    - name: Add APT keys for nodesource
+      apt_key:
+        url: "{{ item }}"
+      with_items: "{{ host.requirement.nodejs.apt['keys'] }}"
+      become: true
+      tags: ['nodejs']
+    - name: Add APT repositories for nodesource
+      apt_repository:
+        repo: "{{ item.url }}"
+        filename: "{{ item.filename }}"
+        update_cache: false
+      with_items: "{{ host.requirement.nodejs.apt.repos }}"   
+      become: true
+      tags: ['nodejs']
+    - name: Update APT list before installing Node.js
+      apt:
+        force_apt_get: true
+        update_cache: true
+      become: true
+      ignore_errors: true
+      tags: ['nodejs']
+    - name: Install Node.js if necessary
+      apt:
+        name: "{{ host.requirement.nodejs.apt.package }}"
+        state: present
+        force_apt_get: true
+        update_cache: false
+      become: true
+      tags: ['nodejs']  
+    - name: Install npm of required version
+      npm:
+        name: npm
+        state: present
+        version: "{{ host.requirement.npm.ver.recommanded }}"
+        global: true 
+      become: true
+      tags: ['nodejs']
 
+    # Prepare Docker
+    # For more, refer
+    #   - https://docs.docker.com/engine/reference/commandline/version/
+    
+    # TODO

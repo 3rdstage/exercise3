@@ -6,7 +6,7 @@
         msg: 
           - "host.requirement.go.ver.min : {{ host.requirement.go.ver.min }}"
           - "host.requirement.go.ver.recommanded : {{ host.requirement.go.ver.recommanded }}"
-          - "host.requirement.go.ppas: {{ host.requirement.go.ppas }}"
+          - "host.requirement.go.apt.repos: {{ host.requirement.go.apt.repos }}"
       tags: ['debug']
 
     - name: Update APT cache and install a few packages including 'bc'
