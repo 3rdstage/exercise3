@@ -4,20 +4,20 @@
 #  * https://hub.docker.com/r/hyperledger/fabric-couchdb/
 #  * https://github.com/hyperledger/fabric/tree/v1.0.3/images/couchdb
 
-# For web admin, access 'http://localhost:5884/_utils/'
+# For web admin, access 'http://localhost:5984/_utils/'
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 readonly image_name="hyperledger/fabric-couchdb"
 readonly image_ver="x86_64-1.0.3"
-readonly container_name=couch2
-readonly port=6084
+readonly container_name=couch3
+readonly port=6184
 
 docker create \
 --name ${container_name} \
 -p ${port}:5984 \
--p 4469:4369 \
--p 9300:9100 \
---mount type=volume,source=${container_name}-data,target=/opt/couchdb/data \
+-p 4569:4369 \
+-p 9400:9100 \
+-v /var/docker/${container_name}/opt/couchdb/data:/opt/couchdb/data \
 ${image_name}:${image_ver}
 
 docker cp ${script_dir}/couchdb.ini ${container_name}:/opt/couchdb/etc/local.d/docker.ini
