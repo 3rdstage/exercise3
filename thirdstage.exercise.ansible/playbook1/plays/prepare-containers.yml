@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+    - name: Find out ZooKeeper containers
+      debug:
+        msg: 
+          - "{{ item }}"
+      tags: ['debug']
+      when: containers is defined and containers.zookeepers is defined
+      with_items: "{{ containers.zookeepers }}"

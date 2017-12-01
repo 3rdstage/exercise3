@@ -132,3 +132,6 @@
     #   - https://docs.docker.com/engine/reference/commandline/version/
     
     # TODO
+    #   - NTP
+    #   - Prometheus Node Exporter 
+    

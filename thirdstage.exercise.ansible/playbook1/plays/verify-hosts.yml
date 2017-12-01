@@ -171,4 +171,5 @@
       when: ntp_verification.rc == 101
       tags: ['ntp']
 
+     # TODO Check whether or not Prometheus node exporter is installed and running
             

@@ -35,4 +35,12 @@ host:
       ver:
         min: '7.03'
         
-        
+container:
+  image:
+    zookeeper:
+      repository: 'hyperledger/fabric-zookeeper'
+      tag: 
+    kafka:
+      repository:
+      tag:
+      
