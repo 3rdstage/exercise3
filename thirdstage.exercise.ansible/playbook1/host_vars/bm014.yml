@@ -1,3 +1,5 @@
 containers:
   zookeepers:
     - name: zk2
+  kafkas:
+    - name: kafka2

@@ -10,7 +10,7 @@ host:
         min: '1.8'
         recommanded: '1.8'
       apt: 
-        package: "golang-1.8-go"  
+        package: "golang-1.8-go"  # TODO Try "golang-{{ host.requirement.go.ver.recommanded }}-go"
         repos: ['ppa:gophers/archive', 'ppa:longsleep/golang-backports'] # TODO Check it is possible or not to specify the source file name for PPA
     nodejs:
       ver: # For all Node.js releases, refer 'https://nodejs.org/en/download/releases/'
@@ -34,13 +34,36 @@ host:
     docker:
       ver:
         min: '7.03'
-        
-container:
-  image:
+
+fabric:
+  ver: 'x86_64-1.1.0-preview'
+
+
+docker:
+  images:
+    # For all list of Hyperledger Fabric repositories, refer https://hub.docker.com/u/hyperledger/
+    base: &docker_image_base
+      # If you would like to use registry other than Docker Hub, uncomment the following line and ..
+      # registry: ''
+      tag: "{{ fabric.ver }}"
     zookeeper:
+      <<: *docker_image_base
       repository: 'hyperledger/fabric-zookeeper'
-      tag: 
     kafka:
-      repository:
-      tag:
-      
+      <<: *docker_image_base
+      repository: 'hyperledger/fabric-kafka'
+    orderer:
+      <<: *docker_image_base
+      repository: 'hyperledger/fabric-orderer'
+    peer:
+      <<: *docker_image_base
+      repository: 'hyperledger/fabric-peer'
+    couchdb:
+      <<: *docker_image_base
+      repository: 'hyperledger/fabric-couchdb'
+    tools:
+      <<: *docker_image_base
+      repository: 'hyperledger/fabric-tools'
+    ca: # CA Server
+      <<: *docker_image_base
+      repository: 'hyperledger/fabric-ca'

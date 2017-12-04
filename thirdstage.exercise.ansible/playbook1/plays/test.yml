@@ -1,6 +1,11 @@
 ---
 - hosts: all
   tasks:
+    - name: Print all varialbes of 'bm001' host 
+      debug: 
+         var: groupvars[all]
+         verbosity: 4
+        
     - name: Find out ZooKeeper containers
       debug:
         msg: 

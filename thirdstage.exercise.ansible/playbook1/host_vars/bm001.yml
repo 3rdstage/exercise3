@@ -1,1 +1,4 @@
 containers:
+  peers:
+    - name: peer1
+

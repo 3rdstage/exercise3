@@ -5,6 +5,44 @@
       debug:
         msg: 
           - "{{ item }}"
-      tags: ['debug']
       when: containers is defined and containers.zookeepers is defined
       with_items: "{{ containers.zookeepers }}"
+      tags: ['debug']
+      
+    - name: Install Fabric ZooKeeper docker image if necessary
+      docker_image:
+        name: "{{ docker.images.zookeeper.repository }}"
+        # TODO What about when registry is not defined or blank ?
+        tag: "{{ docker.images.zookeeper.tag }}"
+        state: present
+      when: 'containers is defined and containers.zookeepers is defined'
+      # Assumed all ZooKeepers are of same docker image
+      tags: ['docker-image']
+      
+    - name: Install Fabric Kafka docker image if necessary
+      docker_image:
+        name: "{{ docker.images.kafka.repository }}"
+        tag: "{{ docker.images.kafka.tag }}"
+        state: present
+      when: 'containers is defined and containers.kafkas is defined'
+      tags: ['docker-image']
+      
+    - name: Install Fabric Orderer docker image if necessary
+      docker_image:
+        name: "{{ docker.images.orderer.repository }}"
+        tag: "{{ docker.images.orderer.tag }}"
+        state: present
+      when: 'containers is defined and containers.orderers is defined'
+      tags: ['docker-image']
+
+    - name: Install Fabric Peer/CouchDB/Tools docker images if necessary
+      docker_image:
+        name: "{{ item.repository }}"
+        tag: "{{ item.tag }}"
+        state: present
+      when: 'containers is defined and containers.peers is defined'
+      with_items:
+        - "{{ docker.images.peer }}"
+        - "{{ docker.images.couchdb }}"
+        - "{{ docker.images.tools }}"
+      tags: ['docker-image']
