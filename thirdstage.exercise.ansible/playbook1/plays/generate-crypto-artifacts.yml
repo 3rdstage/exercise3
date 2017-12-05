@@ -1,0 +1,34 @@
+
+- hosts: all
+  tasks:
+    - name: Print out
+      debug:
+        msg:
+          - "fabric.ver : {{ fabric.ver }}"
+          - "playbook_dir : {{ playbook_dir }}"
+          # - "inventory_file : {{ inventory_file }}"
+          # - "inventory_dir : {{ inventory_dir }}"
+      become: true
+      ignore_errors: true
+      run_once: true
+      delegate_to: 127.0.0.1    
+    
+    # TODO Join several nodes into a single tree
+    - name: Write custom variables by host into repective file in JSON format.
+      copy:
+        dest: "{{ playbook_dir }}/../generated/{{ item }}.json"
+        content: "{{ hostvars[item]['fabric']|tojson(indent=2) }}"
+      with_items: "{{ ansible_play_hosts }}"
+      run_once: true
+      delegate_to: 127.0.0.1
+  
+    # TODO Rename previously generated file before
+    - name: Generate cryptogen configuration file
+      template: 
+        src: "{{ playbook_dir }}/../templates/crypto-config.yaml.j2"
+        dest: "{{ playbook_dir }}/../generated/crypto-config.yaml"
+        mode: "u=rw,g=r,o=r"
+      run_once: true
+      delegate_to: 127.0.0.1
+      
+      

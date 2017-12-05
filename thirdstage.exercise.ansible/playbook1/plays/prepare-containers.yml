@@ -1,12 +1,12 @@
 ---
 - hosts: all
   tasks:
-    - name: Find out ZooKeeper containers
+    - name: Print out all the containers defined
       debug:
         msg: 
           - "{{ item }}"
-      when: containers is defined and containers.zookeepers is defined
-      with_items: "{{ containers.zookeepers }}"
+      when: 'containers is defined'
+      with_items: "{{ containers }}"
       tags: ['debug']
       
     - name: Install Fabric ZooKeeper docker image if necessary
@@ -46,3 +46,14 @@
         - "{{ docker.images.couchdb }}"
         - "{{ docker.images.tools }}"
       tags: ['docker-image']
+      
+    - name: Install Fabric CA Server docker images if necessary
+      docker_image:
+        name: "{{ docker.images.ca.repository }}"
+        tag: "{{ docker.images.ca.tag }}"
+        state: present
+      when: 'containers is defined and containers.cas is defined'
+      tags: ['docker-image']
+
+      
+      

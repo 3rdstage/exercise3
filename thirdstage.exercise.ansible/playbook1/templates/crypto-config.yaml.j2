@@ -1,0 +1,63 @@
+OrdererOrgs:
+  {% for key, value in fabric.orgs.items() %}
+    {% if value.type == 'orderer' %}
+  - Name: {{ value.name }}
+    Domain: {{ value.domain}}
+    CA:
+    Specs:
+      - Hostname: orderer1
+        CommonName: orderer1
+      - Hostname: orderer2
+        CommonName: orderer2
+    {% endif %}
+  {% endfor %}
+
+PeerOrgs:
+  - Name: org1
+    Domain: org1
+    CA:
+      Hostname: ca1
+      CommonName : ca1
+    Specs:
+      - Hostname: peer1
+        CommonName: peer1
+      - Hostname: peer2
+        CommonName: peer2
+      - Hostname: peer3
+        CommonName: peer3
+      - Hostname: peer4
+        CommonName: peer4
+    Users:
+      Count: 1
+  - Name: org2
+    Domain: org2
+    CA:
+      Hostname: ca2
+      CommonName : ca2
+    Specs:
+      - Hostname: peer5
+        CommonName: peer5
+      - Hostname: peer6
+        CommonName: peer6
+      - Hostname: peer7
+        CommonName: peer7
+      - Hostname: peer8
+        CommonName: peer8
+    Users:
+      Count: 1
+  - Name: org3
+    Domain: org3
+    CA:
+      Hostname: ca3
+      CommonName : ca3
+    Specs:
+      - Hostname: peer9
+        CommonName: peer9
+      - Hostname: peer10
+        CommonName: peer10
+      - Hostname: peer11
+        CommonName: peer11
+      - Hostname: peer12
+        CommonName: peer12
+    Users:
+      Count: 1

@@ -8,7 +8,7 @@ host:
     go:
       ver:
         min: '1.8'
-        recommanded: '1.8'
+        recommanded:  '1.8'
       apt: 
         package: "golang-1.8-go"  # TODO Try "golang-{{ host.requirement.go.ver.recommanded }}-go"
         repos: ['ppa:gophers/archive', 'ppa:longsleep/golang-backports'] # TODO Check it is possible or not to specify the source file name for PPA
@@ -37,6 +37,23 @@ host:
 
 fabric:
   ver: 'x86_64-1.1.0-preview'
+  orgs:
+    org0:
+      name: org0
+      type: orderer
+      domain: org0
+      ca:
+        hostname: ca0
+        common_name: ca0
+    org1:
+      name: org1
+      type: peer
+    org2:
+      name: org2
+      type: peer
+    org3:
+      name: org3
+      type: peer
 
 
 docker:
