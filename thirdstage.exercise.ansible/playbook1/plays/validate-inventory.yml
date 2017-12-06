@@ -1,0 +1,60 @@
+- hosts: 
+    - bm001
+    - bm002
+    - bm003
+  tasks:
+    # For more on jsonschema, refer https://github.com/Julian/jsonschema
+    - name: Install jsonschema Python package only for commander
+      pip:
+        name: jsonschema
+        version: 2.6.0
+        state: present
+      become: true
+      run_once: true
+      delegate_to: 127.0.0.1
+
+    - name: Downlaod schema for JSON schema if not already done.
+      get_url:
+        url: https://raw.githubusercontent.com/json-schema-org/json-schema-spec/draft-zyp-json-schema-04/schema.json
+        dest: "{{ inventory_dir }}/files/schema.json"
+        mode: '0644'
+        force: false
+      become: false
+      run_once: true
+      delegate_to: 127.0.0.1
+    
+    - name: Validate schema for fabric node configuration
+      command: "jsonschema -i files/fabric-node-schema.json files/schema.json"
+      args:
+        chdir: "{{ inventory_dir }}"
+      become: false
+      run_once: true
+      delegate_to: 127.0.0.1
+
+    # TODO Join several nodes into a single tree
+    - name: Write faric node configuration for each host into repective file in JSON format.
+      vars:
+        contents: |-
+          {
+            "host": {{ hostvars[item]['host'] | tojson(indent=2) }},
+            "fabric": {{ hostvars[item]['fabric'] | to_nice_json(indent=2) }},
+            "docker": {{ hostvars[item]['docker'] | to_nice_json(indent=2) }},
+            "containers": {{ hostvars[item]['containers'] | to_nice_json(indent=2) }}
+          } 
+      copy:
+        dest: "{{ inventory_dir }}/generated/host-config/{{ item }}.json"
+        content: " {{ contents | to_nice_json }}"
+      with_items: "{{ ansible_play_hosts }}"
+      run_once: true
+      delegate_to: 127.0.0.1
+
+    - name: Validate faric node configuration for each host against schema
+      command: "jsonschema -i generated/host-config/{{ item }}.json files/fabric-node-schema.json"
+      args:
+        chdir: "{{ inventory_dir }}"
+      become: false
+      with_items: "{{ ansible_play_hosts }}"
+      run_once: true
+      delegate_to: 127.0.0.1    
+      
+      

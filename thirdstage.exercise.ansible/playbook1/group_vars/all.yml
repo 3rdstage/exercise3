@@ -45,11 +45,20 @@ fabric:
         hostname: ca0
         common_name: ca0
     - name: org1
-      type: peer
+      type: peer # 'orderer' or 'peer', default is 'peer'
+      ca:
+        hostname: ca1
+        common_name: ca1
     - name: org2
       type: peer
+      ca:
+        hostname: ca2
+        common_name: ca2
     - name: org3
       type: peer
+      ca:
+        hostname: ca3
+        common_name: ca3
 
 
 docker:

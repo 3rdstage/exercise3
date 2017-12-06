@@ -13,3 +13,25 @@
       tags: ['debug']
       when: containers is defined and containers.zookeepers is defined
       with_items: "{{ containers.zookeepers }}"
+
+    - name: Print out built-in variables in localhost
+      debug:
+        msg:
+          - "fabric.ver : {{ fabric.ver }}"
+          - "playbook_dir : {{ playbook_dir }}"
+          - "inventory_file : {{ inventory_file }}"
+          - "inventory_dir : {{ inventory_dir }}"
+      become: true
+      ignore_errors: true
+
+    - name: Print out built-in variables in localhost
+      debug:
+        msg:
+          - "fabric.ver : {{ fabric.ver }}"
+          - "playbook_dir : {{ playbook_dir }}"
+          - "inventory_file : {{ inventory_file }}"
+          - "inventory_dir : {{ inventory_dir }}"
+      become: true
+      ignore_errors: true
+      run_once: true
+      delegate_to: 127.0.0.1

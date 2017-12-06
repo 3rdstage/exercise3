@@ -1,15 +1,15 @@
 OrdererOrgs:
-  {% for key, value in fabric.orgs.items() %}
-    {% if value.type == 'orderer' %}
-  - Name: {{ value.name }}
-    Domain: {{ value.domain}}
+  {% for org in fabric.orgs %}
+    {%- if org.type == 'orderer' -%}
+  - Name: {{ org.name }}
+    Domain: {{ org.domain | default(org.name) }}
     CA:
     Specs:
       - Hostname: orderer1
         CommonName: orderer1
       - Hostname: orderer2
         CommonName: orderer2
-    {% endif %}
+    {%- endif -%}
   {% endfor %}
 
 PeerOrgs:

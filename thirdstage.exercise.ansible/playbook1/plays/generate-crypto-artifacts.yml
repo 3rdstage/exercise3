@@ -1,61 +1,12 @@
 
-- hosts: bm001
+- hosts: all
   tasks:
-    - name: Print out
-      debug:
-        msg:
-          - "fabric.ver : {{ fabric.ver }}"
-          - "playbook_dir : {{ playbook_dir }}"
-          # - "inventory_file : {{ inventory_file }}"
-          # - "inventory_dir : {{ inventory_dir }}"
-      become: true
-      ignore_errors: true
-      run_once: true
-      delegate_to: 127.0.0.1    
-            
-    # For more on jsonschema, refer https://github.com/Julian/jsonschema
-    - name: Install jsonschema Python package only for commander
-      pip:
-        name: jsonschema
-        version: 2.6.0
-        state: present
-      become: true
-      run_once: true
-      delegate_to: 127.0.0.1
 
-    - name: Downlaod schema for JSON schema if not already done.
-      get_url:
-        url: https://raw.githubusercontent.com/json-schema-org/json-schema-spec/draft-zyp-json-schema-04/schema.json
-        dest: "{{ inventory_dir }}/files/schema.json"
-        mode: '0644'
-        force: false
-      become: false
-      run_once: true
-      delegate_to: 127.0.0.1
-    
-    - name: Validate schema for fabric node variables
-      command: "jsonschema -i {{ inventory_dir }}/files/fabric-node-schema.json {{ inventory_dir }}/files/schema.json"
-      chdir: "{{ inventory_dir }}"
-      become: false
-      run_once: true
-      delegate_to: 127.0.0.1
-          
-    # TODO Join several nodes into a single tree
-    - name: Write custom variables by host into repective file in JSON format.
-      copy:
-        dest: "{{ playbook_dir }}/../generated/{{ item }}.json"
-        content: |
-          "host": {{ hostvars[item]['host'] | tojson(indent=2) }}
-          "fabric": {{ hostvars[item]['fabric']|to_nice_json(indent=2) }}
-      with_items: "{{ ansible_play_hosts }}"
-      run_once: true
-      delegate_to: 127.0.0.1
-  
     # TODO Rename previously generated file before
     - name: Generate cryptogen configuration file
       template: 
-        src: "{{ playbook_dir }}/templates/crypto-config.yaml.j2"
-        dest: "{{ playbook_dir }}/generated/crypto-config.yaml"
+        src: "{{ inventory_dir }}/templates/crypto-config.yaml.j2"
+        dest: "{{ inventory_dir }}/generated/crypto-config.yaml"
         mode: "u=rw,g=r,o=r"
       run_once: true
       delegate_to: 127.0.0.1
