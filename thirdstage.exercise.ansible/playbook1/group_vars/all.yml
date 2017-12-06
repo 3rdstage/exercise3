@@ -38,21 +38,17 @@ host:
 fabric:
   ver: 'x86_64-1.1.0-preview'
   orgs:
-    org0:
-      name: org0
+    - name: org0
       type: orderer
       domain: org0
       ca:
         hostname: ca0
         common_name: ca0
-    org1:
-      name: org1
+    - name: org1
       type: peer
-    org2:
-      name: org2
+    - name: org2
       type: peer
-    org3:
-      name: org3
+    - name: org3
       type: peer
 
 

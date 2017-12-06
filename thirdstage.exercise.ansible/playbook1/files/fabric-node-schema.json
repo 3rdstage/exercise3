@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Fabric Node Config",
+  "type": "object",
+  "require": ["ver", "name", "price"],
+  "properties": {
+    "ver": {
+      "description": "the version of Hyperledger Fabric to use",
+      "type": "string"
+    },
+    "orgs": {
+      "descripton": "all the members(organizations) of the Fabric",
+      "type": "array",
+      "items": {
+          "title": "Organization",
+          "description": "a Fabric member(organization)",
+          "maxItems": -100
+      }
+    }
+  }
+}
