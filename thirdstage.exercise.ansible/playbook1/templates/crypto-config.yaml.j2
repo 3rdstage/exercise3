@@ -1,15 +1,21 @@
+# References
+#   - https://github.com/hyperledger/fabric/blob/v1.0.0-beta/examples/e2e_cli/crypto-config.yaml
+
+
 OrdererOrgs:
-  {% for org in fabric.orgs %}
-    {%- if org.type == 'orderer' -%}
+  {% for org in fabric.orgs if org.type == 'orderer' %}
   - Name: {{ org.name }}
     Domain: {{ org.domain | default(org.name) }}
     CA:
+      HostName : {{ org.ca.hostname }}
+      CommonName: {{ org.ca.common_name }}
+      {% for host in ansible_play_batch if hostvars[host].containers is defined and hostvars[host].containers.orderer is defined %}
     Specs:
       - Hostname: orderer1
         CommonName: orderer1
       - Hostname: orderer2
         CommonName: orderer2
-    {%- endif -%}
+      {% endfor %}
   {% endfor %}
 
 PeerOrgs:

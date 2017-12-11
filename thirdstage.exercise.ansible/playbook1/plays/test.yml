@@ -1,11 +1,20 @@
 ---
 - hosts: all
   tasks:
-    - name: Print all varialbes of 'bm001' host 
+    - name: Print hostname and current datetime of all the host
+      debug:
+        msg: "hostname: {{ hostvars[item].ansible_hostname }}, IP address: {{ hostvars[item].ansible_default_ipv4.address }}, current datetime: {{ hostvars[item].ansible_date_time.iso8601 }}"
+      with_items: "{{ ansible_play_batch }}"
+      run_once: true
+      delegate_to: 127.0.0.1
+
+    - name: Print varialbes for all group, maybe defined in group_vars/all.yml file 
       debug: 
          var: groupvars[all]
          verbosity: 4
-        
+      run_once: true
+      delegate_to: 127.0.0.1
+
     - name: Find out ZooKeeper containers
       debug:
         msg: 
@@ -23,6 +32,8 @@
           - "inventory_dir : {{ inventory_dir }}"
       become: true
       ignore_errors: true
+      run_once: true
+      delegate_to: 127.0.0.1
 
     - name: Print out built-in variables in localhost
       debug:
