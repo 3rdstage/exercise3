@@ -55,15 +55,15 @@
         
         if [ -z `echo $GOPATH` ]; then
           # GOPATH is not defined
-          sed -i '$ a \\nexport GOPATH=$HOME/go\nexport PATH=$PATH:$GOPATH/bin\n' ~/.bashrc
+          sed -i '$ a \\nexport GOPATH=$HOME/go\nexport PATH=$GOPATH/bin:$PATH\n' ~/.bashrc
         else
           if [ `echo $GOPATH | grep "$HOME/go" | wc -l` -lt 1 ]; then
             # GOPAHT is defined but doesn't include "$HOME/go"
-            sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$PATH:$HOME/go/bin\n' ~/.bashrc
+            sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$HOME/go/bin:$PATH\n' ~/.bashrc
           else
             if [ `echo $PATH | grep "$HOME/go/bin" | wc -l` -lt 1 ]; then
-              # PATH doen't include "$HOME/go/bin"
-              sed -i '$ a \\neexport PATH=$PATH:$HOME/go/bin\n' ~/.bashrc
+              # PATH doesn't include "$HOME/go/bin"
+              sed -i '$ a \\nexport PATH=$HOME/go/bin:$PATH\n' ~/.bashrc
             else
               echo "{{ unchanged_stdout }}"
             fi

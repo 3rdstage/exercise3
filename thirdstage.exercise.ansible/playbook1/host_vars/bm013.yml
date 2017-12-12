@@ -3,3 +3,6 @@ containers:
     - name: zk1
   kafkas:
     - name: kafka1
+  orderers:
+    - name: orderer1
+      org: org0

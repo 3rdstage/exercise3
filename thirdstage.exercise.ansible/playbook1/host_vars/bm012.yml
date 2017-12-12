@@ -1,5 +1,6 @@
 containers:
   peers:
     - name: peer12
+      org: org3
   cas: # CA Servers
     - name: ca3    

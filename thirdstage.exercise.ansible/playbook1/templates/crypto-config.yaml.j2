@@ -1,69 +1,43 @@
-# References
-#   - https://github.com/hyperledger/fabric/blob/v1.0.0-beta/examples/e2e_cli/crypto-config.yaml
+#jinja2: trim_blocks:False
 
+# References
+#   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/crypto-config.yaml
 
 OrdererOrgs:
-  {% for org in fabric.orgs if org.type == 'orderer' %}
+  {%- for org in fabric.orgs if org.type == 'orderer' %}
   - Name: {{ org.name }}
     Domain: {{ org.domain | default(org.name) }}
     CA:
       HostName : {{ org.ca.hostname }}
       CommonName: {{ org.ca.common_name }}
-      {% for host in ansible_play_batch if hostvars[host].containers is defined and hostvars[host].containers.orderer is defined %}
     Specs:
-      - Hostname: orderer1
-        CommonName: orderer1
-      - Hostname: orderer2
-        CommonName: orderer2
-      {% endfor %}
-  {% endfor %}
+      {%- for host in ansible_play_batch|sort
+        if hostvars[host].containers is defined
+        and hostvars[host].containers.orderers is defined -%}
+        {%- for orderer in hostvars[host].containers.orderers if orderer.org == org.name %}
+      - Hostname: {{ orderer.name }}
+        CommonName: {{ orderer.name }}
+        {%- endfor -%}
+      {%- endfor -%}
+  {%- endfor %}
 
 PeerOrgs:
-  - Name: org1
-    Domain: org1
+  {%- for org in fabric.orgs if org.type == 'peer' %}
+  - Name: {{ org.name }}
+    Domain: {{ org.domain | default(org.name) }}
     CA:
-      Hostname: ca1
-      CommonName : ca1
+      HostName : {{ org.ca.hostname }}
+      CommonName: {{ org.ca.common_name }}
     Specs:
-      - Hostname: peer1
-        CommonName: peer1
-      - Hostname: peer2
-        CommonName: peer2
-      - Hostname: peer3
-        CommonName: peer3
-      - Hostname: peer4
-        CommonName: peer4
+      {%- for host in ansible_play_batch|sort
+        if hostvars[host].containers is defined
+        and hostvars[host].containers.peers is defined -%}
+        {%- for peer in hostvars[host].containers.peers if peer.org == org.name %}
+      - Hostname: {{ peer.name }}
+        CommonName: {{ peer.name }}
+        {%- endfor -%}
+      {%- endfor %}
     Users:
       Count: 1
-  - Name: org2
-    Domain: org2
-    CA:
-      Hostname: ca2
-      CommonName : ca2
-    Specs:
-      - Hostname: peer5
-        CommonName: peer5
-      - Hostname: peer6
-        CommonName: peer6
-      - Hostname: peer7
-        CommonName: peer7
-      - Hostname: peer8
-        CommonName: peer8
-    Users:
-      Count: 1
-  - Name: org3
-    Domain: org3
-    CA:
-      Hostname: ca3
-      CommonName : ca3
-    Specs:
-      - Hostname: peer9
-        CommonName: peer9
-      - Hostname: peer10
-        CommonName: peer10
-      - Hostname: peer11
-        CommonName: peer11
-      - Hostname: peer12
-        CommonName: peer12
-    Users:
-      Count: 1
+  {%- endfor %}
+

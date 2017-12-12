@@ -1,0 +1,78 @@
+
+- hosts: all
+  tasks:
+    - name: Install Fabric binaries necessary to generate crypt artifacts and configruation transactions
+      shell: |
+        . ~/.profile
+        
+        readonly fabric_ver="{{ fabric.ver }}"
+        readonly fabric_bin_dir=$HOME/fabric/${fabric_ver}
+
+        # For more, refer 'https://hyperledger-fabric.readthedocs.io/en/release/samples.html'
+        if [ ! -d ${fabric_bin_dir} ]; then
+          mkdir -p ${fabric_bin_dir}
+          cd ${fabric_bin_dir}
+          curl -sSL https://goo.gl/byy2Qj | bash -s "{{ fabric.ver }}"
+          echo "Fabric binaries are successfully installed."
+        fi
+
+        # Update PATH if necessary
+        if [ `echo $PATH | grep "$HOME/fabric/${fabric_ver}/bin" | wc -l` -lt 1 ]; then
+          # PATH doesn\'t include "$HOME/fabric/{{ fabric.ver }}/bin"
+          sed -i '$ a \\nexport PATH=$HOME/fabric/'${fabric_ver}'/bin:$PATH\n' ~/.bashrc
+          echo "PATH are updated to include Fabric ${fabric_ver} binaries"
+          echo $PATH
+        fi
+      args:
+        executable: /bin/bash        
+      become: false
+      run_once: true
+      delegate_to: 127.0.0.1
+      register: fabric_bin_install
+      changed_when: "('successfully installed' in fabric_bin_install.stdout) or ('PATH are updated' in fabric_bin_install.stdout)" 
+
+    # TODO Rename previously generated cryptogen input file
+    - name: Generate cryptogen input file
+      template: 
+        src: "{{ inventory_dir }}/templates/crypto-config.yaml.j2"
+        dest: "{{ inventory_dir }}/generated/fabric/crypto-config.yaml"
+        mode: "u=rw,g=r,o=r"
+      run_once: true
+      delegate_to: 127.0.0.1
+      
+    - name: Generate crypto artifacts using cryptogen tool 
+      shell: |
+        . ~/.profile
+        cd {{ inventory_dir }}
+
+        # Backup current crypto artifacts previously generated
+        if [ `ls -A ./generated/fabric/crypto | wc -l` -gt 0 ]; then
+          mv ./generated/fabric/crypto ./generated/fabric/crypto-{{ '%y%m%dT%H%M%S' | strftime(ansible_date_time.epoch) }}
+        fi
+
+        mkdir -p ./generated/fabric/crypto
+        
+        # Generate Fabric\'s crypto artifacts using cryptogen
+        cryptogen generate --config=./generated/fabric/crypto-config.yaml --output=./generated/fabric/crypto
+        
+        # TODO Check the generated artifacts are in expected shape.
+        
+      args:
+        executable: /bin/bash        
+      become: false              
+      run_once: true
+      delegate_to: 127.0.0.1
+      ignore_erros : true
+      
+      
+    # TODO Rename previously generated configtxgen input file
+    - name: Generate configtxgen input file
+      template: 
+        src: "{{ inventory_dir }}/templates/configtx.yaml.j2"
+        dest: "{{ inventory_dir }}/generated/fabric/configtx.yaml"
+        mode: "u=rw,g=r,o=r"
+      run_once: true
+      delegate_to: 127.0.0.1
+      
+      
+      

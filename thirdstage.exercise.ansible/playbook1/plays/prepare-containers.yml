@@ -1,4 +1,6 @@
 ---
+# To just try this play, run 'ansible-playbook plays/prepare-containers.yml --check --diff'
+
 - hosts: all
   tasks:
     - name: Print out all the containers defined

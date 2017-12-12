@@ -36,7 +36,7 @@ host:
         min: '7.03'
 
 fabric:
-  ver: 'x86_64-1.1.0-preview'
+  ver: '1.1.0-preview'
   orgs:
     - name: org0
       type: orderer
@@ -59,7 +59,11 @@ fabric:
       ca:
         hostname: ca3
         common_name: ca3
-
+  generate:
+    crypto:
+      force: true
+    configtx:
+      force: true
 
 docker:
   images:
@@ -67,7 +71,7 @@ docker:
     base: &docker_image_base
       # If you would like to use registry other than Docker Hub, uncomment the following line and ..
       # registry: ''
-      tag: "{{ fabric.ver }}"
+      tag: "{{ ansible_architecture }}-{{ fabric.ver }}"
     zookeeper:
       <<: *docker_image_base
       repository: 'hyperledger/fabric-zookeeper'

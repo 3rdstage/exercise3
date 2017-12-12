@@ -1,3 +1,5 @@
 containers:
   peers:
     - name: peer6
+      org: org2
+      
