@@ -7,3 +7,27 @@
 
 Profiles:
   GenesisProfile:
+    Orderer:
+      <<: *ordererDefaults
+      Organizations:
+        {%- for org in fabric.orgs if org.type == 'orderer' %}
+        - *{{ org.name }}
+        {%- endfor -%}
+      Consortiums:
+        {%- for channel in fabric.channels %}
+        {{ channel.consortium }}:
+          Organizations:
+            {%- for org in channel.orgs %}
+            - *{{ org }}
+            {%- endfor -%}
+        {%- endfor -%}
+  {%- for channel in fabric.channels -%}
+  {{ channel.profile }}
+    Consortium: {{ channel.consortium }}
+    Application:
+      Organizations:
+
+      # TODO ...
+  {%- endfor -%}
+
+

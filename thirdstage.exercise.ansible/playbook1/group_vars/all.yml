@@ -37,6 +37,11 @@ host:
 
 fabric:
   ver: '1.1.0-preview'
+  generate:
+    crypto:
+      force: true # default
+    configtx:
+      force: true # default
   orgs:
     - name: org0
       type: orderer
@@ -59,12 +64,24 @@ fabric:
       ca:
         hostname: ca3
         common_name: ca3
-  generate:
-    crypto:
-      force: true
-    configtx:
-      force: true
-
+  channels:
+    - name: channel1
+      consortium: Channel1Consortium
+      profile: Channel1Profile
+      orgs: ['org1', 'org2', 'org3']
+    - name: channel2
+      consortium: Channel2Consortium
+      profile: Channel2Profile
+      orgs: ['org1', 'org2', 'org3']
+  orderer_default:
+    type: kafka # default
+    batch_timeout: 4s
+    batch_size:
+      max_message_count: 400
+      absolute_max_bytes: 5 MB
+      preferred_max_bytes: 1024 KB
+    
+    
 docker:
   images:
     # For all list of Hyperledger Fabric repositories, refer https://hub.docker.com/u/hyperledger/
