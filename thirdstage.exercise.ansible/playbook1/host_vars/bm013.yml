@@ -3,6 +3,10 @@ containers:
     - name: zk1
   kafkas:
     - name: kafka1
+      address: "{{ ansible_host }}"
+      port: 9092 # default: 9092
   orderers:
     - name: orderer1
       org: org0
+      address: "{{ ansible_host }}"
+      port: 7050 # default: 7050      

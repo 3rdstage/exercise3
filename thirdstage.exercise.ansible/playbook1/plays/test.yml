@@ -3,7 +3,10 @@
   tasks:
     - name: Print hostname and current datetime of all the host
       debug:
-        msg: "hostname: {{ hostvars[item].ansible_hostname }}, IP address: {{ hostvars[item].ansible_default_ipv4.address }}, current datetime: {{ hostvars[item].ansible_date_time.iso8601 }}"
+        msg: 
+          - "hostname: {{ hostvars[item].ansible_hostname }}" 
+          - "IP address: {{ hostvars[item].ansible_default_ipv4.address }}"
+          - "current datetime: {{ lookup('pipe','date +%y%m%dT%H%M%S') }}"
       with_items: "{{ ansible_play_batch }}"
       run_once: true
       delegate_to: 127.0.0.1

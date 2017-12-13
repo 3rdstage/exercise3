@@ -2,5 +2,10 @@ containers:
   peers:
     - name: peer4
       org: org1
+      address: "{{ ansible_host }}"
+      port: 7051 # default: 7051
+      gossip:
+        orgLeader: false
+        anchor: false
   cas: # CA Servers
     - name: ca1

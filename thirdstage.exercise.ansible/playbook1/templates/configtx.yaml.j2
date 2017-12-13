@@ -1,9 +1,9 @@
 #jinja2: trim_blocks:False
 
 # References
-#   - https://github.com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 #   - http://hyperledger-fabric.readthedocs.io/en/latest/configtxgen.html
-#   - https://github.com/hyperledger/fabric/blob/master/examples/e2e_cli/configtx.yaml
+#   - https://github.com/hyperledger/fabric/blob/v{{ fabric.ver }}/sampleconfig/configtx.yaml
+#   - https://github.com/hyperledger/fabric/blob/v{{ fabric.ver }}/examples/e2e_cli/configtx.yaml
 
 Profiles:
   GenesisProfile:
@@ -12,22 +12,85 @@ Profiles:
       Organizations:
         {%- for org in fabric.orgs if org.type == 'orderer' %}
         - *{{ org.name }}
-        {%- endfor -%}
-      Consortiums:
-        {%- for channel in fabric.channels %}
-        {{ channel.consortium }}:
-          Organizations:
-            {%- for org in channel.orgs %}
-            - *{{ org }}
-            {%- endfor -%}
-        {%- endfor -%}
-  {%- for channel in fabric.channels -%}
-  {{ channel.profile }}
+        {%- endfor %}
+
+    Consortiums:
+      {%- for channel in fabric.channels|sort %}
+      {{ channel.consortium }}:
+        Organizations:
+          {%- for org in channel.orgs|sort %}
+          - *{{ org }}
+          {%- endfor -%}
+      {%- endfor %}
+
+  {%- for channel in fabric.channels|sort %}
+  {{ channel.profile }}:
     Consortium: {{ channel.consortium }}
     Application:
+      <<: *applicationDefaults
       Organizations:
+        {%- for org in channel.orgs|sort %}
+        - *{{ org }}
+        {%- endfor -%}
 
-      # TODO ...
-  {%- endfor -%}
+  {%- endfor %}
 
+Organizations:
+  {%- for org in fabric.orgs if org.type == 'orderer' %}
+  - &{{ org.name }}
+    Name: {{ org.name }}
+    ID: {{ org.name }}
+    MSPDir: crypto/ordererOrganizations/{{ org.name }}/msp
+    AdminPrincipal: Role.ADMIN
+  {%- endfor %}
+  {%- for org in fabric.orgs if org.type == 'peer' %}
+  - &{{ org.name }}
+    Name: {{ org.name }}
+    ID: {{ org.name }}
+    MSPDir: crypto/peerOrganizations/{{ org.name }}/msp
+    AdminPrincipal: Role.ADMIN
+    AnchorPeers:
+    {%- for host in ansible_play_batch|sort -%}
+      {%- for peer in (hostvars[host].containers|default({})).peers|default([])
+          if peer.org == org.name and peer.gossip.anchor|default(false) %}
+      - Host: {{ peer.address }}
+        Port: {{ peer.port }}
+      {%- endfor -%}
+    {%- endfor %}
+  {%- endfor %}
 
+Orderer: &ordererDefaults
+
+  OrdererType: kafka # only 'kafka' is supported
+
+  Addresses:
+  {%- for host in ansible_play_batch|sort -%}
+    {%- for orderer in (hostvars[host].containers|default({})).orderers|default([]) %}
+    - {{ orderer.address }}:{{ orderer.port }}
+    {%- endfor -%}
+  {%- endfor %}
+
+  BatchTimeout: {{ fabric.ordererDefaults.batchTimeout }}
+
+  {%- with batchSize = fabric.ordererDefaults.batchSize %}
+  BatchSize:
+    MaxMessageCount: {{ batchSize.maxMessageCount }}
+    AbsoluteMaxBytes: {{ batchSize.absoluteMaxBytes }}
+    PreferredMaxBytes: {{ batchSize.preferredMaxBytes }}
+  {%- endwith %}
+
+  Kafka:
+    Brokers:
+    {%- for host in ansible_play_batch|sort -%}
+      {%- for kafka in (hostvars[host].containers|default({})).kafkas|default([]) %}
+      - {{ kafka.address }}:{{ kafka.port }}
+      {%- endfor -%}
+    {%- endfor %}
+
+  Organizations:
+
+Application: &applicationDefaults
+
+  # Organizations is the list of orgs which are defined as participants on
+  # the application side of the network
+  Organizations:

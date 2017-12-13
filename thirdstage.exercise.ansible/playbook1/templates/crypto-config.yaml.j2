@@ -9,12 +9,11 @@ OrdererOrgs:
     Domain: {{ org.domain | default(org.name) }}
     CA:
       HostName : {{ org.ca.hostname }}
-      CommonName: {{ org.ca.common_name }}
+      CommonName: {{ org.ca.commonName }}
     Specs:
-      {%- for host in ansible_play_batch|sort
-        if hostvars[host].containers is defined
-        and hostvars[host].containers.orderers is defined -%}
-        {%- for orderer in hostvars[host].containers.orderers if orderer.org == org.name %}
+      {%- for host in ansible_play_batch|sort -%}
+        {%- for orderer in (hostvars[host].containers|default({})).orderers|default([])
+            if orderer.org == org.name %}
       - Hostname: {{ orderer.name }}
         CommonName: {{ orderer.name }}
         {%- endfor -%}
@@ -29,10 +28,9 @@ PeerOrgs:
       HostName : {{ org.ca.hostname }}
       CommonName: {{ org.ca.common_name }}
     Specs:
-      {%- for host in ansible_play_batch|sort
-        if hostvars[host].containers is defined
-        and hostvars[host].containers.peers is defined -%}
-        {%- for peer in hostvars[host].containers.peers if peer.org == org.name %}
+      {%- for host in ansible_play_batch|sort -%}
+        {%- for peer in (hostvars[host].containers|default({})).peers|default([])
+            if peer.org == org.name %}
       - Hostname: {{ peer.name }}
         CommonName: {{ peer.name }}
         {%- endfor -%}

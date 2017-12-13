@@ -1,0 +1,5 @@
+containers:
+  kafkas:
+    - name: kafka4
+      address: "{{ ansible_host }}"
+      port: 9092 # default: 9092

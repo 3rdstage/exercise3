@@ -34,12 +34,12 @@
               "ca": {
                 "description": "CA Server configuration",
                 "type": "object",
-                "required": ["hostname", "common_name"],
+                "required": ["hostname", "commonName"],
                 "properties": {
                   "hostname": {
                     "type": "string"
                   },
-                  "common_name": {
+                  "commonName": {
                     "type": "string"
                   }
                 }

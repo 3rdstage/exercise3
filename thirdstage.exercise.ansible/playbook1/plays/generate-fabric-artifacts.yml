@@ -37,6 +37,7 @@
         src: "{{ inventory_dir }}/templates/crypto-config.yaml.j2"
         dest: "{{ inventory_dir }}/generated/fabric/crypto-config.yaml"
         mode: "u=rw,g=r,o=r"
+      when: not fabric.generate.crypto.skip|default(false)
       run_once: true
       delegate_to: 127.0.0.1
       
@@ -47,7 +48,7 @@
 
         # Backup current crypto artifacts previously generated
         if [ `ls -A ./generated/fabric/crypto | wc -l` -gt 0 ]; then
-          mv ./generated/fabric/crypto ./generated/fabric/crypto-{{ '%y%m%dT%H%M%S' | strftime(ansible_date_time.epoch) }}
+          mv ./generated/fabric/crypto ./generated/fabric/crypto-{{ lookup('pipe','date +%y%m%dT%H%M%S')  }}
         fi
 
         mkdir -p ./generated/fabric/crypto
@@ -58,7 +59,8 @@
         # TODO Check the generated artifacts are in expected shape.
         
       args:
-        executable: /bin/bash        
+        executable: /bin/bash
+      when: not fabric.generate.crypto.skip|default(false)
       become: false              
       run_once: true
       delegate_to: 127.0.0.1
@@ -71,8 +73,33 @@
         src: "{{ inventory_dir }}/templates/configtx.yaml.j2"
         dest: "{{ inventory_dir }}/generated/fabric/configtx.yaml"
         mode: "u=rw,g=r,o=r"
+      when: not fabric.generate.configtx.skip|default(false)
+      become: false
       run_once: true
       delegate_to: 127.0.0.1
       
-      
+    - name: Generate configuration artifacts using configtxgen tool 
+      shell: |
+        . ~/.profile
+        cd {{ inventory_dir }}
+
+        # Backup current crypto artifacts previously generated
+        if [ `ls -A ./generated/fabric/configtx | wc -l` -gt 0 ]; then
+          mv ./generated/fabric/crypto ./generated/fabric/configtx-{{ lookup('pipe','date +%y%m%dT%H%M%S')  }}
+        fi
+
+        mkdir -p ./generated/fabric/configtx
+        
+        # TODO Generate genesis block
+        
+        
+        # TODO Check the generated artifacts are in expected shape.
+        
+      args:
+        executable: /bin/bash
+      when: not fabric.generate.crypto.skip|default(false)
+      become: false              
+      run_once: true
+      delegate_to: 127.0.0.1
+      ignore_erros : true      
       

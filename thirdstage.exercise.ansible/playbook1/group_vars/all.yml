@@ -39,31 +39,38 @@ fabric:
   ver: '1.1.0-preview'
   generate:
     crypto:
-      force: true # default
+      skip: true # default: false
+      force: true # default: true
     configtx:
-      force: true # default
+      skip: false # default: false
+      force: true # default: true 
+  distribute:
+    crypto:
+      skip: false # default: false
+      
+  init:
   orgs:
     - name: org0
       type: orderer
       domain: org0
       ca:
         hostname: ca0
-        common_name: ca0
+        commonName: ca0
     - name: org1
       type: peer # 'orderer' or 'peer', default is 'peer'
       ca:
         hostname: ca1
-        common_name: ca1
+        commonName: ca1
     - name: org2
       type: peer
       ca:
         hostname: ca2
-        common_name: ca2
+        commonName: ca2
     - name: org3
       type: peer
       ca:
         hostname: ca3
-        common_name: ca3
+        commonName: ca3
   channels:
     - name: channel1
       consortium: Channel1Consortium
@@ -73,40 +80,39 @@ fabric:
       consortium: Channel2Consortium
       profile: Channel2Profile
       orgs: ['org1', 'org2', 'org3']
-  orderer_default:
-    type: kafka # default
-    batch_timeout: 4s
-    batch_size:
-      max_message_count: 400
-      absolute_max_bytes: 5 MB
-      preferred_max_bytes: 1024 KB
+  ordererDefaults:
+    batchTimeout: 4s
+    batchSize:
+      maxMessageCount: 400
+      absoluteMaxBytes: 5 MB
+      preferredMaxBytes: 1024 KB
     
     
 docker:
   images:
     # For all list of Hyperledger Fabric repositories, refer https://hub.docker.com/u/hyperledger/
-    base: &docker_image_base
+    base: &dockerImageBase
       # If you would like to use registry other than Docker Hub, uncomment the following line and ..
       # registry: ''
       tag: "{{ ansible_architecture }}-{{ fabric.ver }}"
     zookeeper:
-      <<: *docker_image_base
+      <<: *dockerImageBase
       repository: 'hyperledger/fabric-zookeeper'
     kafka:
-      <<: *docker_image_base
+      <<: *dockerImageBase
       repository: 'hyperledger/fabric-kafka'
     orderer:
-      <<: *docker_image_base
+      <<: *dockerImageBase
       repository: 'hyperledger/fabric-orderer'
     peer:
-      <<: *docker_image_base
+      <<: *dockerImageBase
       repository: 'hyperledger/fabric-peer'
     couchdb:
-      <<: *docker_image_base
+      <<: *dockerImageBase
       repository: 'hyperledger/fabric-couchdb'
     tools:
-      <<: *docker_image_base
+      <<: *dockerImageBase
       repository: 'hyperledger/fabric-tools'
     ca: # CA Server
-      <<: *docker_image_base
+      <<: *dockerImageBase
       repository: 'hyperledger/fabric-ca'
