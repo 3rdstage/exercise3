@@ -21,11 +21,9 @@ host:
         package: "nodejs"
         keys: ['https://deb.nodesource.com/gpgkey/nodesource.gpg.key']
         repos: 
-          - 
-            url: "deb https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main"
+          - url: "deb https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main"
             filename: 'nodesource'
-          - 
-            url: "deb-src https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main"
+          - url: "deb-src https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main"
             filename: 'nodesource'
     npm:
       ver:
@@ -50,7 +48,7 @@ fabric:
       
   init:
   orgs:
-    - name: org0
+    - name: org0 # [A-Za-z][_0-9A-Za-z]*
       type: orderer
       domain: org0
       ca:
@@ -72,7 +70,7 @@ fabric:
         hostname: ca3
         commonName: ca3
   channels:
-    - name: channel1
+    - name: channel1 # [A-Za-z][_0-9A-Za-z]*
       consortium: Channel1Consortium
       profile: Channel1Profile
       orgs: ['org1', 'org2', 'org3']
@@ -81,6 +79,7 @@ fabric:
       profile: Channel2Profile
       orgs: ['org1', 'org2', 'org3']
   ordererDefaults:
+    # Reference : ...
     batchTimeout: 4s
     batchSize:
       maxMessageCount: 400

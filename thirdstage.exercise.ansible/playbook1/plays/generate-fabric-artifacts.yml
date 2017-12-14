@@ -1,14 +1,14 @@
 
 - hosts: all
   tasks:
+    # For more, refer 'https://hyperledger-fabric.readthedocs.io/en/release/samples.html'
     - name: Install Fabric binaries necessary to generate crypt artifacts and configruation transactions
       shell: |
         . ~/.profile
         
         readonly fabric_ver="{{ fabric.ver }}"
         readonly fabric_bin_dir=$HOME/fabric/${fabric_ver}
-
-        # For more, refer 'https://hyperledger-fabric.readthedocs.io/en/release/samples.html'
+        
         if [ ! -d ${fabric_bin_dir} ]; then
           mkdir -p ${fabric_bin_dir}
           cd ${fabric_bin_dir}
@@ -32,6 +32,8 @@
       changed_when: "('successfully installed' in fabric_bin_install.stdout) or ('PATH are updated' in fabric_bin_install.stdout)" 
 
     # TODO Rename previously generated cryptogen input file
+    # Reference
+    #   - http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html#manually-generate-the-artifacts
     - name: Generate cryptogen input file
       template: 
         src: "{{ inventory_dir }}/templates/crypto-config.yaml.j2"
@@ -52,9 +54,10 @@
         fi
 
         mkdir -p ./generated/fabric/crypto
+        cd ./generated/fabric/
         
         # Generate Fabric\'s crypto artifacts using cryptogen
-        cryptogen generate --config=./generated/fabric/crypto-config.yaml --output=./generated/fabric/crypto
+        cryptogen generate --config=./crypto-config.yaml --output=./crypto
         
         # TODO Check the generated artifacts are in expected shape.
         
@@ -68,6 +71,9 @@
       
       
     # TODO Rename previously generated configtxgen input file
+    # Reference
+    #   - http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html#manually-generate-the-artifacts
+    #   - http://hyperledger-fabric.readthedocs.io/en/latest/configtxgen.html
     - name: Generate configtxgen input file
       template: 
         src: "{{ inventory_dir }}/templates/configtx.yaml.j2"
@@ -85,19 +91,55 @@
 
         # Backup current crypto artifacts previously generated
         if [ `ls -A ./generated/fabric/configtx | wc -l` -gt 0 ]; then
-          mv ./generated/fabric/crypto ./generated/fabric/configtx-{{ lookup('pipe','date +%y%m%dT%H%M%S')  }}
+          mv ./generated/fabric/configtx ./generated/fabric/configtx-{{ lookup('pipe','date +%y%m%dT%H%M%S')  }}
         fi
 
         mkdir -p ./generated/fabric/configtx
+        cd ./generated/fabric/
+        export FABRIC_CFG_PATH=$PWD
         
-        # TODO Generate genesis block
+        # Generate genesis block
+        configtxgen -profile GenesisProfile -outputBlock ./configtx/genesis.block
+        if [ $? -ne 0 ]; then
+          echo "Fail to generate genesis block using '$PWD/configtx.yaml'"
+          exit 201
+        fi
         
+        # Generate channel configuration transactions and anchor peer update transactions 
+        {% for channel in fabric.channels|sort %}
+        export CHANNEL_NAME={{ channel.name }}
+        configtxgen -profile {{ channel.profile }} -outputCreateChannelTx ./configtx/channel_${CHANNEL_NAME}.tx -channelID ${CHANNEL_NAME}
+        if [ $? -ne 0 ]; then
+          echo "Fail to generate channel configuration transaction for '{{ channel.name }}' using '$PWD/configtx.yaml'"
+          exit 202
+        fi
+          {% for org in channel.orgs|sort %}
+          configtxgen -profile {{ channel.profile }} -outputAnchorPeersUpdate ./configtx/anchors_${CHANNEL_NAME}_{{ org }}.tx -channelID $CHANNEL_NAME -asOrg {{ org }}
+          if [ $? -ne 0 ]; then
+            echo "Fail to generate anchor peer update transaction for '{{ channel.name }}/{{ org }}' using '$PWD/configtx.yaml'"
+            exit 203
+          fi
+          {% endfor %}
+        {% endfor %}
         
-        # TODO Check the generated artifacts are in expected shape.
+        # Verify generated configtx artifacts
+        configtxgen -profile GenesisProfile -inspectBlock configtx/genesis.block >/dev/null
+        if [ $? -ne 0 ]; then
+          echo "Fail to verify generated genesis block of '$PWD/configtx/genesis.block'"
+          exit 301
+        fi
         
+        {% for channel in fabric.channels|sort %}
+        export CHANNEL_NAME={{ channel.name }}
+        configtxgen -profile {{ channel.profile }} -inspectChannelCreateTx ./configtx/channel_${CHANNEL_NAME}.tx -channelID ${CHANNEL_NAME} >/dev/null
+        if [ $? -ne 0 ]; then
+          echo "Fa il to verify generated channel configuration transaction of '$PWD/configtx/channel_${CHANNEL_NAME}.tx'"
+          exit 302
+        fi
+        {% endfor %}
       args:
         executable: /bin/bash
-      when: not fabric.generate.crypto.skip|default(false)
+      when: not fabric.generate.configtx.skip|default(false)
       become: false              
       run_once: true
       delegate_to: 127.0.0.1

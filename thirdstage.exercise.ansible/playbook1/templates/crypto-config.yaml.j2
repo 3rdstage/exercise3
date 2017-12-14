@@ -26,7 +26,7 @@ PeerOrgs:
     Domain: {{ org.domain | default(org.name) }}
     CA:
       HostName : {{ org.ca.hostname }}
-      CommonName: {{ org.ca.common_name }}
+      CommonName: {{ org.ca.commonName }}
     Specs:
       {%- for host in ansible_play_batch|sort -%}
         {%- for peer in (hostvars[host].containers|default({})).peers|default([])
