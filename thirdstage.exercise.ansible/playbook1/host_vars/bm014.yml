@@ -1,6 +1,16 @@
 containers:
   zookeepers:
     - name: zk2
+      id: 2 # myid file of ZooKeeper
+      
+      # For configuration parameters of ZooKeeper, refer 'https://zookeeper.apache.org/doc/r3.4.6/zookeeperAdmin.html#sc_configuration' 
+      config:
+        clientPort: 2191 #default: 2181
+        tickTime: 2000
+        initLimit: 10
+        syncLimit: 2
+        quorumPort: 2898 #default: 2888
+        electionPort: 3898 #default : 3888    
   kafkas:
     - name: kafka2
       address: "{{ ansible_host }}"

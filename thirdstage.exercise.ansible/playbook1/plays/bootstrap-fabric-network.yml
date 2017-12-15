@@ -1,5 +1,40 @@
 
 - hosts: all
-
-  # Run ZooKeepers
+  tasks:
   
+  - name: Evaluate ZooKeeper emsemble string
+    shell: |
+      zk_emsemble_string=
+      
+      {% for host in ansible_play_batch|sort %}
+        {%- for zk in (hostvars[host].containers|default({})).zookeepers|default([]) %}
+      zk_emsemble_string="${zk_emsemble_string} server.{{ zk.id }}={{ hostvars[host].ansible_host }}:{{ zk.config.quorumPort }}:{{ zk.config.electionPort }}"
+        {% endfor -%}
+      {%- endfor %}
+      
+      echo ${zk_emsemble_string}
+    become: false
+    run_once: true
+    delegate_to: 127.0.0.1
+    register: eval_zk_emsemble_str
+    failed_when: eval_zk_emsemble_str.stdout|length == 0
+    check_mode: false
+    
+  # Reference
+  #   - https://github.com/hyperledger/fabric/tree/v1.1.0-preview/images/zookeeper
+  - name: Run ZooKeeper containers
+    docker_container:
+      image: "{{ docker.images.zookeeper.repository }}:{{ docker.images.zookeeper.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      env:
+        ZOO_MY_ID: "{{ item.id }}"
+        ZOO_PORT: "{{ item.config.clientPort }}"
+        ZOO_TICK_TIME: "{{ item.config.tickTime }}"
+        ZOO_INIT_LIMIT: "{{ item.config.initLimit }}"
+        ZOO_SYNC_LIMIT: "{{ item.config.syncLimit }}"
+        ZOO_SERVERS: "{{ eval_zk_emsemble_str.stdout }}"
+    with_items: "{{ (containers|default({})).zookeepers|default([]) }}"
+    tags: ['docker', 'zookeeper']
+    
+    

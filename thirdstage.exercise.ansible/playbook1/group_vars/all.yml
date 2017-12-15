@@ -97,6 +97,7 @@ docker:
     zookeeper:
       <<: *dockerImageBase
       repository: 'hyperledger/fabric-zookeeper'
+      src: "https://github.com/hyperledger/fabric/tree/v{{ fabric.ver }}/images/zookeeper"
     kafka:
       <<: *dockerImageBase
       repository: 'hyperledger/fabric-kafka'
