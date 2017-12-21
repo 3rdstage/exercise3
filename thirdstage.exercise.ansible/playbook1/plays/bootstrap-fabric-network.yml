@@ -1,6 +1,8 @@
 
 - hosts: all
   tasks:
+
+  # TODO Check IP port availability for all IP ports used containers
   
   - name: Evaluate ZooKeeper emsemble string
     shell: |
@@ -38,3 +40,41 @@
     tags: ['docker', 'zookeeper']
     
     
+  # TODO Verify that ZooKeeper ensemble is in proper state.
+    
+  # TODO Run some kind of ZooKeeper management tool
+
+  # Reference
+  #   - https://github.com/hyperledger/fabric/tree/v1.1.0-preview/images/kafka
+  #   - https://kafka.apache.org/documentation/#configuration
+  - name: Run Kafka containers
+    docker_container:
+      image: "{{ docker.images.kafka.repository }}:{ docker.images.kafka.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      env:
+        KAFKA_ZOOKEEPER_CONNECT: ""
+        KAFKA_ADVERTISED_HOST_NAME:
+        KAFKA_BROKER_ID: "{{ item.config['broker.id'] }}"
+        KAFKA_LISTENERS: "PLAINTEXT://{{ ansible_host }}:{{ item.port }}"
+        KAFKA_MESSAGE_MAX_BYTES:
+        KAFKA_MIN_INSYNC_REPLICAS:
+        KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: false
+        KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT.MS: "{{ item.config['zookeeper.connection.timeout.ms'] }}"
+        KAFKA_DEFAULT_REPLICATION_FACTOR:
+        KAFKA_REPLICA_FETCH_MAX_BYTES:
+        KAFKA_METRICS_RECORDING_LEVEL:  
+        KAFKA_HEAP_OPTS:
+        KAFKA_JVM_PERFORMANCE_OPTS:
+        KAFKA_GC_LOG_OPTS:
+        KAFKA_JMX_OPTS:
+    with_items: "{{ (containers|default({})).kafkas|default([]) }}"  
+    tags: ['docker', 'kafka']
+        
+        
+        
+        
+        
+        
+        
+        

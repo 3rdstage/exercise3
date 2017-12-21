@@ -15,6 +15,14 @@ containers:
     - name: kafka1
       address: "{{ ansible_host }}"
       port: 9092 # default: 9092
+      config:
+        'broker.id': 1
+        'zookeeper.connection.timeout.ms': 6000
+      jvm:
+        heapOpts:
+        performanceOpts:
+        gcLogOpts:
+        jmxOpts:
   orderers:
     - name: orderer1
       org: org0
