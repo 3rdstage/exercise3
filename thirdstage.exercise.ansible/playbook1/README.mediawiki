@@ -14,6 +14,9 @@
 |-
 | Kafka Configuration
 | https://kafka.apache.org/documentation/#configuration
+|-
+| Kafka-based Ordering Service
+| http://hyperledger-fabric.readthedocs.io/en/release/kafka.html
 |}
 
 * Hyperledger Configuration samples

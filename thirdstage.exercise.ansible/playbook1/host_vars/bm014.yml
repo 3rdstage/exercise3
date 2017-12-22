@@ -17,7 +17,18 @@ containers:
       port: 9092 # default: 9092
       config:
         'broker.id': 2
-        'zookeeper.connection.timeout.ms': 6000
+        'message.max.bytes': 6000000 # 6MB, shoud be larger than Orderer.AbsoluteMaxBytes
+        'min.insync.replicas': 2 # 1 < min.insync.replicas < default.replication.factor
+        'zookeeper.connection.timeout.ms': 10000 # 10 sec
+        'default.replication.factor': 3
+        'replica.fetch.max.bytes': 6000000 # Orderer.AbsoluteMaxBytes < replica.fetch.max.bytes <= message.max.bytes
+        'metrics.recording.level': INFO
+      jvm:
+        heapOpts: '-Xmx1024m -Xms1024m'
+        performanceOpts: '-server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+DisableExplicitGC -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true'
+        gcLogOpts: ''
+        jmxOpts: '-Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false'
+        jmxPort: !!int 9999
   orderers:
     - name: orderer2
       org: org0

@@ -6,21 +6,24 @@
   
   - name: Evaluate ZooKeeper emsemble string
     shell: |
-      zk_emsemble_string=
+      zk_emsemble_str=
+      zk_connect_str=
       
       {% for host in ansible_play_batch|sort %}
         {%- for zk in (hostvars[host].containers|default({})).zookeepers|default([]) %}
-      zk_emsemble_string="${zk_emsemble_string} server.{{ zk.id }}={{ hostvars[host].ansible_host }}:{{ zk.config.quorumPort }}:{{ zk.config.electionPort }}"
+      zk_emsemble_str="${zk_emsemble_str} server.{{ zk.id }}={{ hostvars[host].ansible_host }}:{{ zk.config.quorumPort }}:{{ zk.config.electionPort }}"
+      zk_connect_str="${zk_connect_str},{{ hostvars[host].ansible_host }}:{{ zk.config.clientPort }}"
         {% endfor -%}
       {%- endfor %}
       
-      echo ${zk_emsemble_string}
+      echo "{ 'zk_emsemble_str': '${zk_emsemble_str}', 'zk_conect_str': '${zk_connect_str}' }"
     become: false
     run_once: true
     delegate_to: 127.0.0.1
     register: eval_zk_emsemble_str
-    failed_when: eval_zk_emsemble_str.stdout|length == 0
+    failed_when: eval_zk_emsemble_str.stdout.zk_emsemble_str|length == 0
     check_mode: false
+    tags: ['docker', 'zookeeper']
     
   # Reference
   #   - https://github.com/hyperledger/fabric/tree/v1.1.0-preview/images/zookeeper
@@ -35,7 +38,7 @@
         ZOO_TICK_TIME: "{{ item.config.tickTime }}"
         ZOO_INIT_LIMIT: "{{ item.config.initLimit }}"
         ZOO_SYNC_LIMIT: "{{ item.config.syncLimit }}"
-        ZOO_SERVERS: "{{ eval_zk_emsemble_str.stdout }}"
+        ZOO_SERVERS: "{{ eval_zk_emsemble_str.stdout.zk_emsemble_str }}"
     with_items: "{{ (containers|default({})).zookeepers|default([]) }}"
     tags: ['docker', 'zookeeper']
     
@@ -47,6 +50,7 @@
   # Reference
   #   - https://github.com/hyperledger/fabric/tree/v1.1.0-preview/images/kafka
   #   - https://kafka.apache.org/documentation/#configuration
+  #   - http://hyperledger-fabric.readthedocs.io/en/release/kafka.html
   - name: Run Kafka containers
     docker_container:
       image: "{{ docker.images.kafka.repository }}:{ docker.images.kafka.tag }}"
@@ -54,20 +58,21 @@
       network_mode: host
       env:
         KAFKA_ZOOKEEPER_CONNECT: ""
-        KAFKA_ADVERTISED_HOST_NAME:
+        KAFKA_ADVERTISED_HOST_NAME: "{{ item.name }}"
         KAFKA_BROKER_ID: "{{ item.config['broker.id'] }}"
-        KAFKA_LISTENERS: "PLAINTEXT://{{ ansible_host }}:{{ item.port }}"
-        KAFKA_MESSAGE_MAX_BYTES:
-        KAFKA_MIN_INSYNC_REPLICAS:
+        KAFKA_LISTENERS: "PLAINTEXT://{{ ansible_host }}:{{ item.port|int }}"
+        KAFKA_LOG_RETENTION_MS: -1
+        KAFKA_MESSAGE_MAX_BYTES: "{{ item.config['message.max.bytes']|int }}"
+        KAFKA_MIN_INSYNC_REPLICAS: "{{ item.config['min.insync.replicas']|int }}"
         KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: false
         KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT.MS: "{{ item.config['zookeeper.connection.timeout.ms'] }}"
-        KAFKA_DEFAULT_REPLICATION_FACTOR:
-        KAFKA_REPLICA_FETCH_MAX_BYTES:
-        KAFKA_METRICS_RECORDING_LEVEL:  
-        KAFKA_HEAP_OPTS:
-        KAFKA_JVM_PERFORMANCE_OPTS:
-        KAFKA_GC_LOG_OPTS:
-        KAFKA_JMX_OPTS:
+        KAFKA_DEFAULT_REPLICATION_FACTOR: "{{ item.config['default.replication.factor']|int }}"
+        KAFKA_REPLICA_FETCH_MAX_BYTES: "{{ item.config['replica.fetch.max.bytes']|int }}"
+        KAFKA_METRICS_RECORDING_LEVEL: "{{ item.config['metrics.recording.level'] }}"
+        KAFKA_HEAP_OPTS: "{{ item.jvm.heapOpts }}"
+        KAFKA_JVM_PERFORMANCE_OPTS: "{{ item.jvm.performanceOpts }}"
+        KAFKA_GC_LOG_OPTS: "{{ item.jvm.gcLogOpts }}"
+        KAFKA_JMX_OPTS: "{{ item.jvm.jmxOpts }} -Dcom.sun.management.jmxremote.rmi.port={{ item.jvm.jmxPort|int }}"
     with_items: "{{ (containers|default({})).kafkas|default([]) }}"  
     tags: ['docker', 'kafka']
         
