@@ -4,7 +4,8 @@
 
   # TODO Check IP port availability for all IP ports used containers
   
-  - name: Evaluate ZooKeeper emsemble string
+  - name: Evaluate ZooKeeper emsemble string and connection string
+    # TODO Use python script or Jinja2 instead of bash script.
     shell: |
       emsemble_str=
       connect_str=
