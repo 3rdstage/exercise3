@@ -12,7 +12,17 @@
       become: true
       run_once: true
       delegate_to: 127.0.0.1
-
+    
+    # http://docs.ansible.com/ansible/2.4/znode_module.html
+    - name: Install 'kazoo' Python library required by 'znode' module
+      pip:
+        name: kazoo
+        version: 2.2
+        state: present
+      become: true
+      run_once: true
+      delegate_to: 127.0.0.1    
+    
     - name: Downlaod schema for JSON schema if not already done.
       get_url:
         url: https://raw.githubusercontent.com/json-schema-org/json-schema-spec/draft-zyp-json-schema-04/schema.json
@@ -36,14 +46,14 @@
       vars:
         contents: |-
           {
-            "host": {{ hostvars[item]['host'] | tojson(indent=2) }},
-            "fabric": {{ hostvars[item]['fabric'] | to_nice_json(indent=2) }},
-            "docker": {{ hostvars[item]['docker'] | to_nice_json(indent=2) }},
-            "containers": {{ hostvars[item]['containers'] | to_nice_json(indent=2) }}
+            "host": {{ hostvars[item]['host']|tojson(indent=2) }},
+            "fabric": {{ hostvars[item]['fabric']|to_nice_json(indent=2) }},
+            "docker": {{ hostvars[item]['docker']|to_nice_json(indent=2) }},
+            "containers": {{ hostvars[item]['containers']|to_nice_json(indent=2) }}
           } 
       copy:
         dest: "{{ inventory_dir }}/generated/host-config/{{ item }}.json"
-        content: " {{ contents | to_nice_json }}"
+        content: " {{ contents|to_nice_json }}"
       with_items: "{{ ansible_play_hosts }}"
       run_once: true
       delegate_to: 127.0.0.1

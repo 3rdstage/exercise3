@@ -1,11 +1,11 @@
 containers:
   kafkas:
-    - name: kafka4
+    - name: kafka3
       address: "{{ ansible_host }}"
       port: 9092 # default: 9092
       config:
       config:
-        'broker.id': 4
+        'broker.id': 3
         'message.max.bytes': 6000000 # 6MB, shoud be larger than Orderer.AbsoluteMaxBytes
         'min.insync.replicas': 2 # 1 < min.insync.replicas < default.replication.factor
         'zookeeper.connection.timeout.ms': 10000 # 10 sec

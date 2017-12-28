@@ -12,5 +12,12 @@ containers:
         quorumPort: 2898 #default: 2888
         electionPort: 3898 #default : 3888    
   cas: # CA Servers
-    - name: ca0    
+    - name: ca0
+    
+  # For more refer
+  #   - https://github.com/yahoo/kafka-manager
+  #   - https://github.com/montana-ua/kafka-manager-docker
+  kafkaManager:
+    - name: 'kafka-manager'
+      port: 9010 #default: 9000
     

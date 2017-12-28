@@ -57,5 +57,11 @@
       when: 'containers is defined and containers.cas is defined'
       tags: ['docker-image']
 
-      
+    - name: Install Kafka Manager docker images if necessary
+      docker_image:
+        name: "{{ docker.images.kafkaManager.repository }}"
+        tag: "{{ docker.images.kafkaManager.tag }}"
+        state: present
+      when: '(containers|default({})).kafkaManager is defined'
+      tags: ['docker-image']
       

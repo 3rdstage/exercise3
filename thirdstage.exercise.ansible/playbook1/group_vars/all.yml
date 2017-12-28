@@ -116,3 +116,6 @@ docker:
     ca: # CA Server
       <<: *dockerImageBase
       repository: 'hyperledger/fabric-ca'
+    kafkaManager:
+      tag: '1.3.3.4'
+      repository: 'intropro/kafka-manager'

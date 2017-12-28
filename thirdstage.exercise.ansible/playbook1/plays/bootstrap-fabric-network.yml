@@ -6,28 +6,40 @@
   
   - name: Evaluate ZooKeeper emsemble string
     shell: |
-      zk_emsemble_str=
-      zk_connect_str=
+      emsemble_str=
+      connect_str=
       
       {% for host in ansible_play_batch|sort %}
         {%- for zk in (hostvars[host].containers|default({})).zookeepers|default([]) %}
-      zk_emsemble_str="${zk_emsemble_str} server.{{ zk.id }}={{ hostvars[host].ansible_host }}:{{ zk.config.quorumPort }}:{{ zk.config.electionPort }}"
-      zk_connect_str="${zk_connect_str},{{ hostvars[host].ansible_host }}:{{ zk.config.clientPort }}"
+      emsemble_str="${emsemble_str} server.{{ zk.id }}={{ hostvars[host].ansible_host }}:{{ zk.config.quorumPort }}:{{ zk.config.electionPort }}"
+      connect_str="${connect_str},{{ hostvars[host].ansible_host }}:{{ zk.config.clientPort }}"
         {% endfor -%}
       {%- endfor %}
       
-      echo "{ 'zk_emsemble_str': '${zk_emsemble_str}', 'zk_conect_str': '${zk_connect_str}' }"
+      echo "{ \"emsemble_str\": \"${emsemble_str# }\", \"connect_str\": \"${connect_str#,}\" }"
     become: false
     run_once: true
     delegate_to: 127.0.0.1
-    register: eval_zk_emsemble_str
-    failed_when: eval_zk_emsemble_str.stdout.zk_emsemble_str|length == 0
+    register: eval_zk_strings
+    failed_when: (eval_zk_strings.stdout|from_json).emsemble_str|length == 0
     check_mode: false
-    tags: ['docker', 'zookeeper']
+    tags: ['docker', 'zookeeper', 'kafka']
+    
+  - name: Test the ouput
+    debug:
+      msg: 
+        - "ZooKeeper Emsemble String: '{{ (eval_zk_strings.stdout|from_json).emsemble_str }}'"
+        - "ZooKeeper Connection String: '{{ (eval_zk_strings.stdout|from_json).connect_str }}'" 
+    when: false
+    run_once: true
+    delegate_to: 127.0.0.1
+    tags: ['debug']
     
   # Reference
   #   - https://github.com/hyperledger/fabric/tree/v1.1.0-preview/images/zookeeper
   - name: Run ZooKeeper containers
+    vars:
+      zk_emsemble_str: "{{ (eval_zk_strings.stdout|from_json).emsemble_str }}"
     docker_container:
       image: "{{ docker.images.zookeeper.repository }}:{{ docker.images.zookeeper.tag }}"
       name: "{{ item.name }}"
@@ -38,8 +50,9 @@
         ZOO_TICK_TIME: "{{ item.config.tickTime }}"
         ZOO_INIT_LIMIT: "{{ item.config.initLimit }}"
         ZOO_SYNC_LIMIT: "{{ item.config.syncLimit }}"
-        ZOO_SERVERS: "{{ eval_zk_emsemble_str.stdout.zk_emsemble_str }}"
+        ZOO_SERVERS: "{{ zk_emsemble_str }}"
     with_items: "{{ (containers|default({})).zookeepers|default([]) }}"
+    when: true
     tags: ['docker', 'zookeeper']
     
     
@@ -52,12 +65,14 @@
   #   - https://kafka.apache.org/documentation/#configuration
   #   - http://hyperledger-fabric.readthedocs.io/en/release/kafka.html
   - name: Run Kafka containers
+    vars:
+      zk_connect_str: "{{ (eval_zk_strings.stdout|from_json).connect_str }}"  
     docker_container:
-      image: "{{ docker.images.kafka.repository }}:{ docker.images.kafka.tag }}"
+      image: "{{ docker.images.kafka.repository }}:{{ docker.images.kafka.tag }}"
       name: "{{ item.name }}"
       network_mode: host
       env:
-        KAFKA_ZOOKEEPER_CONNECT: ""
+        KAFKA_ZOOKEEPER_CONNECT: "{{ zk_connect_str }}"
         KAFKA_ADVERTISED_HOST_NAME: "{{ item.name }}"
         KAFKA_BROKER_ID: "{{ item.config['broker.id'] }}"
         KAFKA_LISTENERS: "PLAINTEXT://{{ ansible_host }}:{{ item.port|int }}"
@@ -73,13 +88,55 @@
         KAFKA_JVM_PERFORMANCE_OPTS: "{{ item.jvm.performanceOpts }}"
         KAFKA_GC_LOG_OPTS: "{{ item.jvm.gcLogOpts }}"
         KAFKA_JMX_OPTS: "{{ item.jvm.jmxOpts }} -Dcom.sun.management.jmxremote.rmi.port={{ item.jvm.jmxPort|int }}"
-    with_items: "{{ (containers|default({})).kafkas|default([]) }}"  
+    with_items: "{{ (containers|default({})).kafkas|default([]) }}"
+    when: true
     tags: ['docker', 'kafka']
-        
-        
-        
-        
-        
-        
-        
-        
+
+  # Reference
+  #   - https://github.com/yahoo/kafka-manager
+  #   - https://github.com/montana-ua/kafka-manager-docker
+  - name: Run Kafka Manager containers        
+    vars:
+      zk_connect_str: "{{ (eval_zk_strings.stdout|from_json).connect_str }}"  
+    docker_container:
+      image: "{{ docker.images.kafkaManager.repository }}:{{ docker.images.kafkaManager.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      env:
+        ZK_HOSTS: "{{ zk_connect_str }}"
+        KMANAGER_ARGS: "-Dhttp.port={{ item.port }}"
+    with_items: "{{ (containers|default({})).kafkaManager|default([]) }}"
+    when: true
+    tags: ['docker', 'kafka-manager']  
+  
+  # For more, refer https://github.com/yahoo/kafka-manager/issues/426      
+  - name: Add a cluster into the Kafka Manager
+    vars:
+      zk_connect_str: "{{ (eval_zk_strings.stdout|from_json).connect_str }}"
+      cluster_name: "FabricOrdererKafkas"
+      config:
+        name: "{{ cluster_name }}"
+        curatorConfig: 
+          zkConnect: "{{ zk_connect_str }}"
+          zkMaxRetry: 100
+          baseSleepTimeMs: 100
+          maxSleepTimeMs: 1000
+        enabled: true
+        kafkaVersion: "0.10.1.0" # for Fabric 1.1.0-preview
+        jmxEnabled: true
+        jmxSsl: false
+        tuning:
+          brokerViewUpdatePeriodSeconds: 30
+    znode:
+      hosts: "{{ zk_connect_str }}"
+      name: "/kafka-manager/configs/{{ cluster_name }}"
+      value: "{{ config|to_json|string }}"
+      state: present
+    run_once: true
+    delegate_to: 127.0.0.1
+    tags: ['docker', 'kafka-manager']
+    # Add Kafka Manager URL into notice messages.
+    
+    
+  # TODO run Fabric Orderer containers
+  
