@@ -106,7 +106,7 @@
       env:
         ZK_HOSTS: "{{ zk_connect_str }}"
         KMANAGER_ARGS: "-Dhttp.port={{ item.port }}"
-    with_items: "{{ (containers|default({})).kafkaManager|default([]) }}"
+    with_items: "{{ (containers|default({})).kafkaManagers|default([]) }}"
     when: true
     tags: ['docker', 'kafka-manager']  
   
@@ -138,6 +138,47 @@
     tags: ['docker', 'kafka-manager']
     # Add Kafka Manager URL into notice messages.
     
-    
-  # TODO run Fabric Orderer containers
   
+  # TODO Run Fabric CA servers
+    
+  # Reference
+  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/orderer.yaml
+  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+  - name: Run Fabric Orderer containers
+    docker_container:
+      image: "{{ docker.images.kafka.repository }}:{{ docker.images.kafka.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      env:
+        ORDERER_GENERAL_LEDGERTYPE: file # A production file-based ledger, fixed
+        ORDERER_GENERAL_LISTENADDRESS: "{{ item.address }}"
+        ORDERER_GENERAL_LISTENPORT: "{{ item.port }}"
+        ORDERER_GENERAL_TLS_ENABLED: true  # fixed
+        ORDERER_GENERAL_TLS_PRIVATEKEY: /var/hyperledger/orderer/tls/server.key
+        ORDERER_GENERAL_TLS_CERTIFICATE: /var/hyperledger/orderer/tls/server.crt
+        ORDERER_GENERAL_TLS_ROOTCAS: [/var/hyperledger/orderer/tls/ca.crt]
+        ORDERER_GENERAL_TLS_CLIENTAUTHENABLED: false # fixed
+        ORDERER_GENERAL_LOGLEVEL: "{{ item.config.General.LogLevel }}"
+        ORDERER_GENERAL_GENESISMETHOD: file  # provisional | file
+        ORDERER_GENERAL_GENESISFILE: /var/hyperledger/orderer/orderer.genesis.block
+        ORDERER_GENERAL_LOCALMSPDIR: /var/hyperledger/orderer/msp
+        ORDERER_GENERAL_LOCALMSPID: "{{ item.name }}"
+        ORDERER_GENERAL_PROFILE_ENABLED: "{{ item.config.General.Profile.Enabled }}"
+        ORDERER_GENERAL_PROFILE_ADDRESS: "{{ item.config.General.Profile.Address }}"
+        ORDERER_FILELEDGER_LOCATION: /var/hyperledger/production/orderer
+        ORDERER_KAFKA_RETRY_SHORTINTERVAL: "{{ item.config.Kafka.Retry.ShortInterval }}"
+        ORDERER_KAFKA_RETRY_SHORTTOTAL: "{{ item.config.Kafka.Retry.ShortTotal }}"
+        ORDERER_KAFKA_VERBOSE: "{{ item.config.Kafka.Verbose }}"
+        ORDERER_KAFKA_TLS_ENABLED: false # TODO Is this Okay for production systems ?
+        CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: host
+      volumes:
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/bootstrap/configtx/genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/bootstrap/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/msp:/var/hyperledger/orderer/msp"
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/bootstrap/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/tls/:/var/hyperledger/orderer/tls"
+      # TODO What about working_dir?  Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+    with_items: "{{ (containers|default({})).orderers|default([]) }}"
+    when: true
+    tags: ['docker', 'fabric-orderer']
+
+
+      

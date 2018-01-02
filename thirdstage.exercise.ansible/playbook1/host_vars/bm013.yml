@@ -33,4 +33,15 @@ containers:
     - name: orderer1
       org: org0
       address: "{{ ansible_host }}"
-      port: 7050 # default: 7050      
+      port: 7050 # default: 7050
+      config: # follow naming convention of Fabric. (e.g.: https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/orderer.yaml)
+        General:
+          LogLevel: info # (critical | error | warning | notice | info | debug), http://hyperledger-fabric.readthedocs.io/en/release/logging-control.html
+          Profile:
+            Enabled: false # default: false
+            Address: 0.0.0.0:6060
+          Kafka:
+            Retry:
+              ShortInterval: 1s
+              ShortTotal: 30s
+            Verbose: false

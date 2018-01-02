@@ -21,3 +21,71 @@
 
 * Hyperledger Configuration samples
 ** https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/crypto-config.yaml
+
+
+===Directory Layout===
+
+{| class="wikitable" style="margin-left:20px"
+! Contents !! Host Directory !! Container Directory !! Remarks
+|-
+| Confirguration transactions to bootstrap Fabric network
+| <code>~/fabric/_version_/bootstrap/configtx</code>
+|
+| <code>configtxgen</code>
+|-
+| Crypto artifacts to bootstrap Fabric network
+| <code>~/fabric/_version_/bootstrap/crypto</code>
+|
+| <code>cryptogen</code>
+|-
+| Fabric orderer/peer runtime configuration
+|
+| <code>/etc/hyperledger/fabric/</code>
+| <code>orderer.yaml</code>, <code>configtx.yaml</code>, <code>core.yaml</code>
+|-
+| Fabric CA server runtime configuration
+|
+| <code>/etc/hyperledger/fabric-ca/server/</code>
+| <code>fabric-ca-server-config.yaml</code>, <code>FABRIC_CA_SERVER_HOME</code>
+|-
+| Genesis block
+| <code>~/fabric/_version_/bootstrap/configtx/genesis.block</code>
+| <code>/var/hyperledger/orderer/orderer.genesis.block</code>
+| https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+|-
+| MSP files for Fabric orderer
+| <code>~/fabric/_version_/bootstrap/crypto/ordererOrganizations/org0/orderers/_ordererName_/msp</code>
+| <code>/var/hyperledger/orderer/msp</code>
+| Key files, Certificate files, CA certificates, Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+|-
+| TLS files for Fabric orderer
+| <code>~/fabric/_version_/bootstrap/crypto/ordererOrganizations/org0/orderers/_ordererName_/tls/</code>
+| <code>/var/hyperledger/orderer/tls</code>
+| Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+|}
+
+===Environment Varialbes===
+
+{| class="wikitable" style="margin-left:20px"
+! Variable !! Scope !! Description !! Example
+|-
+| <code>GOPATH</code>
+| Host
+|
+|
+|-
+| <code>FABRIC_VERSION</code>
+|
+|
+|
+|-
+| <code>COUCHDB_LOG_LEVEL</code>
+|
+|
+|
+|-
+| <code>COUCHDB_PORT</code>
+|
+|
+|
+|}
