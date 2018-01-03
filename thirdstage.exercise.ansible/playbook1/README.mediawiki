@@ -26,42 +26,58 @@
 ===Directory Layout===
 
 {| class="wikitable" style="margin-left:20px"
-! Contents !! Host Directory !! Container Directory !! Remarks
+! Service !! Contents !! Container Directory/File !! Host Directory/File !! Files !! Remarks
 |-
-| Confirguration transactions to bootstrap Fabric network
-| <code>~/fabric/_version_/bootstrap/configtx</code>
+| rowspan="2" | All
+| Confirguration transactions
+|
+| <code>~/fabric/_version_/configtx</code>
 |
 | <code>configtxgen</code>
 |-
-| Crypto artifacts to bootstrap Fabric network
-| <code>~/fabric/_version_/bootstrap/crypto</code>
+| Crypto artifacts
+|
+| <code>~/fabric/_version_/crypto</code>
 |
 | <code>cryptogen</code>
 |-
-| Fabric orderer/peer runtime configuration
+| rowspan="2" | Fabric CA Server
+| Data files
+| <code>/etc/hyperledger/fabric-ca-server</code>
+| <code>~/fabric/_version_/service/_caName_/etc/hyperledger/fabric-ca-server</code>
+| <code>fabric-ca-server-config.yaml</code>
 |
-| <code>/etc/hyperledger/fabric/</code>
-| <code>orderer.yaml</code>, <code>configtx.yaml</code>, <code>core.yaml</code>
 |-
-| Fabric CA server runtime configuration
+| Crypto files
+| <code>/etc/hyperledger/fabric-ca-server-config</code>
+| <code>~/fabric/_version_/crypto/peerOrganizations/_orgName_/ca</code>
+| Key file, Certificate file
 |
-| <code>/etc/hyperledger/fabric-ca/server/</code>
-| <code>fabric-ca-server-config.yaml</code>, <code>FABRIC_CA_SERVER_HOME</code>
 |-
+| rowspan="4" | Fabric Orderer
 | Genesis block
-| <code>~/fabric/_version_/bootstrap/configtx/genesis.block</code>
 | <code>/var/hyperledger/orderer/orderer.genesis.block</code>
+| <code>~/fabric/_version_/configtx/genesis.block</code>
+|
 | https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
 |-
-| MSP files for Fabric orderer
-| <code>~/fabric/_version_/bootstrap/crypto/ordererOrganizations/org0/orderers/_ordererName_/msp</code>
+| MSP files
 | <code>/var/hyperledger/orderer/msp</code>
-| Key files, Certificate files, CA certificates, Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+| <code>~/fabric/_version_/crypto/ordererOrganizations/org0/orderers/_ordererName_/msp</code>
+| Key files, Certificate files, CA certificates
+| https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
 |-
-| TLS files for Fabric orderer
-| <code>~/fabric/_version_/bootstrap/crypto/ordererOrganizations/org0/orderers/_ordererName_/tls/</code>
+| TLS files
 | <code>/var/hyperledger/orderer/tls</code>
-| Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+| <code>~/fabric/_version_/crypto/ordererOrganizations/org0/orderers/_ordererName_/tls/</code>
+|
+| https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+|-
+| Ledger files
+| <code>/var/hyperledger/production/orderer</code>
+| <code>~/fabric/_version_/service/_ordererName_/var/hyperledger/production/orderer</code>
+|
+|
 |}
 
 ===Environment Varialbes===

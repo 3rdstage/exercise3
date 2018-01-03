@@ -1,7 +1,7 @@
 - hosts: 
-    - bm001
-    - bm002
-    - bm003
+    - m001
+    - m002
+    - m003
   tasks:
     # For more on jsonschema, refer https://github.com/Julian/jsonschema
     - name: Install jsonschema Python package only for commander

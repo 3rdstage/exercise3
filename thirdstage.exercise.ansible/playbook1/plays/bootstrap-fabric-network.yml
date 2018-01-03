@@ -139,14 +139,41 @@
     # Add Kafka Manager URL into notice messages.
     
   
-  # TODO Run Fabric CA servers
+  # Reference
+  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/cluster/config/fabric-ca-server-config.yaml
+  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-e2e.yaml
+  - name: Run Fabric CA server containers
+    docker_container:
+      image: "{{ docker.images.ca.repository }}:{{ docker.images.ca.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      env:
+        FABRIC_CA_SERVER_HOME: /etc/hyperledger/fabric-ca-server
+        FABRIC_CA_SERVER_PORT: "{{ item.port }}"
+        FABRIC_CA_SERVER_DEBUG: "{{ item.config.debug }}"
+        FABRIC_CA_SERVER_TLS_ENABLED: "{{ item.config.tls.enabled }}"
+        # TODO Enabling TLS for Fabric CA server 
+        # FABRIC_CA_SERVER_TLS_CERTFILE: 
+        # FABRIC_CA_SERVER_TLS_KEYFILE: 
+        FABRIC_CA_SERVER_CA_NAME: "{{ item.name }}"
+        FABRIC_CA_SERVER_CA_KEYFILE: /etc/hyperledger/fabric-ca-server-config
+        FABRIC_CA_SERVER_CA_CERTFILE: "/etc/hyperledger/fabric-ca-server-config/{{ item.name }}-cert.pem"
+        FABRIC_CA_SERVER_DB_TLS_ENABLED: false
+        FABRIC_CA_SERVER_LDAP_ENABLED: false
+      volumes:
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/crypto/{{ item.orgType }}Organizations/{{ item.org }}/ca"
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/service/{{ item.name }}/etc/hyperledger/fabric-ca-server:/etc/hyperledger/fabric-ca-server"
+    with_items: "{{ (containers|default({})).cas|default([]) }}"
+    when: true
+    tags: ['docker', 'fabric-ca']
+      
     
   # Reference
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/orderer.yaml
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
   - name: Run Fabric Orderer containers
     docker_container:
-      image: "{{ docker.images.kafka.repository }}:{{ docker.images.kafka.tag }}"
+      image: "{{ docker.images.orderer.repository }}:{{ docker.images.orderer.tag }}"
       name: "{{ item.name }}"
       network_mode: host
       env:
@@ -172,13 +199,23 @@
         ORDERER_KAFKA_TLS_ENABLED: false # TODO Is this Okay for production systems ?
         CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: host
       volumes:
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/bootstrap/configtx/genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/bootstrap/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/msp:/var/hyperledger/orderer/msp"
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/bootstrap/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/tls/:/var/hyperledger/orderer/tls"
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/configtx/genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/msp:/var/hyperledger/orderer/msp"
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/tls/:/var/hyperledger/orderer/tls"
+        - "~/fabric/{{ hostvars[host].fabric.ver }}/service/{{ item.name }}/var/hyperledger/production/orderer:/var/hyperledger/production/orderer"
       # TODO What about working_dir?  Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
     with_items: "{{ (containers|default({})).orderers|default([]) }}"
     when: true
     tags: ['docker', 'fabric-orderer']
 
+
+  - name: Run Fabric Peer containers
+    docker_container:
+      image: "{{ docker.images.peer.repository }}:{{ docker.images.peer.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      env:
+      
+    
 
       

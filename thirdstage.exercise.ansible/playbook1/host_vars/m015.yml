@@ -13,6 +13,7 @@ containers:
         electionPort: 3898 #default : 3888    
   cas: # CA Servers
     - name: ca0
+      org: org0
     
   # For more refer
   #   - https://github.com/yahoo/kafka-manager

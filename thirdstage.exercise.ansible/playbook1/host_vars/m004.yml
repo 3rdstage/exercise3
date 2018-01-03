@@ -1,0 +1,19 @@
+containers:
+  peers:
+    - name: peer4
+      org: org1
+      address: "{{ ansible_host }}"
+      port: 7051 # default: 7051
+      gossip:
+        orgLeader: false
+        anchor: false
+  cas: # CA Servers
+    - name: ca1 # fabric-ca-server-config/ca.name
+      org: "{{ (hostvars[host].fabric.orgs|selectattr('name.commonName', 'ca1')).name }}"
+      orgType: "{{ (hostvars[host].fabric.orgs|selectattr('name.commonName', 'ca1')).type }}"
+      port: 7054 # defalut: 7054
+      config:
+        debug: false
+        tls:
+          enabled: false
+    
