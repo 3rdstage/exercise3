@@ -9,3 +9,8 @@ containers:
         anchor: false
   cas: # CA Servers
     - name: ca2    
+      port: 7054 # defalut: 7054
+      config:
+        debug: false
+        tls:
+          enabled: false    

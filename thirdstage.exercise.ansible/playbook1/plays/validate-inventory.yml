@@ -1,7 +1,7 @@
-- hosts: 
-    - m001
-    - m002
-    - m003
+- hosts: all
+    # - m001
+    # - m002
+    # - m003
   tasks:
     # For more on jsonschema, refer https://github.com/Julian/jsonschema
     - name: Install jsonschema Python package only for commander
@@ -46,10 +46,10 @@
       vars:
         contents: |-
           {
-            "host": {{ hostvars[item]['host']|tojson(indent=2) }},
-            "fabric": {{ hostvars[item]['fabric']|to_nice_json(indent=2) }},
-            "docker": {{ hostvars[item]['docker']|to_nice_json(indent=2) }},
-            "containers": {{ hostvars[item]['containers']|to_nice_json(indent=2) }}
+            "host": {{ hostvars[item]['host']|default('')|to_nice_json(indent=2) }},
+            "fabric": {{ hostvars[item]['fabric']|default('')|to_nice_json(indent=2) }},
+            "docker": {{ hostvars[item]['docker']|default('')|to_nice_json(indent=2) }},
+            "containers": {{ hostvars[item]['containers']|default('')|to_nice_json(indent=2) }}
           } 
       copy:
         dest: "{{ inventory_dir }}/generated/host-config/{{ item }}.json"

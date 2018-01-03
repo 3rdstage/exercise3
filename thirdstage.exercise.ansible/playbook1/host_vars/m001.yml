@@ -7,5 +7,6 @@ containers:
       gossip:
         orgLeader: true
         anchor: false
-      
-
+  couchdbs:
+    - name: couchdb1
+      port: 5984

@@ -8,4 +8,9 @@ containers:
         orgLeader: false
         anchor: false
   cas: # CA Servers
-    - name: ca3    
+    - name: ca3
+      port: 7054 # defalut: 7054
+      config:
+        debug: false
+        tls:
+          enabled: false

@@ -44,7 +44,7 @@
 | rowspan="2" | Fabric CA Server
 | Data files
 | <code>/etc/hyperledger/fabric-ca-server</code>
-| <code>~/fabric/_version_/service/_caName_/etc/hyperledger/fabric-ca-server</code>
+| <code>~/fabric/_version_/volumes/_caName_/etc/hyperledger/fabric-ca-server</code>
 | <code>fabric-ca-server-config.yaml</code>
 |
 |-
@@ -75,7 +75,20 @@
 |-
 | Ledger files
 | <code>/var/hyperledger/production/orderer</code>
-| <code>~/fabric/_version_/service/_ordererName_/var/hyperledger/production/orderer</code>
+| <code>~/fabric/_version_/volumes/_ordererName_/var/hyperledger/production/orderer</code>
+|
+|
+|-
+| rowspan="2" | CouchDB
+| Data files
+| <code>/opt/couchdb/data</code>
+| <code>~/fabric/_version_/volumes/_couchdbName_/opt/couchdb/data</code>
+|
+|
+|-
+| Log files
+| <code>/opt/couchdb/var/log</code>
+| <code>~/fabric/_version_/volumes/_couchdbName_/opt/couchdb/var/log</code>
 |
 |
 |}

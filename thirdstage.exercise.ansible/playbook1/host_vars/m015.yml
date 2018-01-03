@@ -13,8 +13,12 @@ containers:
         electionPort: 3898 #default : 3888    
   cas: # CA Servers
     - name: ca0
-      org: org0
-    
+      port: 7054 # defalut: 7054
+      config:
+        debug: false
+        tls:
+          enabled: false
+
   # For more refer
   #   - https://github.com/yahoo/kafka-manager
   #   - https://github.com/montana-ua/kafka-manager-docker

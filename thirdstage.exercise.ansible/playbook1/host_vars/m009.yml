@@ -7,4 +7,3 @@ containers:
       gossip:
         orgLeader: true
         anchor: false
-      

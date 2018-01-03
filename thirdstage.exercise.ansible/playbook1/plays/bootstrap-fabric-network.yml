@@ -143,6 +143,9 @@
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/cluster/config/fabric-ca-server-config.yaml
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-e2e.yaml
   - name: Run Fabric CA server containers
+    vars:
+      orgName: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).name }}"
+      orgType: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).type }}"
     docker_container:
       image: "{{ docker.images.ca.repository }}:{{ docker.images.ca.tag }}"
       name: "{{ item.name }}"
@@ -161,8 +164,8 @@
         FABRIC_CA_SERVER_DB_TLS_ENABLED: false
         FABRIC_CA_SERVER_LDAP_ENABLED: false
       volumes:
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/crypto/{{ item.orgType }}Organizations/{{ item.org }}/ca"
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/service/{{ item.name }}/etc/hyperledger/fabric-ca-server:/etc/hyperledger/fabric-ca-server"
+        - "~/fabric/{{ fabric.ver }}/crypto/{{ orgType }}Organizations/{{ orgName }}/ca:/etc/hyperledger/fabric-ca-server-config"
+        - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/etc/hyperledger/fabric-ca-server:/etc/hyperledger/fabric-ca-server"
     with_items: "{{ (containers|default({})).cas|default([]) }}"
     when: true
     tags: ['docker', 'fabric-ca']
@@ -199,23 +202,39 @@
         ORDERER_KAFKA_TLS_ENABLED: false # TODO Is this Okay for production systems ?
         CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: host
       volumes:
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/configtx/genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/msp:/var/hyperledger/orderer/msp"
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/tls/:/var/hyperledger/orderer/tls"
-        - "~/fabric/{{ hostvars[host].fabric.ver }}/service/{{ item.name }}/var/hyperledger/production/orderer:/var/hyperledger/production/orderer"
+        - "~/fabric/{{ fabric.ver }}/configtx/genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
+        - "~/fabric/{{ fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/msp:/var/hyperledger/orderer/msp"
+        - "~/fabric/{{ fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/tls/:/var/hyperledger/orderer/tls"
+        - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/var/hyperledger/production/orderer:/var/hyperledger/production/orderer"
       # TODO What about working_dir?  Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
     with_items: "{{ (containers|default({})).orderers|default([]) }}"
     when: true
     tags: ['docker', 'fabric-orderer']
 
 
-  - name: Run Fabric Peer containers
-    docker_container:
-      image: "{{ docker.images.peer.repository }}:{{ docker.images.peer.tag }}"
-      name: "{{ item.name }}"
-      network_mode: host
-      env:
-      
-    
+  - block:
+    - name: Just start CouchDB containers
+      docker_container:
+        image: "{{ docker.images.couchdb.repository }}:{{ docker.images.couchdb.tag }}"
+        name: "{{ item.name }}"
+        network_mode: host
+        volumes:
+          - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/data:/opt/couchdb/data"
+          - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/var/log:/opt/couchdb/var/log"
+        command: /bin/bash
+      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
+    - name: Wait for a moment before the container start completely
+      wait_for: timeout=2
+      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
+    - name: Optimize CouchDB configuration
+      shell: |
+        docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
+        docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
+        docker exec -i $name bash -c "cat >> /opt/couchdb/etc/local.d/docker.ini << HERE
+        {{  lookup('file', 'files/couchdb.ini') }}  
+        HERE"
+      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
+    when: true
+    tags: ['docker', 'couchdb']
 
       
