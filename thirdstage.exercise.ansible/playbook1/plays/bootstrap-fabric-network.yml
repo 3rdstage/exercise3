@@ -226,7 +226,7 @@
         detach: true
         network_mode: host
         volumes:
-          - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/data:/opt/couchdb/data|e"
+          - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/data:/opt/couchdb/data"
           - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/var/log:/opt/couchdb/var/log"
         entrypoint: /bin/bash
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
@@ -235,11 +235,13 @@
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
     - name: Optimize CouchDB configuration
       shell: |
+        # change the permission of /opt/couchdb/var/log in container
         docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
         docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
         docker exec -i "{{ item.name }}" bash -c "cat >> /opt/couchdb/etc/local.d/docker.ini << HERE
         {{  lookup('file', '../files/couchdb.ini') }}  
         HERE"
+        docker exec -id "{{ item.name }}" /docker-entrypoint.sh /opt/couchdb/bin/couchdb
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
       ignore_errors: true # temporary
     when: true
