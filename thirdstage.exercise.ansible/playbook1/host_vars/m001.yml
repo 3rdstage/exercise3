@@ -10,3 +10,6 @@ containers:
   couchdbs:
     - name: couchdb1
       port: 5984
+      config:
+        admin: {user: admin, password: admin!@34}
+          

@@ -164,8 +164,8 @@
         FABRIC_CA_SERVER_DB_TLS_ENABLED: false
         FABRIC_CA_SERVER_LDAP_ENABLED: false
       volumes:
-        - "~/fabric/{{ fabric.ver }}/crypto/{{ orgType }}Organizations/{{ orgName }}/ca:/etc/hyperledger/fabric-ca-server-config"
-        - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/etc/hyperledger/fabric-ca-server:/etc/hyperledger/fabric-ca-server"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/crypto/{{ orgType }}Organizations/{{ orgName }}/ca:/etc/hyperledger/fabric-ca-server-config"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/etc/hyperledger/fabric-ca-server:/etc/hyperledger/fabric-ca-server"
     with_items: "{{ (containers|default({})).cas|default([]) }}"
     when: true
     tags: ['docker', 'fabric-ca']
@@ -192,7 +192,7 @@
         ORDERER_GENERAL_GENESISMETHOD: file  # provisional | file
         ORDERER_GENERAL_GENESISFILE: /var/hyperledger/orderer/orderer.genesis.block
         ORDERER_GENERAL_LOCALMSPDIR: /var/hyperledger/orderer/msp
-        ORDERER_GENERAL_LOCALMSPID: "{{ item.name }}"
+        ORDERER_GENERAL_LOCALMSPID: "{{ item.org }}"
         ORDERER_GENERAL_PROFILE_ENABLED: "{{ item.config.General.Profile.Enabled }}"
         ORDERER_GENERAL_PROFILE_ADDRESS: "{{ item.config.General.Profile.Address }}"
         ORDERER_FILELEDGER_LOCATION: /var/hyperledger/production/orderer
@@ -202,38 +202,46 @@
         ORDERER_KAFKA_TLS_ENABLED: false # TODO Is this Okay for production systems ?
         CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: host
       volumes:
-        - "~/fabric/{{ fabric.ver }}/configtx/genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
-        - "~/fabric/{{ fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/msp:/var/hyperledger/orderer/msp"
-        - "~/fabric/{{ fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/tls/:/var/hyperledger/orderer/tls"
-        - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/var/hyperledger/production/orderer:/var/hyperledger/production/orderer"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/configtx/genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/msp:/var/hyperledger/orderer/msp"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/crypto/ordererOrganizations/{{ item.org }}/orderers/{{ item.name }}/tls/:/var/hyperledger/orderer/tls"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/var/hyperledger/production/orderer:/var/hyperledger/production/orderer"
       # TODO What about working_dir?  Refer https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
     with_items: "{{ (containers|default({})).orderers|default([]) }}"
     when: true
     tags: ['docker', 'fabric-orderer']
 
-
+  # TODO Check out 4369 or 9100 port of CouchDB
+  # Reference
+  #   - https://github.com/hyperledger/fabric/tree/v1.1.0-preview/images/couchdb
+  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-couch.yaml
   - block:
-    - name: Just start CouchDB containers
+    - name: Just create CouchDB containers
       docker_container:
         image: "{{ docker.images.couchdb.repository }}:{{ docker.images.couchdb.tag }}"
         name: "{{ item.name }}"
+        state: started
+        interactive: true
+        tty: true
+        detach: true
         network_mode: host
         volumes:
-          - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/data:/opt/couchdb/data"
-          - "~/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/var/log:/opt/couchdb/var/log"
-        command: /bin/bash
+          - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/data:/opt/couchdb/data|e"
+          - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/var/log:/opt/couchdb/var/log"
+        entrypoint: /bin/bash
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
-    - name: Wait for a moment before the container start completely
+    - name: Wait for a moment before the container created completely
       wait_for: timeout=2
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
     - name: Optimize CouchDB configuration
       shell: |
         docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
         docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
-        docker exec -i $name bash -c "cat >> /opt/couchdb/etc/local.d/docker.ini << HERE
-        {{  lookup('file', 'files/couchdb.ini') }}  
+        docker exec -i "{{ item.name }}" bash -c "cat >> /opt/couchdb/etc/local.d/docker.ini << HERE
+        {{  lookup('file', '../files/couchdb.ini') }}  
         HERE"
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
+      ignore_errors: true # temporary
     when: true
     tags: ['docker', 'couchdb']
 
