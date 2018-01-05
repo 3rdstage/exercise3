@@ -12,4 +12,6 @@ containers:
       port: 5984
       config:
         admin: {user: admin, password: admin!@34}
+        log:
+          level: warning
           

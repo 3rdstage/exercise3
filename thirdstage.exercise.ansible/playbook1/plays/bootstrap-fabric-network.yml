@@ -216,6 +216,18 @@
   #   - https://github.com/hyperledger/fabric/tree/v1.1.0-preview/images/couchdb
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-couch.yaml
   - block:
+    - name: Create a directory for optimized CouchDB config if not exists
+      file:
+        path: "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/etc/local.d/"
+        state: directory
+        mode: 0755
+      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
+    - name: Copy optimized CouchDB configuration into remote systems
+      copy:
+        src: "{{ inventory_dir }}/files/couchdb.ini"
+        dest: "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/etc/local.d/docker.ini"
+        mode: 0644
+      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"  
     - name: Just create CouchDB containers
       docker_container:
         image: "{{ docker.images.couchdb.repository }}:{{ docker.images.couchdb.tag }}"
@@ -225,25 +237,17 @@
         tty: true
         detach: true
         network_mode: host
+        env:
+          COUCHDB_USER: "{{ item.config.admin.user }}" # Do NOT use [admin] section of couchdb.ini injected later step
+          COUCHDB_PASSWORD: "{{ item.config.admin.password }}"
+          COUCHDB_LOG_LEVEL: "{{ item.config.log.level }}"
         volumes:
           - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/data:/opt/couchdb/data"
-          - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/var/log:/opt/couchdb/var/log"
-        entrypoint: /bin/bash
+          # - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/logs:/opt/couchdb/logs"
+          - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/etc/local.d/docker.ini:/opt/couchdb/etc/local.d/docker.ini"
+          # - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/var/log:/opt/couchdb/var/log"
+        # entrypoint: /bin/bash
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
-    - name: Wait for a moment before the container created completely
-      wait_for: timeout=2
-      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
-    - name: Optimize CouchDB configuration
-      shell: |
-        # change the permission of /opt/couchdb/var/log in container
-        docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
-        docker exec -i "{{ item.name }}" sed -i 's/^\(q=[0-9]*\)/;&/' /opt/couchdb/etc/default.ini
-        docker exec -i "{{ item.name }}" bash -c "cat >> /opt/couchdb/etc/local.d/docker.ini << HERE
-        {{  lookup('file', '../files/couchdb.ini') }}  
-        HERE"
-        docker exec -id "{{ item.name }}" /docker-entrypoint.sh /opt/couchdb/bin/couchdb
-      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
-      ignore_errors: true # temporary
     when: true
     tags: ['docker', 'couchdb']
 
