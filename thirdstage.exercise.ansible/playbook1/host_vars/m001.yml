@@ -3,10 +3,24 @@ containers:
     - name: peer1
       org: org1
       address: "{{ ansible_host }}"
-      port: 7051 # default: 7051
-      gossip:
-        orgLeader: true
-        anchor: false
+      config: # https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/core.yaml
+        logging:
+          level: warning
+          cauthdsl: warning 
+          gossip: warning
+          grpc: error
+          ledger: info
+          msp: warning
+          policies: warning
+          peer:
+            gossip: warning
+        peer:
+          listenPortPeers: ["peer1"]
+          chaincodeListenAddress: # just address without port
+          gossip:
+            bootstrap: 
+            orgLeader: true
+            anchor: false
   couchdbs:
     - name: couchdb1
       port: 5984

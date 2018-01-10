@@ -228,7 +228,7 @@
         dest: "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/etc/local.d/docker.ini"
         mode: 0644
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"  
-    - name: Just create CouchDB containers
+    - name: Run CouchDB containers
       docker_container:
         image: "{{ docker.images.couchdb.repository }}:{{ docker.images.couchdb.tag }}"
         name: "{{ item.name }}"
@@ -248,7 +248,119 @@
           # - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/var/log:/opt/couchdb/var/log"
         # entrypoint: /bin/bash
       with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
+    - name: Wait a moment for the containers to be fully started
+      wait_for: timeout=5
+      run_once: true
+      delegate_to: 127.0.0.1
+    - name: Request single node setup of CouchDB
+      # Reference : http://docs.couchdb.org/en/2.0.0/install/index.html#single-node-setup
+      uri:
+        url: "http://127.0.0.1:{{ item.port }}/_cluster_setup"
+        method: POST
+        user: "{{ item.config.admin.user }}"
+        password: "{{ item.config.admin.password }}"
+        force_basic_auth: true
+        body_format: json
+        body: |
+          {
+            "action": "enable_cluster",
+            "username": "{{ item.config.admin.user }}",
+            "password": "{{ item.config.admin.password }}",
+            "bind_address": "0.0.0.0",
+            "port": {{ item.port }}
+          }
+        status_code: 201
+      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
+    - name: Finish single node setup of CouchDB
+      uri:
+        url: "http://127.0.0.1:{{ item.port }}/_cluster_setup"
+        method: POST
+        user: "{{ item.config.admin.user }}"
+        password: "{{ item.config.admin.password }}"
+        force_basic_auth: true
+        body_format: json
+        body: '{"action":"finish_cluster"}'
+        status_code: 201
+      with_items: "{{ (containers|default({})).couchdbs|default([]) }}"
     when: true
     tags: ['docker', 'couchdb']
 
+  # Reference
+  #   - http://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/core.yaml
+  #   - http://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
+  - name: Run Fabric Peer Containers
+    vars:
+      bootstrapPeer: "{{ (containers|default({})).peers|default([])|selectattr('name', 'equalto', item.config.peer.gossip.bootstrapPeer)|first }}"
+      couchdb: {% for host in ansible_play_batch %}
+          {{ (hostvars[host].containers|default({})).couchdbs|default([])|selectattr('name',  'equalto', item.couchdb)|first }}
+        {% endfor %}
+    docker_container:
+      image: "{{ docker.images.peer.repository }}:{{ docker.images.peer.tag }}"
+      name: "{{ item.name }}"
+      interactive: true
+      tty: true
+      detach: true
+      network_mode: host
+      working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+      env:
+        CORE_LOGGING_LEVEL: "{{ item.config.logging.level }}"
+        CORE_LOGGING_CAUTHDSL: "{{ item.config.logging.cauthdsl }}"
+        CORE_LOGGING_GOSSIP: "{{ item.config.logging.gossip }}"
+        CORE_LOGGING_GRPC: "{{ item.config.logging.grpc }}"
+        CORE_LOGGING_LEDGER: "{{ item.config.logging.ledger }}"
+        CORE_LOGGING_MSP: "{{ item.config.logging.msp }}"
+        CORE_LOGGING_POLICIES: "{{ item.config.logging.policies }}"
+        CORE_LOGGING_PEER_GOSSIP: "{{ item.config.logging.peer.gossip }}"
+        CORE_PEER_ID: "{{ item.name }}" 
+        # CORE_PEER_NETWORKID: # unclear - use implicit default 
+        CORE_PEER_LISTENADDRESS: "{{ item.address }}:{{ item.config.peer.listenPort }}"
+        CORE_PEER_CHAINCODELISTENADDRESS: "{{ item.address }}:{{ item.config.peer.chaincodeListenPort }}"
+        CORE_PEER_ADDRESS: "{{ item.address }}:{{ item.config.peer.listenPort }}"
+        CORE_PEER_ADDRESSAUTODETECT: false
+        CORE_PEER_GOSSIP_BOOTSTRAP: "{{ bootstrapPeer.address }}:{{ bootstrapPeer.config.peer.listenPort }}"
+        CORE_PEER_GOSSIP_USELEADERELECTION: false
+        CORE_PEER_GOSSIP_ORGLEADER: "{{ item.config.peer.gossip.orgLeader }}"
+        CORE_PEER_GOSSIP_ENDPOINT: ""
+        CORE_PEER_GOSSIP_PROPAGATEPEERNUM: "{{ item.config.peer.gossip.propagatePeerNum }}"
+        CORE_PEER_GOSSIP_PULLINTERVAL: "{{ item.config.peer.gossip.pullInterval }}"
+        CORE_PEER_GOSSIP_REQUESTSTATEINFOINTERVAL: "{{ item.config.peer.gossip.requestStateInfoInterval }}"
+        CORE_PEER_GOSSIP_PUBLISHSTATEINFOINTERVAL: "{{ item.config.peer.gossip.publishStateInfoInterval }}"
+        CORE_PEER_GOSSIP_PUBLISHCERTPERIOD: "{{ item.config.peer.gossip.publishCertPeriod }}"
+        CORE_PEER_GOSSIP_RECVBUFFSIZE: "{{ item.config.peer.gossip.recvBuffSize }}"
+        CORE_PEER_GOSSIP_SENDBUFFSIZE: "{{ item.config.peer.gossip.sendBuffSize }}"
+        CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ item.address if item.config.peer.gossip.external else ''}}"
+        CORE_PEER_GOSSIP_SKIPHANDSHAKE: true # From where ?
+        CORE_PEER_EVENTS_ADDRESS: "{{ item.address }}:{{ item.config.peer.events.port }}"
+        CORE_PEER_EVENTS_BUFFERSIZE: "{{ item.config.peer.events.buffersize }}"
+        CORE_PEER_EVENTS_TIMEOUT: "{{ item.config.peer.events.timeout }}"
+        CORE_PEER_TLS_ENABLED: true
+        CORE_PEER_TLS_CLIENTAUTHREQUIRED: "{{ item.config.peer.tls.clientAuthRequired|default(false) }}"
+        CORE_PEER_TLS_CERT_FILE: /etc/hyperledger/fabric/tls/server.crt
+        CORE_PEER_TLS_KEY_FILE: /etc/hyperledger/fabric/tls/server.key
+        CORE_PEER_TLS_ROOTCERT_FILE: /etc/hyperledger/fabric/tls/ca.crt
+        CORE_PEER_FILESYSTEMPATH: /var/hyperledger/production
+        CORE_PEER_MSPCONFIGPATH: 
+        CORE_PEER_LOCALMSPID: "{{ item.org }}"
+        CORE_PEER_PROFILE_ENABLED: "{{ item.config.peer.profile.enabled }}"
+        CORE_PEER_PROFILE_LISTENADDRESS: "{{ item.address }}:{{ item.config.peer.profile.listenPort }}"
+        CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
+        CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: host
+        CORE_CHAINCODE_KEEPALIVE: "{{ item.config.chaincode.keepalive }}"
+        CORE_CHAINCODE_LOGGING_LEVEL: "{{ item.config.chaincode.logging.level }}"
+        CORE_LEDGER_STATE_STATEDATABASE: CouchDB
+        CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{ couchdb }}"
+        CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME: "{{ couchdb.config.admin.user }}"
+        CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD: "{{ couchdb.config.admin.user }}"
+        CORE_LEDGER_HISTORY_ENABLEHISTORYDATABASE: "{{ item.config.ledger.history.enableHistoryDatabase }}"
+        # CORE_PEER_ENDORSE_ENABLED: # deprecated
+        CORE_NEXT: true # uable to find the explanation
+      volumes:
+        - /var/run/:/host/var/run/ # TODO What if more than 2 peer containers are running in a single host?
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/var/hyperledger/production:/var/hyperledger/production"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/crypto/peerOrganizations/{{ item.org }}/peers/{{ item.name }}/msp:/etc/hyperledger/fabric/msp"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/crypto/peerOrganizations/{{ item.org }}/peers/{{ item.name }}/tls:/etc/hyperledger/fabric/tls" 
+    with_items: "{{ (containers|default({})).peers|default([]) }}"
+    when: true
+    tags: ['docker', 'fabric-peer']
       
+          
