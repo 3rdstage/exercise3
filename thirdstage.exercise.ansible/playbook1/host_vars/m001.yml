@@ -2,6 +2,7 @@ containers:
   peers:
     - name: peer1
       org: org1
+      couchdb: couchdb2
       address: "{{ ansible_host }}"
       config: # https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/core.yaml
         logging:
@@ -15,12 +16,37 @@ containers:
           peer:
             gossip: warning
         peer:
-          listenPortPeers: ["peer1"]
-          chaincodeListenAddress: # just address without port
+          listenPort: 7051 # default: 7051
+          chaincodeListenPort:  7052 # default: 7052
           gossip:
-            bootstrap: 
+            bootstrapPeer: peer1 
             orgLeader: true
             anchor: false
+            propagatePeerNum: 
+            pullInterval:
+            requestStateInfoInterval:
+            publishStateInfoInterval:
+            publishCertPeriod:
+            recvBuffSize:
+            sendBuffSize:
+            external: false # default: false 
+          events:
+            port: 7053 # default: 7053
+            buffersize: 
+            timeout: 
+          tls: # always enabled
+            clientAuthRequired: false
+          profile:
+            enabled: false
+            listenPort: 6060
+        chaincode:
+          keepalive: 180 # A value <= 0 turns keepalive off
+          logging:
+            level: warning
+        ledger:
+          history:
+            enableHistoryDatabase: true
+          
   couchdbs:
     - name: couchdb1
       port: 5984

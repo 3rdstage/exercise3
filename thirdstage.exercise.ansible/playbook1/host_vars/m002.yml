@@ -7,3 +7,10 @@ containers:
       gossip:
         orgLeader: false
         anchor: false
+  couchdbs:
+    - name: couchdb2
+      port: 5984
+      config:
+        admin: {user: admin, password: admin!@34}
+        log:
+          level: warning        

@@ -91,6 +91,31 @@
 | <code>~/fabric/_version_/volumes/_couchdbName_/opt/couchdb/var/log</code>
 |
 |
+|-
+| rowspan="5" | Fabric Peer
+| Data files
+| <code>/var/hyperledger/production</code>
+| <code>~/fabric/_version_/volumes/_peerName_/var/hyperledger/production</code>
+|
+|
+|-
+| System information data
+| <code>/host/var/run/</code>
+| <code>/var/run/</code>
+|
+|
+|-
+| MSP files
+| <code>/etc/hyperledger/fabric/msp</code>
+| <code>~/fabric/_version_/crypto/peerOrganizations/_orgName_/peers/_peerName_/msp</code>
+| Key files, Certificate files, CA certificates
+|
+|-
+| TLS files
+| <code>/etc/hyperledger/fabric/tls</code>
+| <code>~/fabric/_version_/crypto/peerOrganizations/_orgName_/peers/_peerName_/tls</code>
+|
+|
 |}
 
 ===Environment Varialbes===
