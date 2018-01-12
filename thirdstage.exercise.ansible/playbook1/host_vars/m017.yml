@@ -1,7 +1,7 @@
 containers:
   kafkas:
     - name: kafka4
-      address: "{{ ansible_host }}"
+      host: "{{ inventory_hostname }}"
       port: 9092 # default: 9092
       config:
         'broker.id': 4

@@ -4,48 +4,44 @@
     - name: Print hostname and current datetime of all the host
       debug:
         msg: 
-          - "hostname: {{ hostvars[item].ansible_hostname }}" 
-          - "IP address: {{ hostvars[item].ansible_default_ipv4.address }}"
+          - "inventory_hostname: {{ hostvars[item].inventory_hostname }}"
+          - "ansible_hostname: {{ hostvars[item].ansible_hostname }}" 
+          - "ansible_default_ipv4.address: {{ hostvars[item].ansible_default_ipv4.address }}"
           - "current datetime: {{ lookup('pipe','date +%y%m%dT%H%M%S') }}"
-      with_items: "{{ ansible_play_batch }}"
+      with_items: "{{ ansible_play_hosts }}"
+      run_once: true
+      delegate_to: 127.0.0.1
+      tags: ['hostnames']
+
+    - name: Print out built-in variables in localhost
+      debug:
+        msg:
+          - "fabric.ver : {{ fabric.ver }}"
+          - "playbook_dir : {{ playbook_dir }}"
+          - "inventory_file : {{ inventory_file }}"
+          - "inventory_dir : {{ inventory_dir }}"
+          - "ansible_play_hosts  : {{ ansible_play_hosts  }}"
+          - "ansible_play_batch  : {{ ansible_play_batch  }}"
+          - "groups['all'] : {{ groups['all'] }}"
+      become: true
+      ignore_errors: true
       run_once: true
       delegate_to: 127.0.0.1
 
-    - name: Print varialbes for all group, maybe defined in group_vars/all.yml file 
-      debug: 
-         var: groupvars[all]
-         verbosity: 4
+    - name: Print out entire 'hostvars'
+      debug:
+        msg:
+          - "{{ hostvars }}"
+      become: true
+      ignore_errors: true
       run_once: true
       delegate_to: 127.0.0.1
+      tags: ['hostvars']
 
     - name: Find out ZooKeeper containers
       debug:
         msg: 
           - "{{ item }}"
       tags: ['debug']
-      when: containers is defined and containers.zookeepers is defined
-      with_items: "{{ containers.zookeepers }}"
-
-    - name: Print out built-in variables in localhost
-      debug:
-        msg:
-          - "fabric.ver : {{ fabric.ver }}"
-          - "playbook_dir : {{ playbook_dir }}"
-          - "inventory_file : {{ inventory_file }}"
-          - "inventory_dir : {{ inventory_dir }}"
-      become: true
-      ignore_errors: true
-      run_once: true
-      delegate_to: 127.0.0.1
-
-    - name: Print out built-in variables in localhost
-      debug:
-        msg:
-          - "fabric.ver : {{ fabric.ver }}"
-          - "playbook_dir : {{ playbook_dir }}"
-          - "inventory_file : {{ inventory_file }}"
-          - "inventory_dir : {{ inventory_dir }}"
-      become: true
-      ignore_errors: true
-      run_once: true
-      delegate_to: 127.0.0.1
+      with_items: "{{ (containers|default({})).zookeepers|default([]) }}"
+      tags: ['zk']

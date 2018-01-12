@@ -1,39 +1,39 @@
 containers:
   peers:
     - name: peer1
+      host: "{{ inventory_hostname }}"
       org: org1
-      couchdb: couchdb2
-      address: "{{ ansible_host }}"
+      couchdb: couchdb1
       config: # https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/core.yaml
         logging:
-          level: warning
-          cauthdsl: warning 
-          gossip: warning
-          grpc: error
-          ledger: info
-          msp: warning
-          policies: warning
+          level: debug
+          cauthdsl: debug 
+          gossip: debug
+          grpc: debug
+          ledger: debug
+          msp: debug
+          policies: debug
           peer:
-            gossip: warning
+            gossip: debug
         peer:
           listenPort: 7051 # default: 7051
           chaincodeListenPort:  7052 # default: 7052
           gossip:
-            bootstrapPeer: peer1 
+            bootstrapPeer: peer1
             orgLeader: true
             anchor: false
-            propagatePeerNum: 
-            pullInterval:
-            requestStateInfoInterval:
-            publishStateInfoInterval:
-            publishCertPeriod:
-            recvBuffSize:
-            sendBuffSize:
+            propagatePeerNum: 3
+            pullInterval: 1s
+            requestStateInfoInterval: 2s
+            publishStateInfoInterval: 2s
+            publishCertPeriod: 180s
+            recvBuffSize: 1000
+            sendBuffSize: 1000
             external: false # default: false 
           events:
             port: 7053 # default: 7053
-            buffersize: 
-            timeout: 
+            buffersize: 100
+            timeout: 10ms
           tls: # always enabled
             clientAuthRequired: false
           profile:
@@ -49,6 +49,7 @@ containers:
           
   couchdbs:
     - name: couchdb1
+      host: "{{ inventory_hostname }}"
       port: 5984
       config:
         admin: {user: admin, password: admin!@34}

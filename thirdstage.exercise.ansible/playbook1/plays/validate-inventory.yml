@@ -41,20 +41,30 @@
       run_once: true
       delegate_to: 127.0.0.1
 
-    # TODO Join several nodes into a single tree
-    - name: Write faric node configuration for each host into repective file in JSON format.
-      vars:
-        contents: |-
-          {
-            "host": {{ hostvars[item]['host']|default('')|to_nice_json(indent=2) }},
-            "fabric": {{ hostvars[item]['fabric']|default('')|to_nice_json(indent=2) }},
-            "docker": {{ hostvars[item]['docker']|default('')|to_nice_json(indent=2) }},
-            "containers": {{ hostvars[item]['containers']|default('')|to_nice_json(indent=2) }}
-          } 
-      copy:
-        dest: "{{ inventory_dir }}/generated/host-config/{{ item }}.json"
-        content: " {{ contents|to_nice_json }}"
-      with_items: "{{ ansible_play_hosts }}"
+    - block:
+      - name: Write entire 'hostvars' into a single YAML file
+        copy:
+          dest: "{{ inventory_dir }}/generated/host-config/hostvars.yaml"
+          content: " {{ hostvars|to_yaml }}"
+      # TODO Filter out unnecessary data mainly from Ansible built-in
+      - name: Write entire 'hostvars' into a single JSON file.
+        copy:
+          dest: "{{ inventory_dir }}/generated/host-config/hostvars.json"
+          content: " {{ hostvars|to_nice_json(indent=2) }}"
+      - name: Write faric node configuration for each host into repective file in JSON format.
+        vars:
+          contents: |-
+            {
+              "host": {{ hostvars[item]['host']|default('')|to_nice_json(indent=2) }},
+              "fabric": {{ hostvars[item]['fabric']|default('')|to_nice_json(indent=2) }},
+              "docker": {{ hostvars[item]['docker']|default('')|to_nice_json(indent=2) }},
+              "containers": {{ hostvars[item]['containers']|default('')|to_nice_json(indent=2) }}
+            } 
+        copy:
+          dest: "{{ inventory_dir }}/generated/host-config/{{ item }}.json"
+          content: " {{ contents|to_nice_json }}"
+        with_items: "{{ ansible_play_hosts }}"
+        when: false
       run_once: true
       delegate_to: 127.0.0.1
 

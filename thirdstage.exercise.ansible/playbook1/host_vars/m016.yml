@@ -1,9 +1,8 @@
 containers:
   kafkas:
     - name: kafka3
-      address: "{{ ansible_host }}"
+      host: "{{ inventory_hostname }}"
       port: 9092 # default: 9092
-      config:
       config:
         'broker.id': 3
         'message.max.bytes': 6000000 # 6MB, shoud be larger than Orderer.AbsoluteMaxBytes

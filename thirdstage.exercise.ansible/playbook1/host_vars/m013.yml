@@ -1,6 +1,7 @@
 containers:
   zookeepers:
     - name: zk1
+      host: "{{ inventory_hostname }}"
       id: 1 # myid file of ZooKeeper
       
       # For configuration parameters of ZooKeeper, refer 'https://zookeeper.apache.org/doc/r3.4.6/zookeeperAdmin.html#sc_configuration' 
@@ -13,7 +14,7 @@ containers:
         electionPort: 3898 #default : 3888
   kafkas:
     - name: kafka1
-      address: "{{ ansible_host }}"
+      host: "{{ inventory_hostname }}"
       port: 9092 # default: 9092
       config:
         'broker.id': 1
@@ -31,9 +32,9 @@ containers:
         jmxPort: !!int 9999
   orderers:
     - name: orderer1
-      org: org0
-      address: "{{ ansible_host }}"
+      host: "{{ inventory_hostname }}"
       port: 7050 # default: 7050
+      org: org0
       config: # follow naming convention of Fabric. (e.g.: https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/orderer.yaml)
         General:
           LogLevel: info # (critical | error | warning | notice | info | debug), http://hyperledger-fabric.readthedocs.io/en/release/logging-control.html

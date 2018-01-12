@@ -3,6 +3,41 @@
   tasks:
 
   # TODO Check IP port availability for all IP ports used containers
+
+  # Reference
+  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/cluster/config/fabric-ca-server-config.yaml
+  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-e2e.yaml
+  - name: Run Fabric CA server containers
+    vars:
+      orgName: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).name }}"
+      orgType: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).type }}"
+    docker_container:
+      image: "{{ docker.images.ca.repository }}:{{ docker.images.ca.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      command: fabric-ca-server start # parameter '-b admin:adminpw' usually exampled would be set via env. variables. 
+      env:
+        FABRIC_CA_SERVER_HOME: /etc/hyperledger/fabric-ca-server
+        FABRIC_CA_SERVER_PORT: "{{ item.port }}"
+        FABRIC_CA_SERVER_DEBUG: "{{ item.config.debug }}"
+        FABRIC_CA_SERVER_TLS_ENABLED: "{{ item.config.tls.enabled }}"
+        # TODO Enabling TLS for Fabric CA server 
+        # FABRIC_CA_SERVER_TLS_CERTFILE: 
+        # FABRIC_CA_SERVER_TLS_KEYFILE: 
+        FABRIC_CA_SERVER_CA_NAME: "{{ item.name }}"
+        FABRIC_CA_SERVER_CA_KEYFILE: /etc/hyperledger/fabric-ca-server-config
+        FABRIC_CA_SERVER_CA_CERTFILE: "/etc/hyperledger/fabric-ca-server-config/{{ item.name }}-cert.pem"
+        FABRIC_CA_SERVER_DB_TLS_ENABLED: false
+        FABRIC_CA_SERVER_LDAP_ENABLED: false
+      volumes:
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/crypto/{{ orgType }}Organizations/{{ orgName }}/ca:/etc/hyperledger/fabric-ca-server-config"
+        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/etc/hyperledger/fabric-ca-server:/etc/hyperledger/fabric-ca-server"
+    with_items: "{{ (containers|default({})).cas|default([]) }}"
+    when: true
+    tags: ['docker', 'fabric-ca']
+
+  - blocks:
+    - name : Enroll 
   
   - name: Evaluate ZooKeeper emsemble string and connection string
     # TODO Use python script or Jinja2 instead of bash script.
@@ -10,7 +45,7 @@
       emsemble_str=
       connect_str=
       
-      {% for host in ansible_play_batch|sort %}
+      {% for host in ansible_play_hosts|sort %}
         {%- for zk in (hostvars[host].containers|default({})).zookeepers|default([]) %}
       emsemble_str="${emsemble_str} server.{{ zk.id }}={{ hostvars[host].ansible_host }}:{{ zk.config.quorumPort }}:{{ zk.config.electionPort }}"
       connect_str="${connect_str},{{ hostvars[host].ansible_host }}:{{ zk.config.clientPort }}"
@@ -138,39 +173,6 @@
     tags: ['docker', 'kafka-manager']
     # Add Kafka Manager URL into notice messages.
     
-  
-  # Reference
-  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/cluster/config/fabric-ca-server-config.yaml
-  #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-e2e.yaml
-  - name: Run Fabric CA server containers
-    vars:
-      orgName: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).name }}"
-      orgType: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).type }}"
-    docker_container:
-      image: "{{ docker.images.ca.repository }}:{{ docker.images.ca.tag }}"
-      name: "{{ item.name }}"
-      network_mode: host
-      env:
-        FABRIC_CA_SERVER_HOME: /etc/hyperledger/fabric-ca-server
-        FABRIC_CA_SERVER_PORT: "{{ item.port }}"
-        FABRIC_CA_SERVER_DEBUG: "{{ item.config.debug }}"
-        FABRIC_CA_SERVER_TLS_ENABLED: "{{ item.config.tls.enabled }}"
-        # TODO Enabling TLS for Fabric CA server 
-        # FABRIC_CA_SERVER_TLS_CERTFILE: 
-        # FABRIC_CA_SERVER_TLS_KEYFILE: 
-        FABRIC_CA_SERVER_CA_NAME: "{{ item.name }}"
-        FABRIC_CA_SERVER_CA_KEYFILE: /etc/hyperledger/fabric-ca-server-config
-        FABRIC_CA_SERVER_CA_CERTFILE: "/etc/hyperledger/fabric-ca-server-config/{{ item.name }}-cert.pem"
-        FABRIC_CA_SERVER_DB_TLS_ENABLED: false
-        FABRIC_CA_SERVER_LDAP_ENABLED: false
-      volumes:
-        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/crypto/{{ orgType }}Organizations/{{ orgName }}/ca:/etc/hyperledger/fabric-ca-server-config"
-        - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/etc/hyperledger/fabric-ca-server:/etc/hyperledger/fabric-ca-server"
-    with_items: "{{ (containers|default({})).cas|default([]) }}"
-    when: true
-    tags: ['docker', 'fabric-ca']
-      
-    
   # Reference
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/sampleconfig/orderer.yaml
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
@@ -181,7 +183,7 @@
       network_mode: host
       env:
         ORDERER_GENERAL_LEDGERTYPE: file # A production file-based ledger, fixed
-        ORDERER_GENERAL_LISTENADDRESS: "{{ item.address }}"
+        ORDERER_GENERAL_LISTENADDRESS: "{{ hostvars[item.host].ansible_host }}"
         ORDERER_GENERAL_LISTENPORT: "{{ item.port }}"
         ORDERER_GENERAL_TLS_ENABLED: true  # fixed
         ORDERER_GENERAL_TLS_PRIVATEKEY: /var/hyperledger/orderer/tls/server.key
@@ -290,10 +292,19 @@
   #   - http://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/base/docker-compose-base.yaml
   - name: Run Fabric Peer Containers
     vars:
-      bootstrapPeer: "{{ (containers|default({})).peers|default([])|selectattr('name', 'equalto', item.config.peer.gossip.bootstrapPeer)|first }}"
-      couchdb: {% for host in ansible_play_batch %}
-          {{ (hostvars[host].containers|default({})).couchdbs|default([])|selectattr('name',  'equalto', item.couchdb)|first }}
-        {% endfor %}
+      bootstrapPeer: >-2
+        {%- for host in ansible_play_hosts -%}
+          {%- for peer in (hostvars[host].containers|default({})).peers|default([])|selectattr('name', 'equalto', item.config.peer.gossip.bootstrapPeer) -%}
+            {{ peer }} 
+          {%- endfor -%}
+        {%- endfor -%}
+      couchdb: >-2 
+        {%- for host in ansible_play_hosts -%}
+          {%- for couchdb in (hostvars[host].containers|default({})).couchdbs|default([])|selectattr('name', 'equalto', item.couchdb) -%}
+            {{ couchdb }} 
+          {%- endfor -%}
+        {%- endfor -%}
+      address: "{{ hostvars[item.host].ansible_host }}"
     docker_container:
       image: "{{ docker.images.peer.repository }}:{{ docker.images.peer.tag }}"
       name: "{{ item.name }}"
@@ -313,14 +324,14 @@
         CORE_LOGGING_PEER_GOSSIP: "{{ item.config.logging.peer.gossip }}"
         CORE_PEER_ID: "{{ item.name }}" 
         # CORE_PEER_NETWORKID: # unclear - use implicit default 
-        CORE_PEER_LISTENADDRESS: "{{ item.address }}:{{ item.config.peer.listenPort }}"
-        CORE_PEER_CHAINCODELISTENADDRESS: "{{ item.address }}:{{ item.config.peer.chaincodeListenPort }}"
-        CORE_PEER_ADDRESS: "{{ item.address }}:{{ item.config.peer.listenPort }}"
+        CORE_PEER_LISTENADDRESS: "{{ address }}:{{ item.config.peer.listenPort }}"
+        CORE_PEER_CHAINCODELISTENADDRESS: "{{ address }}:{{ item.config.peer.chaincodeListenPort }}"
+        CORE_PEER_ADDRESS: "{{ address }}:{{ item.config.peer.listenPort }}"
         CORE_PEER_ADDRESSAUTODETECT: false
-        CORE_PEER_GOSSIP_BOOTSTRAP: "{{ bootstrapPeer.address }}:{{ bootstrapPeer.config.peer.listenPort }}"
+        CORE_PEER_GOSSIP_BOOTSTRAP: "{{ hostvars[bootstrapPeer.host].ansible_host }}:{{ bootstrapPeer.config.peer.listenPort }}"
         CORE_PEER_GOSSIP_USELEADERELECTION: false
         CORE_PEER_GOSSIP_ORGLEADER: "{{ item.config.peer.gossip.orgLeader }}"
-        CORE_PEER_GOSSIP_ENDPOINT: ""
+        CORE_PEER_GOSSIP_ENDPOINT: "{{ address }}:{{ item.config.peer.listenPort }}"
         CORE_PEER_GOSSIP_PROPAGATEPEERNUM: "{{ item.config.peer.gossip.propagatePeerNum }}"
         CORE_PEER_GOSSIP_PULLINTERVAL: "{{ item.config.peer.gossip.pullInterval }}"
         CORE_PEER_GOSSIP_REQUESTSTATEINFOINTERVAL: "{{ item.config.peer.gossip.requestStateInfoInterval }}"
@@ -328,9 +339,9 @@
         CORE_PEER_GOSSIP_PUBLISHCERTPERIOD: "{{ item.config.peer.gossip.publishCertPeriod }}"
         CORE_PEER_GOSSIP_RECVBUFFSIZE: "{{ item.config.peer.gossip.recvBuffSize }}"
         CORE_PEER_GOSSIP_SENDBUFFSIZE: "{{ item.config.peer.gossip.sendBuffSize }}"
-        CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ item.address if item.config.peer.gossip.external else ''}}"
+        CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ address if item.config.peer.gossip.external else ''}}"
         CORE_PEER_GOSSIP_SKIPHANDSHAKE: true # From where ?
-        CORE_PEER_EVENTS_ADDRESS: "{{ item.address }}:{{ item.config.peer.events.port }}"
+        CORE_PEER_EVENTS_ADDRESS: "{{ address }}:{{ item.config.peer.events.port }}"
         CORE_PEER_EVENTS_BUFFERSIZE: "{{ item.config.peer.events.buffersize }}"
         CORE_PEER_EVENTS_TIMEOUT: "{{ item.config.peer.events.timeout }}"
         CORE_PEER_TLS_ENABLED: true
@@ -339,18 +350,18 @@
         CORE_PEER_TLS_KEY_FILE: /etc/hyperledger/fabric/tls/server.key
         CORE_PEER_TLS_ROOTCERT_FILE: /etc/hyperledger/fabric/tls/ca.crt
         CORE_PEER_FILESYSTEMPATH: /var/hyperledger/production
-        CORE_PEER_MSPCONFIGPATH: 
+        CORE_PEER_MSPCONFIGPATH: msp
         CORE_PEER_LOCALMSPID: "{{ item.org }}"
         CORE_PEER_PROFILE_ENABLED: "{{ item.config.peer.profile.enabled }}"
-        CORE_PEER_PROFILE_LISTENADDRESS: "{{ item.address }}:{{ item.config.peer.profile.listenPort }}"
+        CORE_PEER_PROFILE_LISTENADDRESS: "{{ address }}:{{ item.config.peer.profile.listenPort }}"
         CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
         CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE: host
         CORE_CHAINCODE_KEEPALIVE: "{{ item.config.chaincode.keepalive }}"
         CORE_CHAINCODE_LOGGING_LEVEL: "{{ item.config.chaincode.logging.level }}"
         CORE_LEDGER_STATE_STATEDATABASE: CouchDB
-        CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{ couchdb }}"
+        CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{ '127.0.0.1' if hostvars[couchdb.host].ansible_host == address else hostvars[couchdb.host].ansible_host }}:{{ couchdb.port }}"
         CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME: "{{ couchdb.config.admin.user }}"
-        CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD: "{{ couchdb.config.admin.user }}"
+        CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD: "{{ couchdb.config.admin.password }}"
         CORE_LEDGER_HISTORY_ENABLEHISTORYDATABASE: "{{ item.config.ledger.history.enableHistoryDatabase }}"
         # CORE_PEER_ENDORSE_ENABLED: # deprecated
         CORE_NEXT: true # uable to find the explanation
