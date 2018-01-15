@@ -50,8 +50,8 @@ containers:
     - name: couchdb10
       host: "{{ inventory_hostname }}"
       port: 5984
+      admin: {username: admin, passwd: admin!@34}
       config:
-        admin: {user: admin, password: admin!@34}
         log:
           level: warning
       

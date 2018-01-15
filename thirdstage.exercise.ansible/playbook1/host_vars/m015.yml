@@ -16,6 +16,7 @@ containers:
     - name: ca0
       host: "{{ inventory_hostname }}"
       port: 7054 # defalut: 7054
+      admin: {username: admin, passwd: admin!@34}
       config:
         debug: false
         tls:

@@ -7,6 +7,7 @@
   # Reference
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/cluster/config/fabric-ca-server-config.yaml
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-e2e.yaml
+  #   - https://github.com/hyperledger/fabric-ca/blob/v1.1.0-preview/cmd/fabric-ca-server/config.go
   - name: Run Fabric CA server containers
     vars:
       orgName: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).name }}"
@@ -15,7 +16,7 @@
       image: "{{ docker.images.ca.repository }}:{{ docker.images.ca.tag }}"
       name: "{{ item.name }}"
       network_mode: host
-      command: fabric-ca-server start # parameter '-b admin:adminpw' usually exampled would be set via env. variables. 
+      command: fabric-ca-server start -b {{ item.admin.username }}:{{ item.admin.passwd }} 
       env:
         FABRIC_CA_SERVER_HOME: /etc/hyperledger/fabric-ca-server
         FABRIC_CA_SERVER_PORT: "{{ item.port }}"
@@ -240,8 +241,8 @@
         detach: true
         network_mode: host
         env:
-          COUCHDB_USER: "{{ item.config.admin.user }}" # Do NOT use [admin] section of couchdb.ini injected later step
-          COUCHDB_PASSWORD: "{{ item.config.admin.password }}"
+          COUCHDB_USER: "{{ item.admin.username }}" # Do NOT use [admin] section of couchdb.ini injected later step
+          COUCHDB_PASSWORD: "{{ item.admin.passwd }}"
           COUCHDB_LOG_LEVEL: "{{ item.config.log.level }}"
         volumes:
           - "{{ ansible_env.HOME }}/fabric/{{ fabric.ver }}/volumes/{{ item.name }}/opt/couchdb/data:/opt/couchdb/data"
@@ -259,15 +260,15 @@
       uri:
         url: "http://127.0.0.1:{{ item.port }}/_cluster_setup"
         method: POST
-        user: "{{ item.config.admin.user }}"
-        password: "{{ item.config.admin.password }}"
+        user: "{{ item.admin.username }}"
+        password: "{{ item.admin.passwd }}"
         force_basic_auth: true
         body_format: json
         body: |
           {
             "action": "enable_cluster",
-            "username": "{{ item.config.admin.user }}",
-            "password": "{{ item.config.admin.password }}",
+            "username": "{{ item.admin.username }}",
+            "password": "{{ item.admin.passwd }}",
             "bind_address": "0.0.0.0",
             "port": {{ item.port }}
           }
@@ -277,8 +278,8 @@
       uri:
         url: "http://127.0.0.1:{{ item.port }}/_cluster_setup"
         method: POST
-        user: "{{ item.config.admin.user }}"
-        password: "{{ item.config.admin.password }}"
+        user: "{{ item.admin.username }}"
+        password: "{{ item.admin.passwd }}"
         force_basic_auth: true
         body_format: json
         body: '{"action":"finish_cluster"}'
@@ -360,8 +361,8 @@
         CORE_CHAINCODE_LOGGING_LEVEL: "{{ item.config.chaincode.logging.level }}"
         CORE_LEDGER_STATE_STATEDATABASE: CouchDB
         CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS: "{{ '127.0.0.1' if hostvars[couchdb.host].ansible_host == address else hostvars[couchdb.host].ansible_host }}:{{ couchdb.port }}"
-        CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME: "{{ couchdb.config.admin.user }}"
-        CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD: "{{ couchdb.config.admin.password }}"
+        CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME: "{{ couchdb.admin.username }}"
+        CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD: "{{ couchdb.admin.passwd }}"
         CORE_LEDGER_HISTORY_ENABLEHISTORYDATABASE: "{{ item.config.ledger.history.enableHistoryDatabase }}"
         # CORE_PEER_ENDORSE_ENABLED: # deprecated
         CORE_NEXT: true # uable to find the explanation

@@ -50,8 +50,8 @@ containers:
     - name: couchdb12
       host: "{{ inventory_hostname }}"
       port: 5984
+      admin: {username: admin, passwd: admin!@34}
       config:
-        admin: {user: admin, password: admin!@34}
         log:
           level: warning
           
@@ -59,6 +59,7 @@ containers:
     - name: ca3
       host: "{{ inventory_hostname }}"
       port: 7054 # defalut: 7054
+      admin: {username: admin, passwd: admin!@34}
       config:
         debug: false
         tls:

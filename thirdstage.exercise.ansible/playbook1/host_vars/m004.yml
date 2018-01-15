@@ -50,24 +50,18 @@ containers:
     - name: couchdb4
       host: "{{ inventory_hostname }}"
       port: 5984
+      admin: {username: admin, passwd: admin!@34}
       config:
-        admin: {user: admin, password: admin!@34}
         log:
           level: warning
-  
   
   cas: # CA Servers
     - name: ca1 # fabric-ca-server-config/ca.name
       host: "{{ inventory_hostname }}"
       port: 7054 # defalut: 7054
+      admin: {username: admin, passwd: admin!@34}
       # https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/cluster/config/fabric-ca-server-config.yaml
       config:
         debug: false
         tls:
           enabled: false
-        registry:
-          identities:
-            admin:
-              pass: admin!@34
-              type: client
-              affiliation: ""
