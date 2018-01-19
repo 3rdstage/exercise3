@@ -8,8 +8,10 @@ OrdererOrgs:
   - Name: {{ org.name }}
     Domain: {{ org.domain | default(org.name) }}
     CA:
-      HostName : {{ org.ca.hostname }}
-      CommonName: {{ org.ca.commonName }}
+      Country : {{ org.ca.country }}
+      Province: {{ org.ca.province }}
+      Locality: {{ org.ca.locality }}
+      OrganizationalUnit: {{ org.ca.organizationalUnit }}
     Specs:
       {%- for host in ansible_play_batch|sort -%}
         {%- for orderer in (hostvars[host].containers|default({})).orderers|default([])
@@ -25,8 +27,10 @@ PeerOrgs:
   - Name: {{ org.name }}
     Domain: {{ org.domain | default(org.name) }}
     CA:
-      HostName : {{ org.ca.hostname }}
-      CommonName: {{ org.ca.commonName }}
+      Country : {{ org.ca.country }}
+      Province: {{ org.ca.province }}
+      Locality: {{ org.ca.locality }}
+      OrganizationalUnit: {{ org.ca.organizationalUnit }}
     Specs:
       {%- for host in ansible_play_batch|sort -%}
         {%- for peer in (hostvars[host].containers|default({})).peers|default([])

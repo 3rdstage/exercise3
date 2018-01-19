@@ -3,15 +3,19 @@
   tasks:
 
   # TODO Check IP port availability for all IP ports used containers
+  
+  # TODO Need more consideration on a Fabric CA server containing multiple CAs.
 
   # Reference
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/cluster/config/fabric-ca-server-config.yaml
   #   - https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/docker-compose-e2e.yaml
   #   - https://github.com/hyperledger/fabric-ca/blob/v1.1.0-preview/cmd/fabric-ca-server/config.go
   - name: Run Fabric CA server containers
+    # TODO(Done) Map data direcoty containing issued certifcates with host directory for contiunity of the docker container
+    #      'Initialized sqlite3 database at /etc/hyperledger/fabric-ca-server/fabric-ca-server.db'
     vars:
-      orgName: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).name }}"
-      orgType: "{{ (fabric.orgs|selectattr('ca.commonName', 'equalto', item.name)|first).type }}"
+      orgName: "{{ (fabric.orgs|selectattr('ca.name', 'equalto', item.name)|first).name }}"
+      orgType: "{{ (fabric.orgs|selectattr('ca.name', 'equalto', item.name)|first).type }}"
     docker_container:
       image: "{{ docker.images.ca.repository }}:{{ docker.images.ca.tag }}"
       name: "{{ item.name }}"
@@ -26,7 +30,7 @@
         # FABRIC_CA_SERVER_TLS_CERTFILE: 
         # FABRIC_CA_SERVER_TLS_KEYFILE: 
         FABRIC_CA_SERVER_CA_NAME: "{{ item.name }}"
-        FABRIC_CA_SERVER_CA_KEYFILE: /etc/hyperledger/fabric-ca-server-config
+        FABRIC_CA_SERVER_CA_KEYFILE: /etc/hyperledger/fabric-ca-server-config/key.pem
         FABRIC_CA_SERVER_CA_CERTFILE: "/etc/hyperledger/fabric-ca-server-config/{{ item.name }}-cert.pem"
         FABRIC_CA_SERVER_DB_TLS_ENABLED: false
         FABRIC_CA_SERVER_LDAP_ENABLED: false
@@ -37,8 +41,78 @@
     when: true
     tags: ['docker', 'fabric-ca']
 
-  - blocks:
-    - name : Enroll 
+  # Reference
+  #   - http://hyperledger-fabric-ca.readthedocs.io/en/latest/
+  #   - http://hyperledgerdocs.readthedocs.io/en/latest/ca_setup.html
+  #   - http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#fabric-ca-client
+  #   - $ fabric-ca-client register --help
+  #   - http://hyperledger-fabric-ca.readthedocs.io/en/latest/clientconfig.html
+  #   - https://github.com/hyperledger/fabric-ca/blob/release/swagger/swagger-fabric-ca.json
+  - block:
+    - name: Install Fabric CA binaries on commander machine
+      shell: |
+        sudo apt-get install libtool libltdl-dev
+        if [ -d $GOPATH/src/github.com/hyperledger/fabric-ca ]; then
+          cd $GOPATH/src/github.com/hyperledger/fabric-ca
+          git branch -u origin master
+          git checkout master
+        fi
+        go get -u github.com/hyperledger/fabric-ca/cmd/fabric-ca-client
+      run_once: true
+      delegate_to: 127.0.0.1 
+    - name: Enroll bootstrap identities of Fabric CA servers
+      shell: |
+        # TODO Use --mspdir flag of 'fabric-ca-client' to use more proper value for 'FABRIC_CA_CLIENT_HOME'
+        #      which would contain 'fabric-ca-client-config.yaml' provided or automatically generated if not provided
+        export FABRIC_CA_CLIENT_HOME=$HOME/fabric/{{ fabric.ver }}/accounts/{{ item.name }}/admin
+
+        # TODO Correct '127.0.0.1' to hostvars[item.host].ansible_host
+        fabric-ca-client enroll \
+        --url http://{{ item.admin.username }}:{{ item.admin.passwd }}@{{ '127.0.0.1' }}:{{ item.port }}
+      with_items: "{{ (containers|default({})).cas|default([]) }}"
+      delegate_to: 127.0.0.1
+    - name: Register and enroll user accounts of Fabric network
+      vars:
+        accounts: "{{ fabric.accounts|default([])|selectattr('ca', 'equalto', item.name)|list }}"
+      shell: |
+        export FABRIC_CA_CLIENT_HOME=$HOME/fabric/{{ fabric.ver }}/accounts/{{ item.name }}/admin
+
+        {% for account in accounts %}
+        # TODO Correct '127.0.0.1' to hostvars[item.host].ansible_host
+        out=`fabric-ca-client register \
+        --id.name {{ account.name }} --id.type {{ account.type }} \
+        --url http://{{ item.admin.username }}:{{ item.admin.passwd }}@{{ '127.0.0.1' }}:{{ item.port }} 2>&1` 
+        
+        rc=$?  
+        if [ $rc -ne 0 ]; then
+          
+          if [[ $out == *"already registered"* ]]; then
+            echo "'{{ account.name }}' is already registered, so would be skipped. But {{ account.name }} may not be enrolled yet. Check it."
+          else
+            echo "Fail to register '{{ account.name }}' account to '{{ item.name }}' Fabric CA server."  
+            exit 101;
+          fi 
+        else
+          secret=${out/#*Password: /}
+          # TODO Correct '127.0.0.1' to hostvars[item.host].ansible_host
+          echo $secret
+          fabric-ca-client enroll \
+          --url http://{{ account.name }}:${secret}@{{ '127.0.0.1' }}:{{ item.port }} \
+          --mspdir $HOME/fabric/{{ fabric.ver }}/accounts/{{ item.name }}/{{ account.name }}/msp
+  
+          if [ $? -eq 0 ]; then
+            echo "Successfully registered and enrolled '{{ account.name }}' account to '{{ item.name }}' Fabric CA server."
+            echo "The generated key and certificates are located ..."
+          else
+            echo "Fail to enroll '{{ account.name }}' account to '{{ item.name }}' Fabric CA server."
+          fi  
+        fi
+        {% endfor %}
+      args: 
+        executable: /bin/bash              
+      with_items: "{{ (containers|default({})).cas|default([]) }}"
+      delegate_to: 127.0.0.1
+    tags: ['fabric-ca'] 
   
   - name: Evaluate ZooKeeper emsemble string and connection string
     # TODO Use python script or Jinja2 instead of bash script.

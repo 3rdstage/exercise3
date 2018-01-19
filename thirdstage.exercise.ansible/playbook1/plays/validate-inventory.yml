@@ -4,7 +4,7 @@
     # - m003
   tasks:
     # For more on jsonschema, refer https://github.com/Julian/jsonschema
-    - name: Install jsonschema Python package only for commander
+    - name: Install 'jsonschema' Python package only for commander
       pip:
         name: jsonschema
         version: 2.6.0

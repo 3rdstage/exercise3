@@ -48,27 +48,41 @@ fabric:
       
   init:
   orgs:
+    # http://hyperledger-fabric.readthedocs.io/en/release/build_network.html#crypto-generator
+    # https://github.com/hyperledger/fabric/blob/v1.1.0-preview/examples/e2e_cli/crypto-config.yaml
     - name: org0 # [A-Za-z][_0-9A-Za-z]*
       type: orderer
       domain: org0
       ca:
-        hostname: ca0
-        commonName: ca0
+        name: ca0
+        country: KR
+        province: Seoul
+        locality: Seoul
+        organizationalUnit: OrdererOrg
     - name: org1
       type: peer # 'orderer' or 'peer', default is 'peer'
       ca:
-        hostname: ca1
-        commonName: ca1
+        name: ca1
+        country: KR # TODO Review more on moving attributes such as country, province and/or into to 'hostvar/containers/cas' 
+        province: Seoul
+        locality: Seoul
+        organizationalUnit: PeerOrg1
     - name: org2
       type: peer
       ca:
-        hostname: ca2
-        commonName: ca2
+        name: ca2
+        country: KR
+        province: Seoul
+        locality: Seoul
+        organizationalUnit: PeerOrg2
     - name: org3
       type: peer
       ca:
-        hostname: ca3
-        commonName: ca3
+        name: ca3
+        country: KR
+        province: Seoul
+        locality: Seoul
+        organizationalUnit: PeerOrg3
   channels:
     - name: channel1 # [A-Za-z][_0-9A-Za-z]*
       consortium: Channel1Consortium
@@ -85,7 +99,19 @@ fabric:
       maxMessageCount: 400
       absoluteMaxBytes: 5 MB
       preferredMaxBytes: 1024 KB
-    
+  
+  accounts:
+    - name: user1011
+      ca: ca1
+      type: user
+      # affiliation: # optional
+    - name: user1012
+      ca: ca1
+      type: user
+    - name: user2001
+      ca: ca2
+      type: user
+      
     
 docker:
   images:
