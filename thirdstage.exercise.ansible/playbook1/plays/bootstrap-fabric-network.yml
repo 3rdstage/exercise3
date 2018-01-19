@@ -449,4 +449,13 @@
     when: true
     tags: ['docker', 'fabric-peer']
       
-          
+  
+  # TODO Go ahead    
+  - name: Create Fabric channels
+  
+  
+  - name: Make Fabric Peers join the channels
+  
+  
+  
+  
