@@ -16,10 +16,4 @@
     ],
     "preinstall" : "npm install -g truffle"
   }
-
-  "config": {
-    "testnet": {
-       "port": 8545
-    }
-  }
 }
