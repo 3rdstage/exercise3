@@ -1,21 +1,30 @@
 #! /bin/bash
 
-readonly dir=$(cd `dirname $0` && pwd)
+readonly script_dir=$(cd `dirname $0` && pwd)
+source "${script_dir}/private-network-config.sh"
+echo "Configuration for private Ethereum network - networkid: $network_id, port: $port, rpcport: $rpc_port, coinbase: $coin_base, datadir: $data_dir"
 
-if [ -f ${dir}/data/ethereum/private/geth/chaindata/MANIFEST-000000 ]; then
-  # https://github.com/ethereum/go-ethereum/wiki/Private-network
-  geth --datadir ${dir}/data/ethereum/private init genesis.json
-fi
-
-if [ `geth account list --datadir ./data/ethereum/private/ | grep eab867039ce0e12e5ab3f71bce8ac296f890d735 | wc -l` -eq 0 ]; then
-  geth account new --datadir ${dir}/data/ethereum/private --password ${dir}/password
-fi
-
+echo "Starting private Ethereum network with single miner in backgound."
 # https://medium.com/@solangegueiros/https-medium-com-solangegueiros-setting-up-ethereum-private-network-on-windows-a72ec59f2198
 # parameter candidates : --lightkdf
-geth --networkid 31 --port 30303 --rpc --rpcport 8545 --rpcapi personal,db,eth,net,web3 \
-  --unlock eab867039ce0e12e5ab3f71bce8ac296f890d735 --password ${dir}/password --cache 64 --datadir "${dir}/data/ethereum/private" console
+geth --networkid $network_id --port $port --rpc --rpcport $rpc_port --rpcapi personal,db,eth,net,web3 \
+  --mine --minerthreads 1 --etherbase $coin_base \
+  --cache 64 --datadir "$data_dir" > "${script_dir}/private-network.log" 2>&1 &
   
+sleep 5s
 
+# extract addresses to which balances allocated in genesis.json
+declare -a addrs=`grep -E '^\s*"\S*" : { "balance" : .*$' genesis.json | awk '{print $1}' | tr -d '"'`
 
+for addr in ${addrs}; do
+  geth --exec "personal.unlockAccount('$addr', 'user1234', 0)" attach http://127.0.0.1:$rpc_port > /dev/null
+  
+  if [ "$_" == "true" ]; then
+    echo "Successfully unlocked the address of '${addr}'"
+  else
+    echo "Fail to unlock the address of '${addr}'"
+  fi
+done
 
+echo "Attacing to the network."
+geth attach http://127.0.0.1:$rpc_port

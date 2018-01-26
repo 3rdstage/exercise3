@@ -14,3 +14,5 @@ config.gypi
 package-lock.json
 build
 data
+genesis.json
+*.log
