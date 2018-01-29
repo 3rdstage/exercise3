@@ -26,4 +26,6 @@ contract BareCoin {
     balances[receiver] += amount;
     Sent(msg.sender, receiver, amount);
   }
+  
+  
 }
