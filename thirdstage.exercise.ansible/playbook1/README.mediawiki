@@ -1,4 +1,100 @@
 
+===Ansible Plays===
+
+{| class="wikitable" style="margin-left:20px"
+! No !! Play !! Description !! Remarks
+|-
+| 1
+| <code>validate-inventory.yml</code>
+| Validatse Ansible host variables by host
+|
+|-
+| 2
+| <code>verify-hosts.yml</code>
+| Verifies wheter each host has required OS and basic softwares such as Go, Node.js, Docker, NTP and so on
+| <code>group_vars/all/host</code>
+|-
+| 3
+| <code>prepare-hosts.yml</code>
+| Installs and configures required softwares such as Go, Node.js, Docker, NTP and so on for each host
+| <code>group_vars/all/host</code>
+|-
+| 4
+| <code>prepare-container-images.yml</code>
+| Installs necessary Docker container images for each host
+| style="white-space: nowrap;" | <code>group_vars/all/docker/images</code><br/> <code>host_vars/<i>host</i>/containers</code>
+|-
+| 5
+| <code>generate-fabric-artifacts.yml</code>
+| Composes <code>crypto-config.yaml</code>, <code>crypto-configx.yaml</code> files and generates crypto artifacts(keys and certificates), genesis block and configuration transactions for channels and anchors
+| style="white-space: nowrap;" | <code>group_vars/all/fabric/orgs</code> <br/><code>group_vars/all/fabric/channels</code> <br/><code>host_vars/<i>host</i>/containers</code> <br/><code>templates/crypto-config.yaml.j2</code> <br/><code>templates/configtx.yaml.j2</code> <br/><code>generated/fabric/crypto-config.yaml</code> <br/><code>generated/fabric/configtx.yaml</code> <br/><code>generated/fabric/crypto/</code> <br/><code>generated/fabric/configtx/</code>
+|-
+| 6
+| <code>bootstrap-fabric-network.yml</code>
+| Runs Docker containers for Fabric network nodes such as Fabric CA servers, ZooKeepers, Kafkas, Fabric Orderers, CouchDBs, Fabric Peers and so on
+| style="white-space: nowrap;" | <code>host_vars/<i>host</i>/containers/cas</code> <br/><code>host_vars/<i>host</i>/containers/zookeepers</code> <br/><code>host_vars/<i>host</i>/containers/kafkas</code> <br/><code>host_vars/<i>host</i>/containers/orderers</code> <br/><code>host_vars/<i>host</i>/containers/couchdbs</code> <br/><code>host_vars/<i>host</i>/containers/peers</code>
+|}
+
+====Tasks====
+
+# '''<code>validate-inventory.yml</code>'''
+## Install 'jsonschema' Python package only for commander
+## Install 'kazoo' Python library required by 'znode' module
+## Downlaod schema for JSON schema if not already done
+## Validate schema for fabric node configuration
+## Write entire 'hostvars' into a single YAML file
+## Write entire 'hostvars' into a single JSON file
+## Write faric node configuration for each host into repective file in JSON format
+## Validate faric node configuration for each host against schema
+# '''<code>verify-hosts.yml</code>'''
+## Update APT cache and install a few packages including 'bc'
+## Verify that the OS is Ubuntu
+## Verify that the major version of OS is 16
+## Check whether Go is installed and configured properly or not
+## Check whether Node.js is installed and configured properly or not
+## Check whether Docker is installed and configured properly or not
+## Check whether NTP is installed and is running as a service or not
+# '''<code>prepare-hosts.yml</code>'''
+## Add APT repository for Go
+## Update APT list before installing Go
+## Install Go if necessary
+## Add 'GOPHATH' env. variable and update 'PATH' env. varialbe if necessary
+## Remove old PPA for Node.js if it exists
+## Remove APT source lists of Chris Lea's PPA for Node.js
+## Add APT keys for nodesource
+## Add APT repositories for nodesource
+## Update APT list before installing Node.js
+## Install Node.js if necessary
+## Install npm of required version
+# '''<code>prepare-container-images.yml</code>'''
+## Install Fabric ZooKeeper docker images for required hosts
+## Install Fabric Kafka docker images for required hosts
+## Install Fabric Orderer docker images for required hosts
+## Install Fabric Peer/CouchDB/Tools docker images for required hosts
+## Install Fabric CA Server docker images for required hosts
+## Install Kafka Manager docker images for required hosts
+# '''<code>bootstrap-fabric-network.yml</code>'''
+## Run Fabric CA server containers
+## Install Fabric CA binaries on commander machine
+## Enroll bootstrap identities of Fabric CA servers
+## Register and enroll user accounts of Fabric network
+## Evaluate ZooKeeper emsemble string and connection string
+## Run ZooKeeper containers
+## Run Kafka containers
+## Run Kafka Manager containers
+## Add a cluster into the Kafka Manager
+## Run Fabric Orderer containers
+## Create a directory for optimized CouchDB config if not exists
+## Copy optimized CouchDB configuration into remote systems
+## Run CouchDB containers
+## Wait a moment for the containers to be fully started
+## Request single node setup of CouchDB
+## Finish single node setup of CouchDB
+## Run Fabric Peer Containers
+
+===Ansible Commands===
+
+  playbook$ ansible-playbook --list-tasks ./plays/verify-hosts.yml
 
 ===References===
 
