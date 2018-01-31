@@ -5,7 +5,7 @@ source "${script_dir}/private-network-config.sh"
 echo "Configuration for private Ethereum network - networkid: $network_id, port: $port, rpcport: $rpc_port, coinbase: $coin_base, datadir: $data_dir"
 echo "password: $passwd"
 
-echo "Starting private Ethereum network with single miner in backgound."
+echo "Starting private Ethereum network with single miner in background."
 # https://medium.com/@solangegueiros/https-medium-com-solangegueiros-setting-up-ethereum-private-network-on-windows-a72ec59f2198
 # parameter candidates : --lightkdf
 # APIs : web3, net, eth, db, ssh, admin, debug, miner, personal, txpool
