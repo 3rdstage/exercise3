@@ -31,6 +31,15 @@
       register: fabric_bin_install
       changed_when: "('successfully installed' in fabric_bin_install.stdout) or ('PATH are updated' in fabric_bin_install.stdout)" 
 
+    - name: Create a directory for generated Fabric artifacts if not exists
+      file:
+        path: "{{ inventory_dir }}/generated/fabric/"
+        state: directory
+        mode: 0755
+      become: false
+      run_once: true
+      delegate_to: 127.0.0.1
+
     # TODO Rename previously generated cryptogen input file
     # Reference
     #   - http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html#manually-generate-the-artifacts
@@ -40,6 +49,7 @@
         src: "{{ inventory_dir }}/templates/crypto-config.yaml.j2"
         dest: "{{ inventory_dir }}/generated/fabric/crypto-config.yaml"
         mode: "u=rw,g=r,o=r"
+        backup: true
       when: not fabric.generate.crypto.skip|default(false)
       run_once: true
       delegate_to: 127.0.0.1
@@ -61,7 +71,7 @@
         cryptogen generate --config=./crypto-config.yaml --output=./crypto
         
         # Rename private keys for Fabric CA servers to static name 'key.pem'
-        for f in `find ./ -path '*/ca/*_sk'; do mv "$f" "`dirname $f`/key.pem"; done
+        for f in `find ./ -path '*/ca/*_sk'`; do mv "$f" "`dirname $f`/key.pem"; done
         
         # TODO Check the generated artifacts are in expected shape.
         

@@ -52,9 +52,9 @@ Organizations:
     AnchorPeers:
     {%- for host in ansible_play_batch|sort -%}
       {%- for peer in (hostvars[host].containers|default({})).peers|default([])
-          if peer.org == org.name and peer.gossip.anchor|default(false) %}
-      - Host: {{ peer.address }}
-        Port: {{ peer.port }}
+          if peer.org == org.name and peer.config.peer.gossip.anchor|default(false) %}
+      - Host: {{ hostvars[host].ansible_host }}
+        Port: {{ peer.config.peer.listenPort }}
       {%- endfor -%}
     {%- endfor %}
   {%- endfor %}
@@ -66,7 +66,7 @@ Orderer: &ordererDefaults
   Addresses:
   {%- for host in ansible_play_batch|sort -%}
     {%- for orderer in (hostvars[host].containers|default({})).orderers|default([]) %}
-    - {{ orderer.address }}:{{ orderer.port }}
+    - {{ hostvars[host].ansible_host }}:{{ orderer.port }}
     {%- endfor -%}
   {%- endfor %}
 
@@ -83,7 +83,7 @@ Orderer: &ordererDefaults
     Brokers:
     {%- for host in ansible_play_batch|sort -%}
       {%- for kafka in (hostvars[host].containers|default({})).kafkas|default([]) %}
-      - {{ kafka.address }}:{{ kafka.port }}
+      - {{ hostvars[host].ansible_host }}:{{ kafka.port }}
       {%- endfor -%}
     {%- endfor %}
 

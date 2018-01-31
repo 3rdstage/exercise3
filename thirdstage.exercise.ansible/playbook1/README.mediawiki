@@ -94,7 +94,39 @@
 
 ===Ansible Commands===
 
-  playbook$ ansible-playbook --list-tasks ./plays/verify-hosts.yml
+* Normal procedure
+
+<pre style="margin-left:40px">
+playbook$ ansible-playbook --list-tasks ./plays/verify-hosts.yml
+</pre>
+
+* Local or dry run for test or preview
+
+<pre style="margin-left:40px">
+playbook$ ansible-playbook ./plays/validate-inventory.yml -c local
+</pre>
+
+<pre style="margin-left:40px">
+playbook$ ansible-playbook ./plays/verify-hosts.yml --limit=m001 --connection=local
+</pre>
+
+<pre style="margin-left:40px">
+playbook$ ansible-playbook ./plays/generate-fabric-artifacts.yml -c local
+</pre>
+
+<pre style="margin-left:40px">
+ansible-playbook ./plays/bootstrap-fabric-network.yml -l m001 -c local --tags=couchdb,fabric-peer
+</pre>
+
+* Misc
+
+<pre style="margin-left:40px">
+playbook$ ansible-playbook --list-hosts ./plays/verify-hosts.yml
+</pre>
+
+<pre style="margin-left:40px">
+ansible-playbook --list-tasks ./plays/validate-inventory.yml ./plays/verify-hosts.yml
+</pre>
 
 ===References===
 

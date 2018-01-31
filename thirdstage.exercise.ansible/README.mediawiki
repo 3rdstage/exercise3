@@ -1,0 +1,179 @@
+
+===Provisioning & Configruation Management===
+
+* '''Provisioining'''
+** [https://en.wikipedia.org/wiki/Provisioning Wikipedia] says
+
+:: In telecommunication, provisioning involves the process of preparing and equipping a network to allow it to provide new services to its users.
+:: Provisioning configures any required systems, provides users with access to data and technology resources, and refers to all enterprise-level information-resource management involved.
+
+* Server provisioning
+## Select a server from a pool of available servers
+## Load the appropriate software (operating system, device drivers, middleware, and applications)
+## Appropriately customize and configure the system and the software
+## Change its parameters, such as IP address, IP Gateway to find associated network and storage resources
+
+* '''Software provisioning'''
+** ...
+
+* '''Provisioning''' = '''Procedures'''(Process) + '''Configuration'''
+** For provisioing specific set of softwares or software ecos (such as Hadoop ecos)
+*** Process : static
+*** Configuration : dynamic
+
+* Further conisderation
+** [https://en.wikipedia.org/wiki/Configuration_management Configuration management]
+** [https://en.wikipedia.org/wiki/Orchestration_(computing) Orchestration]
+
+----
+
+===Hyperledger Fabric Provisioing===
+
+====Procedures====
+
+# 기본 프로그램 설치 - Go, Node.js, Docker ...
+# Docker image 설치
+# Hosts 파일 설정
+# Crypto artifacts 생성 - keys and certifcates
+# Genesis block, configuration tx 생성
+# Crypto artifacts 배포
+# Docker Swarm network 구성
+# Ordering service node cluster 구성
+## ZooKeeper container 실행
+## Kafka container 실행
+## Orderer container 실행
+# Peer nodes 구성
+## CouchDB container 실행
+## Peer container 실행
+## CLI container 실행
+# CA 서버 구성
+## CA container 실행
+## Fabric account 등록
+# Fabric channel 설정
+# Chaincode 설정
+## Chaincode 설치
+## Chaincode initiate
+
+* 참고 : SK 블록체인 플랫폼_Tech_Document_블록체인 Network Provisioning_v1.01.doc
+
+====Bash script based provisioing====
+
+* <code>lego.provisioning</code> project
+
+* Pros
+** Quick
+
+* Cons
+** Modulization
+** Data structure
+*** '''No built-in heirarchial data structure'''
+
+====Configuration====
+
+* Feature/Requirement
+** Meta data
+** Should be normalized
+** Need to be validated
+** Need to be queried
+
+* Data structure/store for configuration
+** Relational database
+** NoSQL
+** XML
+** JSON
+** YAML
+** .properties
+** .ini
+** ...
+
+----
+
+===Ansible===
+
+* https://en.wikipedia.org/wiki/Ansible_(software)
+* http://docs.ansible.com/ansible/latest/
+
+====Core concepts====
+
+* Playbook <sup>1</sup>---<sup>n</sup> Play <sup>1</sup>---<sup>n</sup> Task:Module
+<pre style="margin-left:40px">
+    - name: Generate cryptogen input file
+      template:
+        src: "{{ inventory_dir }}/templates/crypto-config.yaml.j2"
+        dest: "{{ inventory_dir }}/generated/fabric/crypto-config.yaml"
+        mode: "u=rw,g=r,o=r"
+      when: not fabric.generate.crypto.skip|default(false)
+      run_once: true
+      delegate_to: 127.0.0.1
+</pre>
+<pre style="margin-left:40px">
+  - name: Run Kafka containers
+    vars:
+      zk_connect_str: "{{ (eval_zk_strings.stdout|from_json).connect_str }}"
+    docker_container:
+      image: "{{ docker.images.kafka.repository }}:{{ docker.images.kafka.tag }}"
+      name: "{{ item.name }}"
+      network_mode: host
+      env:
+        KAFKA_ZOOKEEPER_CONNECT: "{{ zk_connect_str }}"
+        KAFKA_ADVERTISED_HOST_NAME: "{{ item.name }}"
+        KAFKA_BROKER_ID: "{{ item.config['broker.id'] }}"
+        KAFKA_LISTENERS: "PLAINTEXT://{{ ansible_host }}:{{ item.port|int }}"
+        KAFKA_LOG_RETENTION_MS: -1
+        KAFKA_MESSAGE_MAX_BYTES: "{{ item.config['message.max.bytes']|int }}"
+        KAFKA_MIN_INSYNC_REPLICAS: "{{ item.config['min.insync.replicas']|int }}"
+        KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: false
+        KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT.MS: "{{ item.config['zookeeper.connection.timeout.ms'] }}"
+        KAFKA_DEFAULT_REPLICATION_FACTOR: "{{ item.config['default.replication.factor']|int }}"
+        KAFKA_REPLICA_FETCH_MAX_BYTES: "{{ item.config['replica.fetch.max.bytes']|int }}"
+        KAFKA_METRICS_RECORDING_LEVEL: "{{ item.config['metrics.recording.level'] }}"
+        KAFKA_HEAP_OPTS: "{{ item.jvm.heapOpts }}"
+        KAFKA_JVM_PERFORMANCE_OPTS: "{{ item.jvm.performanceOpts }}"
+        KAFKA_GC_LOG_OPTS: "{{ item.jvm.gcLogOpts }}"
+        KAFKA_JMX_OPTS: "{{ item.jvm.jmxOpts }} -Dcom.sun.management.jmxremote.rmi.port={{ item.jvm.jmxPort|int }}"
+    with_items: "{{ (containers|default({})).kafkas|default([]) }}"
+    when: true
+    tags: ['docker', 'kafka']
+</pre>
+
+* Module
+** prototype or class to define task
+** <code>shell, template, get_url, uri, apt, docker_container, docker_image, assert, fail</code>
+** [http://docs.ansible.com/ansible/latest/list_of_all_modules.html All built-in modules]
+** Ant Task, Maven Plugin, ...
+
+* Inventory
+** Configuration data
+** in YAML format
+** Built-in category : <code>host</code>, <code>group</code>
+
+* Templating
+** [http://jinja.pocoo.org/docs/2.10/ Jinja2]
+** templating language
+** wire inventory and provide dynamics into plays
+** server-side include like ASP, JSP
+** operation/expression/statement, loop/conditional control, filter/test(predicate) ...
+<pre style="margin-left:40px">
+OrdererOrgs:
+  {%- for org in fabric.orgs if org.type == 'orderer' %}
+  - Name: {{ org.name }}
+    Domain: {{ org.domain | default(org.name) }}
+    CA:
+      Country : {{ org.ca.country }}
+      Province: {{ org.ca.province }}
+      Locality: {{ org.ca.locality }}
+      OrganizationalUnit: {{ org.ca.organizationalUnit }}
+    Specs:
+      {%- for host in ansible_play_batch|sort -%}
+        {%- for orderer in (hostvars[host].containers|default({})).orderers|default([])
+            if orderer.org == org.name %}
+      - Hostname: {{ orderer.name }}
+        CommonName: {{ orderer.name }}
+        {%- endfor -%}
+      {%- endfor -%}
+  {%- endfor %}
+</pre>
+
+* Role
+** ...
+
