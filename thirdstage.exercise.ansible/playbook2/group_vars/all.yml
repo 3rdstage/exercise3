@@ -1,6 +1,6 @@
 host:
   layout:
-    gitHome: "~/git"
+    gitRepoBase: "~/git/repo" # base directory for git repositories
   requirement:
     go:
       ver:

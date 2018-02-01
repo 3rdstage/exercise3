@@ -5,7 +5,7 @@
   - name: Install Quorum nodes
     git: 
       repo: 'https://github.com/jpmorganchase/quorum.git'
-      dest: "{{ host.layout.gitHome }}/quorum"
+      dest: "{{ host.layout.gitRepoBase }}/quorum"
       clone: true
       update: true
     with_items: "{{ (quorum|default({})).nodes|default([]) }}"
