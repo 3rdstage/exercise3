@@ -1,0 +1,39 @@
+host:
+  layout:
+    gitHome: "~/git"
+  requirement:
+    go:
+      ver:
+        min: '1.8'
+        recommanded:  '1.8'
+      apt: 
+        package: "golang-1.8-go"  # TODO Try "golang-{{ host.requirement.go.ver.recommanded }}-go"
+        repos: ['ppa:gophers/archive', 'ppa:longsleep/golang-backports'] # TODO Check it is possible or not to specify the source file name for PPA
+    nodejs:
+      ver: # For all Node.js releases, refer 'https://nodejs.org/en/download/releases/'
+        pattern: '6\.\(9|10|11|12|13|14\)\.[0-9]+'
+        min: '6.9'
+        max: '7.0'
+      apt:
+        package: "nodejs"
+        keys: ['https://deb.nodesource.com/gpgkey/nodesource.gpg.key']
+        repos: 
+          - url: "deb https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main"
+            filename: 'nodesource'
+          - url: "deb-src https://deb.nodesource.com/node_6.x {{ ansible_distribution_release }} main"
+            filename: 'nodesource'
+    npm:
+      ver:
+        pattern: '3\.10\.10'
+        recommanded: '3.10.10'
+    docker:
+      ver:
+        min: '7.03'
+        
+quorum: 
+  version:
+    node: 'v2.0.0'
+    
+    
+    
+        

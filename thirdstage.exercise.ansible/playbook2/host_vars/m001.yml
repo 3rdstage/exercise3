@@ -1,0 +1,4 @@
+quorum: 
+  nodes:
+    - name:
+      host: m001
