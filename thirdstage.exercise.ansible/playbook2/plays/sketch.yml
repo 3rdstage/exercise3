@@ -2,10 +2,60 @@
 - hosts: all
   tasks:
 
-  - name: Install Quorum nodes
+
+  - name: Clone or update Quorum source repository from GitHub
     git: 
       repo: 'https://github.com/jpmorganchase/quorum.git'
-      dest: "{{ host.layout.gitRepoBase }}/quorum"
+      dest: "{{ common.host.layout.git_repo_base }}/quorum"
       clone: true
       update: true
-    with_items: "{{ (quorum|default({})).nodes|default([]) }}"
+      version: "{{ common.quorum.version.node }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: []
+    
+  - name: Build Quorum
+    make:
+     chdir: "{{ common.host.layout.git_repo_base }}/quorum"
+     target: all
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: []
+    
+  - name: Copy Quorum binaries to '/usr/local/bin'
+    copy:
+      src:  "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
+      dest: /usr/local/bin
+      owner: root
+      group : root
+      mode: 0766
+    with_items: ['geth', 'bootnode']
+    when: (quorum|default({})).nodes|default([])
+    become: true
+    tags: []
+    
+  - name: Install packages required for Constellation node
+    apt:
+      name: "{{ item }}" 
+    with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: []
+
+  - name: Downlaod Constellation binary archive
+    get_url:
+      url: "{{ common.quorum.download.constellation }}" 
+      dest: "~/Downloads"
+      mode: 0644
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    register: download_constellation_result
+    tags: []
+      
+  - name: Unzip Constellation binary archive
+    unarchive:
+      src: "~/Downloads/constellation-0.2.0-ubuntu1604.tar.xz"
+      dest: "~/Downloads"
+    when: (quorum|default({})).nodes|default([]) and download_constellation_result.changed
+    become: false
+    tags: []

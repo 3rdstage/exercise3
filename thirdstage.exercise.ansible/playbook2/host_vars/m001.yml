@@ -1,4 +1,5 @@
 quorum: 
   nodes:
-    - name:
+    - name: node1
       host: m001
+      type: permissioned # 'static' or 'permissioned' 

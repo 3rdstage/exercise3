@@ -34,6 +34,11 @@
       delegate_to: 127.0.0.1
     
     - block:
+      - name: Create project directory for generated files
+        file: 
+          path: "{{ inventory_dir }}/generated/host-config"
+          state: directory
+          mode: 0644
       - name: Write entire 'hostvars' into a single YAML file
         copy:
           dest: "{{ inventory_dir }}/generated/host-config/hostvars.yaml"
@@ -51,5 +56,6 @@
           content: " {{ contents|to_nice_json }}"
         with_items: "{{ ansible_play_hosts }}"
         when: false
+      become: false
       run_once: true
       delegate_to: 127.0.0.1
