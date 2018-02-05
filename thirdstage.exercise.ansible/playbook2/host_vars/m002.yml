@@ -1,8 +1,5 @@
 quorum: 
   nodes:
-    - name: node1
+    - name: node3
       host: "{{ inventory_hostname }}"
       type: permissioned # 'static' or 'permissioned'
-    - name: node2
-      host: "{{ inventory_hostname }}"
-      type: permissioned

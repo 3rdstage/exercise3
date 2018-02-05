@@ -67,12 +67,11 @@
     vars: 
       filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
     unarchive:
-      src: "~/Downloads/constellation-0.2.0-ubuntu1604.tar.xz"
+      src: "~/Downloads/{{ filename }}"
       dest: /usr/local/bin
       owner: root
       group: root
       mode: 0755
-      
     when: (quorum|default({})).nodes|default([]) and download_constellation_result.changed
     become: true
     tags: ['constellation']

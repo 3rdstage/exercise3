@@ -28,7 +28,10 @@ common:
           pattern: '3\.10\.10'
           recommanded: '3.10.10'
   
-  quorum: 
+  quorum:
+    flags:
+      skip:
+        generate_data: false
     version:
       node: 'v2.0.0' # target tag of quorum git repository at https://github.com/jpmorganchase/quorum 
       constellation: 'v0.2.0'

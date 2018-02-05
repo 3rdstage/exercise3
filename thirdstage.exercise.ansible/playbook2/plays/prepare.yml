@@ -1,14 +1,103 @@
 - hosts: localhost
   tasks:
   
-  - name: Clone or update Quorum source repository from GitHub to local
-    git: 
-      repo: 'https://github.com/jpmorganchase/quorum.git'
-      dest: "{{ common.host.layout.git_repo_base }}/quorum"
-      clone: true
-      update: true
-      version: "{{ common.quorum.version.node }}"
-    become: false
-    register: update_quorum_src_result
-    changed_when: update_quorum_src_result.after != update_quorum_src_result.before
+  - block:
+    - name: Print out Anisible hosts
+      debug:
+        msg:
+          - "playbook_dir : {{ playbook_dir }}"
+          - "ansible_play_hosts : {{ ansible_play_hosts }}"
+          - "ansible_play_batch : {{ ansible_play_batch }}"
+          - "hostvars|list : {{ hostvars|list }}"
+      tags: ['debug']
+    - name: Print out Quorum nodes
+      debug:
+        msg: "{{ item }}"
+      with_items:  "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
+    name: Debug tasks
+    when: true
+    tags: ['debug']
+  
+  - block:
+    - name: Clone or update Quorum source repository from GitHub to the commander host
+      git: 
+        repo: 'https://github.com/jpmorganchase/quorum.git'
+        dest: "{{ common.host.layout.git_repo_base }}/quorum"
+        clone: true
+        update: true
+        version: "{{ common.quorum.version.node }}"
+      become: false
+      register: update_quorum_src_result
+      changed_when: update_quorum_src_result.after != update_quorum_src_result.before
+    - name: Build Quorum
+      make:
+       chdir: "{{ common.host.layout.git_repo_base }}/quorum"
+       target: all
+      become: false
+    - name: Copy Quorum binaries to '/usr/local/bin' of the commander host
+      copy:
+        src:  "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
+        dest: /usr/local/bin
+        owner: root
+        group : root
+        mode: 0755
+      with_items: ['geth', 'bootnode']
+      become: true
+    - name: Install packages required for Constellation node into the commander host
+      apt:
+        name: "{{ item }}" 
+      with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
+      become: false
+      tags: ['constellation']
+    - name: Check whether the constellation is already installed or not
+      command :  constellation-node --version
+      become: true
+      register: check_constellation_result
+      changed_when: false
+    - name: Downlaod Constellation binary archive into the commander host
+      get_url:
+        url: "{{ common.quorum.download.constellation }}" 
+        dest: "~/Downloads"
+        mode: 0644
+      #when: check_constellation_result|succeeded
+      when: false
+      become: false
+      register: download_constellation_result
+    - name: Unzip Constellation binary archive
+      vars: 
+        filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
+      unarchive:
+        src: "~/Downloads/{{ filename }}"
+        dest: /usr/local/bin
+        owner: root
+        group: root
+        mode: 0755
+      when: download_constellation_result.changed
+      become: true
+    name: Prepare Quroum and Constellation binaries for commander host
+    when: false
     tags: ['commander']
+      
+  
+  # TODO Check skip flags and backup first when doing
+  - name: Create directories for each Quorum node to save generated files
+    file:
+      path: "{{ playbook_dir }}/../generated/quorum/data/{{ item.name }}"
+      state: directory
+      mode: 0755
+    with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
+    become: false 
+    tags: []
+  - name: Check whether a previously generated node key files exist or not
+    stat:
+      path: "{{ playbook_dir }}/../generated/quorum/data/{{ item.name }}/nodekey"
+    register: check_generated_nodekeys
+    with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}"
+    become: false
+    tags: []
+  - name: Generate nodekeys for each Quorum node
+    command: bootnode -genkey "{{ playbook_dir }}/../generated/quorum/data/{{ item.name }}/nodekey"
+    with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
+    become: false
+    tags: []        
+    
