@@ -1,0 +1,14 @@
+- hosts: localhost
+  tasks:
+  
+  - name: Clone or update Quorum source repository from GitHub to local
+    git: 
+      repo: 'https://github.com/jpmorganchase/quorum.git'
+      dest: "{{ common.host.layout.git_repo_base }}/quorum"
+      clone: true
+      update: true
+      version: "{{ common.quorum.version.node }}"
+    become: false
+    register: update_quorum_src_result
+    changed_when: update_quorum_src_result.after != update_quorum_src_result.before
+    tags: ['commander']

@@ -12,7 +12,9 @@
       version: "{{ common.quorum.version.node }}"
     when: (quorum|default({})).nodes|default([])
     become: false
-    tags: []
+    register: update_quorum_src_result
+    changed_when: update_quorum_src_result.after != update_quorum_src_result.before
+    tags: ['quorum-ndoe']
     
   - name: Build Quorum
     make:
@@ -20,7 +22,7 @@
      target: all
     when: (quorum|default({})).nodes|default([])
     become: false
-    tags: []
+    tags: ['quorum-ndoe']
     
   - name: Copy Quorum binaries to '/usr/local/bin'
     copy:
@@ -28,11 +30,11 @@
       dest: /usr/local/bin
       owner: root
       group : root
-      mode: 0766
+      mode: 0755
     with_items: ['geth', 'bootnode']
     when: (quorum|default({})).nodes|default([])
     become: true
-    tags: []
+    tags: ['quorum-ndoe']
     
   - name: Install packages required for Constellation node
     apt:
@@ -40,22 +42,37 @@
     with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
     when: (quorum|default({})).nodes|default([])
     become: false
-    tags: []
+    tags: ['constellation']
+    
+  - name: Check whether the constellation is already installed or not
+    command :  constellation-node --version
+    when: (quorum|default({})).nodes|default([])
+    become: true
+    register: check_constellation_result
+    changed_when: false
+    tags: ['constellation']
 
   - name: Downlaod Constellation binary archive
     get_url:
       url: "{{ common.quorum.download.constellation }}" 
       dest: "~/Downloads"
       mode: 0644
-    when: (quorum|default({})).nodes|default([])
+    when: (quorum|default({})).nodes|default([]) and check_constellation_result.failed
+    when: false
     become: false
     register: download_constellation_result
-    tags: []
+    tags: ['constellation']
       
   - name: Unzip Constellation binary archive
+    vars: 
+      filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
     unarchive:
       src: "~/Downloads/constellation-0.2.0-ubuntu1604.tar.xz"
-      dest: "~/Downloads"
+      dest: /usr/local/bin
+      owner: root
+      group: root
+      mode: 0755
+      
     when: (quorum|default({})).nodes|default([]) and download_constellation_result.changed
-    become: false
-    tags: []
+    become: true
+    tags: ['constellation']
