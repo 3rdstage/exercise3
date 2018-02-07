@@ -1,0 +1,62 @@
+
+===Initializing the source project===
+
+
+* Install required pacakges running <code>npm install</code>
+
+<pre style="margin-left:40px">
+mago.single$ npm install
+</pre>
+
+<p style="margin-left:40px">This may take a while. After that there will be local packages under <code>node_modules</code> directory.</p>
+
+* Customize settings in <code>private-network-config.sh</code>
+** <code>network_id</code> : Network ID of the Ethereum network
+** <code>port</code> : the TCP listening port for the Ethereum node
+** <code>rpc_port</code> : the RPC port for the Ethereum node
+** <code>data_dir</code> : the data directory to store keys and ledger for the Ethereum node
+** <code>passwd</code> : the shared(common) password for the accounts automatically generated
+** <code>coin_base</code> : 
+
+* Initialize standalone private Ethereum network using <code>private-network-init.sh</code>
+
+<pre style="margin-left:40px">
+mago.single$ ./private-network-init.sh
+</pre>
+
+* Update <code>truffle.js</code> in accordance with <code>private-network-config.sh</code> and initialized Ethereum network
+
+<p style="margin-left:40px">Update <code>port</code>, <code>network_id</code>, and <code>from</code> attribute of <code>networks.development</code> node
+
+<pre style="margin-left:40px">
+module.exports = {
+    networks: {
+      development: {
+        host: "127.0.0.1",
+        port: 8545,
+        network_id: 31,
+        from: "47173ba217c39dea60c7d115ea956a3e293fb012",
+        gas: 0x2fefd8
+      }
+    }
+};
+</pre>
+
+
+===Running the network and playing with stmart contracts===
+
+* Start standalone private Ethereum network
+
+<pre style="margin-left:40px">
+mago.single$ ./private-network-start.sh
+</pre>
+
+* Compile smart contracts using <code>truffle</code>
+
+
+* Deploy smart contracts using <code>truffle</code>
+
+
+===References===
+
+* [http://truffleframework.com/docs/ Truffle official documentation]

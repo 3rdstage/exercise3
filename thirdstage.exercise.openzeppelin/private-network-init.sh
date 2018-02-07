@@ -2,7 +2,7 @@
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 source "${script_dir}/private-network-config.sh"
-# echo "Configuration for private Ethereum network - networkid: ${network_id}, port: ${port}, rpcport: ${rpc_port}, coinbase: ${coin_base}, datadir: ${data_dir}"
+# echo "Configuration for private Ethereum network - networkid: ${network_id}, port: ${port}, rpcport: ${rpc_port}, datadir: ${data_dir}, coinbase: ${coin_base}"
 
 if [ -f "${data_dir}/geth/chaindata/CURRENT" ]; then
   echo "The private network seems to be initiated already. Check the directory of '${data_dir}'"
@@ -32,6 +32,7 @@ allocs="${allocs%,}\n  }"
 # echo -e ${allocs}
 
 sed "s/\"@allocs@\"/${allocs}/g" "${script_dir}/genesis.template.json" > "${script_dir}/genesis.json"
+sed -i "s/@coin_base@/${coin_base}/g" "${script_dir}/genesis.json"
 rm -f "${data_dir}/passwd"
 
 echo "Initializaing private Ethereum network..."
