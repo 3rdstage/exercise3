@@ -1,0 +1,10 @@
+- hosts: localhost
+  tasks:
+  
+    - name: Generate 'genesis.json' file
+      template:
+        src: "{{ playbook_dir }}/../templates/genesis.json.j2"
+        dest: "{{ playbook_dir }}/../generated/quorum/data/genesis.json"
+        mode: "u=rw,g=r,o=r"
+      become: false
+    

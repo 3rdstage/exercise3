@@ -1,7 +1,8 @@
 - hosts: localhost
   tasks:
   
-  - block:
+  - name: Debugging tasks
+    block:
     - name: Print out Anisible hosts
       debug:
         msg:
@@ -18,8 +19,9 @@
     when: true
     tags: ['debug']
   
-  - block:
-    - name: Clone or update Quorum source repository from GitHub to the commander host
+  - name: Prepare Quroum and Constellation binaries for control machine
+    block:
+    - name: Clone or update Quorum source repository from GitHub to the control machine
       git: 
         repo: 'https://github.com/jpmorganchase/quorum.git'
         dest: "{{ common.host.layout.git_repo_base }}/quorum"
@@ -34,7 +36,7 @@
        chdir: "{{ common.host.layout.git_repo_base }}/quorum"
        target: all
       become: false
-    - name: Copy Quorum binaries to '/usr/local/bin' of the commander host
+    - name: Copy Quorum binaries to '/usr/local/bin' of the control machine
       copy:
         src:  "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
         dest: /usr/local/bin
@@ -43,18 +45,17 @@
         mode: 0755
       with_items: ['geth', 'bootnode']
       become: true
-    - name: Install packages required for Constellation node into the commander host
+    - name: Install packages required for Constellation node into the control machine
       apt:
         name: "{{ item }}" 
       with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
       become: false
-      tags: ['constellation']
     - name: Check whether the constellation is already installed or not
       command :  constellation-node --version
       become: true
       register: check_constellation_result
       changed_when: false
-    - name: Downlaod Constellation binary archive into the commander host
+    - name: Downlaod Constellation binary archive  
       get_url:
         url: "{{ common.quorum.download.constellation }}" 
         dest: "~/Downloads"
@@ -74,30 +75,71 @@
         mode: 0755
       when: download_constellation_result.changed
       become: true
-    name: Prepare Quroum and Constellation binaries for commander host
     when: false
-    tags: ['commander']
-      
-  
+    tags: ['control-machine']
+
+
   # TODO Check skip flags and backup first when doing
-  - name: Create directories for each Quorum node to save generated files
-    file:
-      path: "{{ playbook_dir }}/../generated/quorum/data/{{ item.name }}"
-      state: directory
-      mode: 0755
-    with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
-    become: false 
-    tags: []
-  - name: Check whether a previously generated node key files exist or not
-    stat:
-      path: "{{ playbook_dir }}/../generated/quorum/data/{{ item.name }}/nodekey"
-    register: check_generated_nodekeys
-    with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}"
-    become: false
-    tags: []
-  - name: Generate nodekeys for each Quorum node
-    command: bootnode -genkey "{{ playbook_dir }}/../generated/quorum/data/{{ item.name }}/nodekey"
-    with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
-    become: false
-    tags: []        
-    
+  - name: Generate data files to bootstrap Quroum nodes
+    vars:
+      data_dir: "{{ playbook_dir }}/../generated/quorum/data"
+    block:
+    - name: Backup and remove the previously generated Quroum data files if exist
+      shell: |
+          . ~/.profile
+          cd '{{ playbook_dir }}/..'
+  
+          # Backup current crypto artifacts previously generated
+          if [ `ls -A ./generated/quorum/data | wc -l` -gt 0 ]; then
+            mv ./generated/quorum/data ./generated/quorum/data-{{ lookup('pipe','date +%y%m%dT%H%M%S')  }}
+          fi
+      args:
+        executable: /bin/bash 
+      become: false
+      tags: []
+    - name: Create directories for each Quorum node to save generated files
+      file:
+        path: "{{ data_dir }}/{{ item.name }}"
+        state: directory
+        mode: 0755
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
+      become: false 
+      tags: []
+    - name: Generate nodekeys for each Quorum node
+      command: bootnode -genkey "{{ data_dir }}/{{ item.name }}/nodekey"
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
+      become: false
+      tags: []
+    - name: Get enode ID from nodekey for each Quorum node
+      shell: bootnode -nodekey "{{ data_dir }}/{{ item.name }}/nodekey" -writeaddress > "{{ data_dir }}/{{ item.name }}/nodeid"
+      register: get_nodeids_result 
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}"
+    - name: Generate 'permissioned-nodes.json' file
+      template:
+        src: "{{ playbook_dir }}/../templates/permissioned-nodes.json.j2"
+        dest: "{{ playbook_dir }}/../generated/quorum/data/permissioned-nodes.json"
+        mode: "u=rw,g=r,o=r"
+      become: false
+    - name: Generate accounts for each Quorum node
+      shell: |
+        . ~/.profile
+        cd '{{ playbook_dir }}/..'
+        
+        echo '{{ item.accounts.prepared.password }}' > './generated/quorum/data/{{ item.name }}/passwd'
+        
+        for i in {1..{{ item.accounts.prepared.count }}}; do
+          geth account new --keystore './generated/quorum/data/{{ item.name }}/keystore' --password './generated/quorum/data/{{ item.name }}/passwd'
+        done
+        
+        rm -f './generated/quorum/data/{{ item.name }}/passwd'
+      args:
+        executable: /bin/bash  
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}"
+    - name: Generate 'genesis.json' file
+      template:
+        src: "{{ playbook_dir }}/../templates/genesis.json.j2"
+        dest: "{{ playbook_dir }}/../generated/quorum/data/genesis.json"
+        mode: "u=rw,g=r,o=r"
+      become: false
+    when: not common.quorum.skips.generate_data
+    tags: ['generate'] 

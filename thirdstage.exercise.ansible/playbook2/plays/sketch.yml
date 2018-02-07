@@ -2,7 +2,6 @@
 - hosts: all
   tasks:
 
-
   - name: Clone or update Quorum source repository from GitHub
     git: 
       repo: 'https://github.com/jpmorganchase/quorum.git'

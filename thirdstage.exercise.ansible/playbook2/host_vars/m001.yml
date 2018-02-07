@@ -1,8 +1,31 @@
 quorum: 
   nodes:
+    # References
+    #   - https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options
     - name: node1
       host: "{{ inventory_hostname }}"
       type: permissioned # 'static' or 'permissioned'
+      port: 30303 # TCP listening port
+      rpcport:  8545 # default 8545
+      raftport: 50400
+      discport: 0
+      accounts:
+        prepared:
+          count: 2
+          password: user1234
+      tx_manager: # transaction manager
+        name: tm1
+        port : 9000
+        socket_file : tm.ipc
+      
     - name: node2
       host: "{{ inventory_hostname }}"
       type: permissioned
+      port: 30313
+      rpcport:  8555
+      raftport: 50410
+      discport: 0
+      accounts:
+        prepared:
+          count: 3
+          password: user1234 

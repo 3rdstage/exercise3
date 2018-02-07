@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 source "${script_dir}/private-network-config.sh"
@@ -31,8 +31,7 @@ done
 allocs="${allocs%,}\n  }"
 # echo -e ${allocs}
 
-sed "s/\"@allocs@\"/${allocs}/g" "${script_dir}/genesis.template.json" > "${script_dir}/genesis.json"
-sed -i "s/@coin_base@/${coin_base}/g" "${script_dir}/genesis.json"
+sed "s/\"@allocs@\"/${allocs}/g" "${script_dir}/genesis.template.json" | sed "s/@coin_base@/${coin_base}/g" > "${script_dir}/genesis.json"
 rm -f "${data_dir}/passwd"
 
 echo "Initializaing private Ethereum network..."

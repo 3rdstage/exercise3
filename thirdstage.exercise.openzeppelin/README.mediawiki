@@ -1,6 +1,7 @@
-
 ===Initializing the source project===
 
+* Install <code>go-ethereum</code> binaries and make them on <code>PATH</code>
+** https://geth.ethereum.org/downloads/
 
 * Install required pacakges running <code>npm install</code>
 

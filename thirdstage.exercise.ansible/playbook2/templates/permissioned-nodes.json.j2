@@ -1,0 +1,8 @@
+[
+
+{% for node in hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list %} 
+  "enode://{{ lookup('file', playbook_dir ~ '/../generated/quorum/data/' ~ node.name ~ '/nodeid') }}@{{ hostvars[node.host].ansible_host }}:{{ node.port }}?discport={{ node.discport }}&raftport={{ node.raftport }}"
+  {%- if not loop.last -%},{%- endif -%}
+{% endfor %}
+
+]

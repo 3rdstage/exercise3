@@ -1,0 +1,29 @@
+{# 
+References
+  - https://github.com/jpmorganchase/quorum-examples/blob/master/examples/7nodes/genesis.json
+  - https://github.com/ethereum/pyethapp/blob/develop/pyethapp/genesisdata/genesis_frontier.json
+  - https://github.com/ethereum/pyethapp/blob/develop/pyethapp/genesisdata/genesis_morden.json
+  - https://github.com/ethereum/pyethapp/blob/develop/pyethapp/genesisdata/genesis_olympic.json
+  - https://github.com/ethereum/wiki/wiki/Ethereum-Chain-Spec-Format#subformat-genesis
+   
+#}
+
+{
+  "nonce": "{{ common.quorum.genesis.nonce }}",
+  "mixhash": "{{ common.quorum.genesis.mixhash }}",
+  "difficulty": "{{ common.quorum.genesis.difficulty }}",
+  "coinbase": "{{ common.quorum.genesis.coinbase }}",
+  "timestamp": "{{ common.quorum.genesis.timestamp }}",
+  "parentHash": "{{ common.quorum.genesis.parentHash }}",
+  "extraData": "{{ common.quorum.genesis.extraData }}",
+  "gasLimit": "{{ common.quorum.genesis.gasLimit }}",
+  "config": {
+    "homesteadBlock": 0,
+    "chainId": 1,
+    "eip155Block": null,
+    "eip158Block": null,
+    "isQuorum": true
+  },
+  "alloc": {}
+  
+}
