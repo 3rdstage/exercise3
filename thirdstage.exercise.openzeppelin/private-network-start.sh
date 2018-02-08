@@ -10,7 +10,7 @@ echo "Starting standalone private Ethereum network with single miner in backgrou
 # APIs : web3, net, eth, db, ssh, admin, debug, miner, personal, txpool
 geth --networkid $network_id --identity paul \
   --port $port --rpc --rpcport $rpc_port --rpcapi web3,net,eth,db,admin,personal \
-  --mine --minerthreads 4 --etherbase $coin_base \
+  --mine --minerthreads 2 --etherbase $coin_base \
   --cache 64 --datadir "$data_dir" > "${script_dir}/private-network.log" 2>&1 &
 
 sleep 5s
