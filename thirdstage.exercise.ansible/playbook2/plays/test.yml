@@ -1,16 +1,29 @@
 - hosts: localhost
   vars:
       generation_dir: "{{ playbook_dir }}/../generated"
+      secret : !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          31653632326433346137303637346538633035366235343631633966666161643035393539303232
+          3634366333633739373735636566363161303865343636370a663263386636356661306538626234
+          62616131303735383366366235353434626566383738633738383336306233366433393835666534
+          3939623466633536640a303434616165353431643264623366623236363639393037613562386639
+          3438
   tasks:
   
+    - name: Test vault
+      vars: 
+        obj: {'a': 1, 'b': 2}
+      debug:
+        msg: 
+          - "{{ obj.values()|list }}"
+          - "{{ hostvars|list }}"
+          - "{{ [obj]|map(attribute='a')|list|to_nice_json }}"
+      when: false
 
-       
-    - name: Generate key files for each transaction manager
-      expect:
-        command: constellation-node --generatekeys=tm
-        responses:
-           'Lock key pair.*' : ''
-        chdir: "{{ generation_dir }}/quorum/data/{{ item.name }}-tm"
-      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
-      become: false
-    
+    - name: Test vault
+      vars: 
+        obj: {'a': 1, 'b': 2}
+      debug:
+        msg: "{{ hostvars['m001'].items() }}"
+      when: true
+

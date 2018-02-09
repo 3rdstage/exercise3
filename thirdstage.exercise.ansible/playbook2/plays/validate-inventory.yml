@@ -1,4 +1,4 @@
-- hosts: local
+- hosts: localhost
   tasks:
 
     - name: Install required Python libraries to validate inventory
@@ -28,21 +28,23 @@
           path: "{{ generation_dir }}/host-config"
           state: directory
           mode: 0644
+        when: false
       - name: Write entire 'hostvars' into a single YAML file
         copy:
           dest: "{{ generation_dir }}/host-config/hostvars.yaml"
           content: " {{ hostvars|to_yaml }}"
+        when: false
       # TODO Filter out unnecessary data mainly from Ansible built-in
       - name: Write entire 'hostvars' into a single JSON file.
         copy:
           dest: "{{ generation_dir }}/host-config/hostvars.json"
           content: " {{ hostvars|to_nice_json(indent=2) }}"
+        when: false
       - name: Write hostvar for each host into repective file in JSON format.
-        vars:
-          contents: " {{ hostvars[item]|to_nice_json(indent=2) }}"
         copy:
           dest: "{{ generation_dir }}/host-config/{{ item }}.json"
-          content: " {{ contents|to_nice_json(indent=2) }}"
+          #content: " {{ ['common', 'quorum']|map('regex_search', hostvars[item])|list|to_nice_json(indent=2) }}"
+          content: " {{ hostvars[item] }}"
         with_items: "{{ hostvars|list }}"
-        when: false
+        when: true
       become: false
