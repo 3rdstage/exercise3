@@ -5,13 +5,13 @@ References
 #}
 
 # Externally accessible URL for this node (this is what's advertised)
-url = "http://127.0.0.1:9000/"
+url = "http://{{ hostvars[item.host].ansible_host }}:{{ item.tx_manager.port }}/"
 
 # Port to listen on for the public API
 port = {{ item.tx_manager.port }}
 
 # Socket file to use for the private API / IPC
-socket = "~/quorunm/data/tm.ipc"
+socket = "~/quorunm/{{ item.name }}/constellation/tm.ipc"
 
 # Initial (not necessarily complete) list of other nodes in the network.
 # Constellation will automatically connect to other nodes not in this list
@@ -20,10 +20,10 @@ socket = "~/quorunm/data/tm.ipc"
 othernodes = []
 
 # The set of public keys this node will host
-publickeys = ["keys/tm1.pub"]
+publickeys = ["~/quorunm/{{ item.name }}/constellation/tm.pub"]
 
 # The corresponding set of private keys
-privatekeys = ["keys/tm1.key"]
+privatekeys = ["~/quorunm/{{ item.name }}/constellation/tm.key"]
 
 # Optional comma-separated list of paths to public keys to add as recipients
 # for every transaction sent through this node, e.g. for backup purposes.
@@ -36,7 +36,7 @@ privatekeys = ["keys/tm1.key"]
 # passwords = "passwords"
 
 # Where to store payloads and related information
-storage = "dir:qdata/constellation1"
+storage = "dir:~/quorunm/{{ item.name }}/constellation/data"
 
 # Optional IP whitelist for the public API. If unspecified/empty,
 # connections from all sources will be allowed (but the private API remains

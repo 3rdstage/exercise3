@@ -1,61 +1,48 @@
-- hosts: all
-    # - m001
-    # - m002
-    # - m003
+- hosts: local
   tasks:
-    # For more on jsonschema, refer https://github.com/Julian/jsonschema
-    - name: Install 'jsonschema' Python package only for commander
+
+    - name: Install required Python libraries to validate inventory
       pip:
-        name: jsonschema
-        version: 2.6.0
+        name: "{{ item.name }}"
+        version: "{{ item.ver }}"
         state: present
+      with_items:
+        - { name: jsonschema, ver: '2.6.0' } # https://github.com/Julian/jsonschema
+        - { name: kazoo, ver: '2.2' } # http://docs.ansible.com/ansible/2.4/znode_module.html
       become: true
-      run_once: true
-      delegate_to: 127.0.0.1
-    
-    # http://docs.ansible.com/ansible/2.4/znode_module.html
-    - name: Install 'kazoo' Python library required by 'znode' module
-      pip:
-        name: kazoo
-        version: 2.2
-        state: present
-      become: true
-      run_once: true
-      delegate_to: 127.0.0.1    
     
     - name: Downlaod schema for JSON schema if not already done.
       get_url:
         url: https://raw.githubusercontent.com/json-schema-org/json-schema-spec/draft-zyp-json-schema-04/schema.json
-        dest: "{{ inventory_dir }}/files/schema.json"
+        dest: "{{ playbook_dir }}/../files/schema.json"
         mode: '0644'
         force: false
       become: false
-      run_once: true
-      delegate_to: 127.0.0.1
     
-    - block:
+    - name: Validate inventory data
+      vars:
+        generation_dir: "{{ playbook_dir }}/../generated"
+      block:
       - name: Create project directory for generated files
         file: 
-          path: "{{ inventory_dir }}/generated/host-config"
+          path: "{{ generation_dir }}/host-config"
           state: directory
           mode: 0644
       - name: Write entire 'hostvars' into a single YAML file
         copy:
-          dest: "{{ inventory_dir }}/generated/host-config/hostvars.yaml"
+          dest: "{{ generation_dir }}/host-config/hostvars.yaml"
           content: " {{ hostvars|to_yaml }}"
       # TODO Filter out unnecessary data mainly from Ansible built-in
       - name: Write entire 'hostvars' into a single JSON file.
         copy:
-          dest: "{{ inventory_dir }}/generated/host-config/hostvars.json"
+          dest: "{{ generation_dir }}/host-config/hostvars.json"
           content: " {{ hostvars|to_nice_json(indent=2) }}"
       - name: Write hostvar for each host into repective file in JSON format.
         vars:
           contents: " {{ hostvars[item]|to_nice_json(indent=2) }}"
         copy:
-          dest: "{{ inventory_dir }}/generated/host-config/{{ item }}.json"
-          content: " {{ contents|to_nice_json }}"
-        with_items: "{{ ansible_play_hosts }}"
+          dest: "{{ generation_dir }}/host-config/{{ item }}.json"
+          content: " {{ contents|to_nice_json(indent=2) }}"
+        with_items: "{{ hostvars|list }}"
         when: false
       become: false
-      run_once: true
-      delegate_to: 127.0.0.1

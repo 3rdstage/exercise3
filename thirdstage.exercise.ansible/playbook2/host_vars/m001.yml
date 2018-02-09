@@ -14,18 +14,9 @@ quorum:
           count: 2
           password: user1234
       tx_manager: # transaction manager
-        name: tm1
         port : 9000
         socket_file : tm.ipc
       
-    - name: node2
-      host: "{{ inventory_hostname }}"
-      type: permissioned
-      port: 30313
-      rpcport:  8555
-      raftport: 50410
-      discport: 0
-      accounts:
-        prepared:
-          count: 3
-          password: user1234 
+
+
+        

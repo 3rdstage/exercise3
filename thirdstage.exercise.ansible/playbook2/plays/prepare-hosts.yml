@@ -1,0 +1,128 @@
+
+- hosts: all
+  tasks:
+
+  - name: Install Go for hosts which would run Quorum nodes
+    # References
+    #   - https://github.com/golang/go/wiki/Ubuntu/151aa825423ec740624969e75bf86fe15334aa7d
+    #   - https://github.com/golang/go/wiki/Ubuntu/cd1ce5cac7d7d48ee67a522c545a46c70ed57a19
+    block:
+    - name: Add APT repository for Go
+      apt_repository:
+        repo: "{{ item }}"
+        update_cache: false
+      with_items: "{{ common.host.requirement.go.apt.repos }}"   
+      become: true
+    - name: Update APT list before installing Go
+      apt:
+        force_apt_get: true
+        update_cache: true
+      become: true
+      ignore_errors: true
+    - name: Install Go if necessary
+      apt:
+        name: "{{ common.host.requirement.go.apt.package }}"
+        state: present
+        force_apt_get: true
+        update_cache: false
+      become: true
+    - name: Add 'GOPHATH' env. variable and update 'PATH' env. varialbe if necessary
+      vars:
+        unchanged_stdout: 'Current GOPATH and PATH env. variables are enough. Nothing has been changed.'
+      shell: |
+        # Note that typically '.profile' calls '.bashrc' on recent bash
+        . ~/.profile
+        
+        # TODO May need to make $HOME/go, $HOME/go/bin, $HOME/go/pkg, $HOME/go/src directories manually
+        
+        if [ -z `echo $GOPATH` ]; then
+          # GOPATH is not defined
+          sed -i '$ a \\nexport GOPATH=$HOME/go\nexport PATH=$GOPATH/bin:$PATH\n' ~/.bashrc
+        else
+          if [ `echo $GOPATH | grep "$HOME/go" | wc -l` -lt 1 ]; then
+            # GOPAHT is defined but doesn't include "$HOME/go"
+            sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$HOME/go/bin:$PATH\n' ~/.bashrc
+          else
+            if [ `echo $PATH | grep "$HOME/go/bin" | wc -l` -lt 1 ]; then
+              # PATH doesn't include "$HOME/go/bin"
+              sed -i '$ a \\nexport PATH=$HOME/go/bin:$PATH\n' ~/.bashrc
+            else
+              echo "{{ unchanged_stdout }}"
+            fi
+          fi
+        fi
+      become: false
+      register: add_gopath_result
+      changed_when: "unchanged_stdout not in add_gopath_result.stdout"
+    when: (quorum|default({})).nodes|default([])
+    tags: ['go']
+
+  - name: Install Quorum and Constellation for hosts which would run Quorum nodes
+    block:
+    - name: Clone or update Quorum source repository from GitHub
+      git: 
+        repo: 'https://github.com/jpmorganchase/quorum.git'
+        dest: "{{ common.host.layout.git_repo_base }}/quorum"
+        clone: true
+        update: true
+        version: "{{ common.quorum.version.node }}"
+      become: false
+      register: update_quorum_src_result
+      changed_when: update_quorum_src_result.after != update_quorum_src_result.before
+    - name: Build Quorum
+      make:
+       chdir: "{{ common.host.layout.git_repo_base }}/quorum"
+       target: all
+      become: false
+    - name: Copy Quorum binaries to '/usr/local/bin'
+      copy:
+        src:  "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
+        dest: /usr/local/bin
+        owner: root
+        group : root
+        mode: 0755
+      with_items: ['geth', 'bootnode']
+      become: true
+    - name: Install packages required for Constellation node
+      apt:
+        name: "{{ item }}" 
+      with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
+      when: (quorum|default({})).nodes|default([])
+      become: false
+    - name: Check whether the constellation is already installed or not
+      command :  constellation-node --version
+      become: true
+      register: check_constellation_result
+      changed_when: false
+    - name: Downlaod Constellation binary archive
+      get_url:
+        url: "{{ common.quorum.download.constellation }}" 
+        dest: "~/Downloads"
+        mode: 0644
+      when: check_constellation_result|failed
+      become: false
+      register: download_constellation_result
+    - name: Unzip Constellation binary archive
+      vars: 
+        filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
+      unarchive:
+        src: "~/Downloads/{{ filename }}"
+        dest: /usr/local/bin
+        owner: root
+        group: root
+        mode: 0755
+      when: download_constellation_result.changed
+      become: true
+    when: (quorum|default({})).nodes|default([])
+    tags: ['quorum']
+    
+    
+  - name: Transfer generated artifacts into respective Quorum node
+    copy:
+      src: "{{ playbook_dir }}/../generated/quorum/{{ item.name }}"
+      dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}"
+    with_items: (quorum|default({})).nodes|default([])  
+    when: false
+    
+    
+  

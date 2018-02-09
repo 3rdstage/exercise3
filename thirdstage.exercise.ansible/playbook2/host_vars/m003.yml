@@ -1,1 +1,16 @@
 quorum:
+  nodes:
+    - name: node3
+      host: "{{ inventory_hostname }}"
+      type: permissioned
+      port: 30313
+      rpcport:  8555
+      raftport: 50410
+      discport: 0
+      accounts:
+        prepared:
+          count: 3
+          password: user1234
+      tx_manager: # transaction manager
+        port : 9010
+        socket_file : tm.ipc

@@ -21,6 +21,11 @@
   
   - name: Prepare Quroum and Constellation binaries for control machine
     block:
+    - name: Install required Python library for the control machine
+      pip:
+        name: pexpect
+        version: 4.3
+      become: false
     - name: Clone or update Quorum source repository from GitHub to the control machine
       git: 
         repo: 'https://github.com/jpmorganchase/quorum.git'
@@ -35,6 +40,7 @@
       make:
        chdir: "{{ common.host.layout.git_repo_base }}/quorum"
        target: all
+      when: update_quorum_src_result.changed
       become: false
     - name: Copy Quorum binaries to '/usr/local/bin' of the control machine
       copy:
@@ -60,8 +66,7 @@
         url: "{{ common.quorum.download.constellation }}" 
         dest: "~/Downloads"
         mode: 0644
-      #when: check_constellation_result|succeeded
-      when: false
+      when: check_constellation_result|failed
       become: false
       register: download_constellation_result
     - name: Unzip Constellation binary archive
@@ -82,7 +87,7 @@
   # TODO Check skip flags and backup first when doing
   - name: Generate data files to bootstrap Quroum nodes
     vars:
-      data_dir: "{{ playbook_dir }}/../generated/quorum/data"
+      generation_dir: "{{ playbook_dir }}/../generated"
     block:
     - name: Backup and remove the previously generated Quroum data files if exist
       shell: |
@@ -90,34 +95,35 @@
           cd '{{ playbook_dir }}/..'
   
           # Backup current crypto artifacts previously generated
-          if [ `ls -A ./generated/quorum/data | wc -l` -gt 0 ]; then
-            mv ./generated/quorum/data ./generated/quorum/data-{{ lookup('pipe','date +%y%m%dT%H%M%S')  }}
+          if [ `ls -A ./generated/quorum | wc -l` -gt 0 ]; then
+            mv ./generated/quorum ./generated/quorum-{{ lookup('pipe','date +%y%m%dT%H%M%S')  }}
           fi
       args:
         executable: /bin/bash 
       become: false
       tags: []
-    - name: Create directories for each Quorum node to save generated files
+    - name: Create directories for Quorum nodes to save generated files
       file:
-        path: "{{ data_dir }}/{{ item.name }}"
+        path: "{{ generation_dir }}/quorum/{{ item.0.name ~ item.1 }}"
         state: directory
         mode: 0755
-      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
-      become: false 
-      tags: []
-    - name: Generate nodekeys for each Quorum node
-      command: bootnode -genkey "{{ data_dir }}/{{ item.name }}/nodekey"
+      with_nested: 
+        - "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
+        - ['/data/geth', '/data/keystore', '/constellation']
+      become: false  
+    - name: Generate nodekeys for Quorum nodes
+      command: bootnode -genkey "{{ generation_dir }}/quorum/{{ item.name }}/data/geth/nodekey"
       with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}" 
       become: false
       tags: []
-    - name: Get enode ID from nodekey for each Quorum node
-      shell: bootnode -nodekey "{{ data_dir }}/{{ item.name }}/nodekey" -writeaddress > "{{ data_dir }}/{{ item.name }}/nodeid"
+    - name: Get enode IDs from nodekeys for Quorum nodes
+      shell: bootnode -nodekey "{{ generation_dir }}/quorum/{{ item.name }}/data/geth/nodekey" -writeaddress > "{{ generation_dir }}/quorum/{{ item.name }}/data/geth/nodeid"
       register: get_nodeids_result 
       with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}"
     - name: Generate 'permissioned-nodes.json' file
       template:
         src: "{{ playbook_dir }}/../templates/permissioned-nodes.json.j2"
-        dest: "{{ playbook_dir }}/../generated/quorum/data/permissioned-nodes.json"
+        dest: "{{ generation_dir }}/quorum/permissioned-nodes.json"
         mode: "u=rw,g=r,o=r"
       become: false
     - name: Generate accounts for each Quorum node
@@ -125,21 +131,36 @@
         . ~/.profile
         cd '{{ playbook_dir }}/..'
         
-        echo '{{ item.accounts.prepared.password }}' > './generated/quorum/data/{{ item.name }}/passwd'
+        echo '{{ item.accounts.prepared.password }}' > './generated/quorum/{{ item.name }}/data/passwd'
         
         for i in {1..{{ item.accounts.prepared.count }}}; do
-          geth account new --keystore './generated/quorum/data/{{ item.name }}/keystore' --password './generated/quorum/data/{{ item.name }}/passwd'
+          geth account new --keystore './generated/quorum/{{ item.name }}/data/keystore' --password './generated/quorum/{{ item.name }}/data/passwd'
         done
         
-        rm -f './generated/quorum/data/{{ item.name }}/passwd'
+        rm -f './generated/quorum/{{ item.name }}/data/passwd'
       args:
         executable: /bin/bash  
       with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|list }}"
     - name: Generate 'genesis.json' file
       template:
         src: "{{ playbook_dir }}/../templates/genesis.json.j2"
-        dest: "{{ playbook_dir }}/../generated/quorum/data/genesis.json"
+        dest: "{{ generation_dir }}/quorum/genesis.json"
         mode: "u=rw,g=r,o=r"
       become: false
+    - name: Generate transaction manager configuration files for each one
+      template:
+        src: "{{ playbook_dir }}/../templates/tm.conf.j2"
+        dest: "{{ generation_dir }}/quorum/{{ item.name }}/constellation/tm.conf"
+        mode: "u=rw,g=r,o=r"
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
+      become: false  
+    - name: Generate key files for each transaction manager
+      expect:
+        command: constellation-node --generatekeys=tm
+        responses:
+           'Lock key pair.*' : ''
+        chdir: "{{ generation_dir }}/quorum/{{ item.name }}/constellation"
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
+      become: false      
     when: not common.quorum.skips.generate_data
     tags: ['generate'] 

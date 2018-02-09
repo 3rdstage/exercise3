@@ -1,10 +1,16 @@
 - hosts: localhost
+  vars:
+      generation_dir: "{{ playbook_dir }}/../generated"
   tasks:
   
-    - name: Generate 'genesis.json' file
-      template:
-        src: "{{ playbook_dir }}/../templates/genesis.json.j2"
-        dest: "{{ playbook_dir }}/../generated/quorum/data/genesis.json"
-        mode: "u=rw,g=r,o=r"
+
+       
+    - name: Generate key files for each transaction manager
+      expect:
+        command: constellation-node --generatekeys=tm
+        responses:
+           'Lock key pair.*' : ''
+        chdir: "{{ generation_dir }}/quorum/data/{{ item.name }}-tm"
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
       become: false
     

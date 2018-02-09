@@ -46,7 +46,7 @@
       tags: ['go']  
     - name: Add 'GOPHATH' env. variable and update 'PATH' env. varialbe if necessary
       vars:
-        unchanged_stdout: 'Current GOPATH and PATH env. variables are enouth. Nothing has been changed.'
+        unchanged_stdout: 'Current GOPATH and PATH env. variables are enough. Nothing has been changed.'
       shell: |
         # Note that typically '.profile' calls '.bashrc' on recent bash
         . ~/.profile

@@ -1,6 +1,6 @@
 quorum: 
   nodes:
-    - name: node3
+    - name: node2
       host: "{{ inventory_hostname }}"
       type: permissioned # 'static' or 'permissioned'
       port: 30303 # TCP listening port
@@ -10,4 +10,7 @@ quorum:
       accounts:
         prepared:
           count: 1
-          password: user1234 
+          password: user1234
+      tx_manager: # transaction manager
+        port : 9000
+        socket_file : tm.ipc
