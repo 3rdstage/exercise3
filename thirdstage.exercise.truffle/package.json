@@ -14,6 +14,6 @@
     "//": [
       "https://github.com/OpenZeppelin/zeppelin-solidity#getting-started"
     ],
-    "preinstall" : "npm install -g truffle"
+    "preinstall" : "npm install -g truffle ganache-cli"
   }
 }
