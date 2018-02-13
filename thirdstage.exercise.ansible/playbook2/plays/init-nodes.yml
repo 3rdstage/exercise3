@@ -1,0 +1,26 @@
+
+- hosts: all
+  vars:
+    generation_dir: "{{ playbook_dir }}/../generated"
+
+  tasks:
+  - name: Copy respective artifacts into the nodes
+    copy:
+      src: "{{ generation_dir }}/quorum/{{ item.name }}/"
+      dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/"
+      backup: true
+      mode: 0640
+      directory_mode: 0640
+    with_items : quorum.nodes
+    when: (quorum|default({})).nodes|default([])
+    tags: ['quorum']
+
+  - name: Copy common configuration files into all nodes
+    copy:
+      src: "{{ generation_dir }}/quorum/{{ item }}"
+      dest: "{{ ansible_env.HOME }}/quorum/{{ item }}"
+      backup: true
+      mode: 0640
+    with_items: ['genesis.json', 'permissioned-nodes.json']
+    when: (quorum|default({})).nodes|default([])
+    tags: ['quorum']    

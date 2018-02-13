@@ -161,6 +161,6 @@
            'Lock key pair.*' : ''
         chdir: "{{ generation_dir }}/quorum/{{ item.name }}/constellation"
       with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
-      become: false      
+      become: false
     when: not common.quorum.skips.generate_data
     tags: ['generate'] 

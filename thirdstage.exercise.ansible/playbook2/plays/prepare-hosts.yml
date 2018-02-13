@@ -30,27 +30,29 @@
       vars:
         unchanged_stdout: 'Current GOPATH and PATH env. variables are enough. Nothing has been changed.'
       shell: |
-        # Note that typically '.profile' calls '.bashrc' on recent bash
+        # Use '.profile' which is more general than '.bashrc'
         . ~/.profile
         
         # TODO May need to make $HOME/go, $HOME/go/bin, $HOME/go/pkg, $HOME/go/src directories manually
         
         if [ -z `echo $GOPATH` ]; then
           # GOPATH is not defined
-          sed -i '$ a \\nexport GOPATH=$HOME/go\nexport PATH=$GOPATH/bin:$PATH\n' ~/.bashrc
+          sed -i '$ a \\nexport GOPATH=$HOME/go\nexport PATH=$GOPATH/bin:$PATH\n' ~/.profile
         else
           if [ `echo $GOPATH | grep "$HOME/go" | wc -l` -lt 1 ]; then
             # GOPAHT is defined but doesn't include "$HOME/go"
-            sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$HOME/go/bin:$PATH\n' ~/.bashrc
+            sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$HOME/go/bin:$PATH\n' ~/.profile
           else
             if [ `echo $PATH | grep "$HOME/go/bin" | wc -l` -lt 1 ]; then
               # PATH doesn't include "$HOME/go/bin"
-              sed -i '$ a \\nexport PATH=$HOME/go/bin:$PATH\n' ~/.bashrc
+              sed -i '$ a \\nexport PATH=$HOME/go/bin:$PATH\n' ~/.profile
             else
               echo "{{ unchanged_stdout }}"
             fi
           fi
         fi
+      args:
+        executable: /bin/bash # NEVER miss it for .profile to call .bashrc
       become: false
       register: add_gopath_result
       changed_when: "unchanged_stdout not in add_gopath_result.stdout"
@@ -88,41 +90,50 @@
         name: "{{ item }}" 
       with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
       when: (quorum|default({})).nodes|default([])
-      become: false
-    - name: Check whether the constellation is already installed or not
-      command :  constellation-node --version
       become: true
+    - name: Check whether the constellation is already installed or not
+      shell :  |
+        . ~/.profile > /dev/null
+        
+        if [ `which constellation-node | wc -l` -gt 0 ]; then 
+          constellation-node --version
+        fi
+      become: true
+      ignore_errors: true
       register: check_constellation_result
       changed_when: false
+    - name: Create directories to save downloaded files
+      file:
+        path: "{{ ansible_env.HOME }}/Downloads/"
+        state: directory
+        mode: 0755
+      when: not check_constellation_result.stdout.endswith('0.1.0')
+      become: false
     - name: Downlaod Constellation binary archive
       get_url:
         url: "{{ common.quorum.download.constellation }}" 
-        dest: "~/Downloads"
+        dest: "{{ ansible_env.HOME }}/Downloads/"
         mode: 0644
-      when: check_constellation_result|failed
+      when: not check_constellation_result.stdout.endswith('0.1.0')
       become: false
       register: download_constellation_result
     - name: Unzip Constellation binary archive
       vars: 
         filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
       unarchive:
-        src: "~/Downloads/{{ filename }}"
+        remote_src: true
+        src: "{{ ansible_env.HOME }}/Downloads/{{ filename }}"
         dest: /usr/local/bin
+        extra_opts: ['--strip-components=1']
         owner: root
         group: root
         mode: 0755
-      when: download_constellation_result.changed
+      when: not check_constellation_result.stdout.endswith('0.1.0')
       become: true
     when: (quorum|default({})).nodes|default([])
     tags: ['quorum']
     
-    
-  - name: Transfer generated artifacts into respective Quorum node
-    copy:
-      src: "{{ playbook_dir }}/../generated/quorum/{{ item.name }}"
-      dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}"
-    with_items: (quorum|default({})).nodes|default([])  
-    when: false
+
     
     
   
