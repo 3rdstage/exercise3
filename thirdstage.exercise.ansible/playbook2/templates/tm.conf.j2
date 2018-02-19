@@ -4,11 +4,23 @@ References
 
 #}
 
+## Sample : https://github.com/jpmorganchase/constellation/blob/master/sample.conf
+##
+## Options
+## --url           The URL to advertise to other nodes (reachable by them)
+## --port          The local port to listen on
+## --workdir       The folder to put stuff in (default: .)
+## --socket        IPC socket to create for access to the Private API
+## --othernodes    "Boot nodes" to connect to to discover the network
+## --publickeys    Public keys hosted by this node
+## --privatekeys   Private keys hosted by this node (in corresponding order)
+
+
 # Externally accessible URL for this node (this is what's advertised)
-url = "http://{{ hostvars[item.host].ansible_host }}:{{ item.tx_manager.port }}/"
+url = "http://{{ hostvars[item.host].ansible_host }}:{{ item.constellation.port }}/"
 
 # Port to listen on for the public API
-port = {{ item.tx_manager.port }}
+port = {{ item.constellation.port }}
 
 # Socket file to use for the private API / IPC
 socket = "~/quorunm/{{ item.name }}/constellation/tm.ipc"

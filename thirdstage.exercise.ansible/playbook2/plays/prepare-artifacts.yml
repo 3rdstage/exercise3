@@ -32,7 +32,7 @@
         dest: "{{ common.host.layout.git_repo_base }}/quorum"
         clone: true
         update: true
-        version: "{{ common.quorum.version.node }}"
+        version: "v{{ common.quorum.version.node }}"
       become: false
       register: update_quorum_src_result
       changed_when: update_quorum_src_result.after != update_quorum_src_result.before
@@ -57,28 +57,45 @@
       with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
       become: false
     - name: Check whether the constellation is already installed or not
-      command :  constellation-node --version
+      shell :  |
+        . ~/.profile > /dev/null
+        
+        if [ `which constellation-node | wc -l` -gt 0 ]; then 
+          constellation-node --version
+        fi
       become: true
+      ignore_errors: true
       register: check_constellation_result
       changed_when: false
-    - name: Downlaod Constellation binary archive  
+
+    - name: Create directories to save downloaded files
+      file:
+        path: "{{ ansible_env.HOME }}/Downloads/"
+        state: directory
+        mode: 0755
+      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
+      become: false
+
+    - name: Downlaod Constellation binary archive
       get_url:
         url: "{{ common.quorum.download.constellation }}" 
-        dest: "~/Downloads"
+        dest: "{{ ansible_env.HOME }}/Downloads/"
         mode: 0644
-      when: check_constellation_result|failed
+      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
       become: false
       register: download_constellation_result
+
     - name: Unzip Constellation binary archive
       vars: 
         filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
       unarchive:
-        src: "~/Downloads/{{ filename }}"
+        src: "{{ ansible_env.HOME }}/Downloads/{{ filename }}"
         dest: /usr/local/bin
+        extra_opts: ['--strip-components=1']
         owner: root
         group: root
         mode: 0755
-      when: download_constellation_result.changed
+      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
       become: true
     when: false
     tags: ['control-machine']

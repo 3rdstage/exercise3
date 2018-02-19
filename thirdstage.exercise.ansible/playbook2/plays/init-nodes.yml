@@ -9,10 +9,11 @@
       src: "{{ generation_dir }}/quorum/{{ item.name }}/"
       dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/"
       backup: true
-      mode: 0640
-      directory_mode: 0640
-    with_items : quorum.nodes
+      mode: 0600
+      directory_mode: 0740
+    with_items: "{{ quorum.nodes }}"
     when: (quorum|default({})).nodes|default([])
+    become: false
     tags: ['quorum']
 
   - name: Copy common configuration files into all nodes
@@ -20,7 +21,18 @@
       src: "{{ generation_dir }}/quorum/{{ item }}"
       dest: "{{ ansible_env.HOME }}/quorum/{{ item }}"
       backup: true
-      mode: 0640
+      mode: 0600
     with_items: ['genesis.json', 'permissioned-nodes.json']
     when: (quorum|default({})).nodes|default([])
-    tags: ['quorum']    
+    become: false
+    tags: ['quorum']
+    
+  
+  - name: Init Quorum node using genesis block
+    command: geth --datadir "{{ item.name }}/data" init genesis.json
+    args:
+      chdir: "{{ ansible_env.HOME }}/quorum"
+    with_items : "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: ['quorum']

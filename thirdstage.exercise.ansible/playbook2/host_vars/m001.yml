@@ -13,9 +13,11 @@ quorum:
         prepared:
           count: 2
           password: user1234
-      tx_manager: # transaction manager
+      constellation: #constellation node
+        # For reference, refer https://github.com/jpmorganchase/constellation/blob/master/sample.conf
         port : 9000
-        socket_file : tm.ipc
+        socket : constellation.ipc
+        verbosity: 3 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
       
 
 

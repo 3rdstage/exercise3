@@ -1,0 +1,43 @@
+- hosts: all
+  vars:
+  tasks:
+  - name: Start constellation nodes
+    # References
+    #   - https://github.com/jpmorganchase/quorum-examples/blob/master/examples/7nodes/constellation-start.sh
+    #   - https://github.com/jpmorganchase/constellation/blob/master/sample.conf
+    vars:
+      protocol: http
+    shell: |
+      . ~/.profile
+    
+      mkdir -p "quorum/{{ item.name }}/logs"
+      
+      cat $PWD
+      
+      # TODO Check wheter the port for constellation node is in use already or not
+      # netstat -anop | grep 9000 | wc -l 
+      
+      # TODO Remove socket file created previously.
+      
+      # TODO Add global variable for TLS usage
+      # TODO Generated tm.conf is not in use.
+      # TODO Trying to using 'nohup'
+      constellation-node \
+        --url={{ protocol }}://{{ hostvars[item.host].ansible_host }}:{{ item.constellation.port }}/ \
+        --port={{ item.constellation.port }} \
+        --workdir=quorum/{{ item.name }}/constellation/ \
+        --socket={{ item.constellation.socket }} \
+        --publickeys=tm.pub \
+        --privatekeys=tm.key \
+        --tls=off \
+        --verbosity={{ item.constellation.verbosity }} \
+        --othernodes={{ protocol }}://169.56.90.131:9000/ >> "quorum/{{ item.name }}/logs/constellation.log" 2>&1 &
+    args:
+      executable: /bin/bash
+      chdir: "{{ ansible_env.HOME }}"
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    async: 15
+    poll: 0
+    tags: ['constellation']  

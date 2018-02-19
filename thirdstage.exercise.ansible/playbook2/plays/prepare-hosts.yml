@@ -13,10 +13,12 @@
         update_cache: false
       with_items: "{{ common.host.requirement.go.apt.repos }}"   
       become: true
+      register: add_go_apt_repos_result
     - name: Update APT list before installing Go
       apt:
         force_apt_get: true
         update_cache: true
+      when: add_go_apt_repos_result.changed
       become: true
       ignore_errors: true
     - name: Install Go if necessary
@@ -67,7 +69,7 @@
         dest: "{{ common.host.layout.git_repo_base }}/quorum"
         clone: true
         update: true
-        version: "{{ common.quorum.version.node }}"
+        version: "v{{ common.quorum.version.node }}"
       become: false
       register: update_quorum_src_result
       changed_when: update_quorum_src_result.after != update_quorum_src_result.before
@@ -107,14 +109,14 @@
         path: "{{ ansible_env.HOME }}/Downloads/"
         state: directory
         mode: 0755
-      when: not check_constellation_result.stdout.endswith('0.1.0')
+      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
       become: false
     - name: Downlaod Constellation binary archive
       get_url:
         url: "{{ common.quorum.download.constellation }}" 
         dest: "{{ ansible_env.HOME }}/Downloads/"
         mode: 0644
-      when: not check_constellation_result.stdout.endswith('0.1.0')
+      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
       become: false
       register: download_constellation_result
     - name: Unzip Constellation binary archive
@@ -128,7 +130,7 @@
         owner: root
         group: root
         mode: 0755
-      when: not check_constellation_result.stdout.endswith('0.1.0')
+      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
       become: true
     when: (quorum|default({})).nodes|default([])
     tags: ['quorum']

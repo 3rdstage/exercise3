@@ -32,10 +32,11 @@ common:
     skips:
         generate_data: false
     version:
-      node: 'v2.0.0' # target tag of quorum git repository at https://github.com/jpmorganchase/quorum 
-      constellation: 'v0.2.0'
+      node: '2.0.0' # without leading 'v' from the target tag of quorum git repository at https://github.com/jpmorganchase/quorum 
+      constellation: '0.3.0'
     download: # download URLs
-      constellation: 'https://github.com/jpmorganchase/constellation/releases/download/v0.2.0/constellation-0.2.0-ubuntu1604.tar.xz'
+      # constellation: 'https://github.com/jpmorganchase/constellation/releases/download/v0.2.0/constellation-0.2.0-ubuntu1604.tar.xz'
+      constellation: 'https://github.com/jpmorganchase/constellation/releases/download/v0.3.0/constellation-0.3.0-ubuntu1604.tar.xz'
     genesis:
       # https://github.com/jpmorganchase/quorum-examples/blob/master/examples/7nodes/genesis.json
       # https://github.com/ethereum/wiki/wiki/Ethereum-Chain-Spec-Format#subformat-genesis
