@@ -7,6 +7,7 @@ quorum:
       rpcport:  8555
       raftport: 50410
       discport: 0
+      verbosity: 3 # 0=silent, 1=error, 2=warn, 3=info, 4=debug, 5=detail (default: 3)
       accounts:
         prepared:
           count: 3
@@ -16,3 +17,4 @@ quorum:
         port : 9000
         socket : constellation.ipc
         verbosity: 3 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
+        tls: off

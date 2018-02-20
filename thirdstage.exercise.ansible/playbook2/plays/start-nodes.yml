@@ -5,14 +5,13 @@
     # References
     #   - https://github.com/jpmorganchase/quorum-examples/blob/master/examples/7nodes/constellation-start.sh
     #   - https://github.com/jpmorganchase/constellation/blob/master/sample.conf
+    #   - https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options
     vars:
       protocol: http
     shell: |
       . ~/.profile
     
       mkdir -p "quorum/{{ item.name }}/logs"
-      
-      cat $PWD
       
       # TODO Check wheter the port for constellation node is in use already or not
       # netstat -anop | grep 9000 | wc -l 
@@ -22,8 +21,9 @@
       # TODO Add global variable for TLS usage
       # TODO Generated tm.conf is not in use.
       # TODO Trying to using 'nohup'
+      set -e
       constellation-node \
-        --url={{ protocol }}://{{ hostvars[item.host].ansible_host }}:{{ item.constellation.port }}/ \
+        --url={{ protocol }}://{{ ansible_host }}:{{ item.constellation.port }}/ \
         --port={{ item.constellation.port }} \
         --workdir=quorum/{{ item.name }}/constellation/ \
         --socket={{ item.constellation.socket }} \
@@ -40,4 +40,42 @@
     become: false
     async: 15
     poll: 0
-    tags: ['constellation']  
+    tags: ['constellation']
+    
+  - name: Start Ethereum nodes
+    shell: |
+      . ~/.profile
+      
+      # Create password file for prepared account
+      echo "{{ item.accounts.prepared.password }}" > "quorum/{{ item.name }}/passwd"
+      
+      # TODO Set permissioned
+      set -e
+      set -v
+      PRIVATE_CONFIG=quorum/{{ item.name }}/constellation/{{ item.constellation.socket }} 
+      nohup geth --datadir "quorum/{{ item.name }}/data" \
+                 --port {{ item.port }} \
+                 --permissioned \
+                 --verbosity {{ item.verbosity }} \
+                 --rpc --rpcapi {{ common.quorum.rpcapi }} \
+                 --rpcaddr {{ ansible_host }} --rpcport {{ item.rpcport }} \
+                 --emitcheckpoints \
+                 --raftport {{ item.raftport }} \
+                 --unlock 0 \  {# Comma separated list of accounts to unlock #}
+                 --password "quorum/{{ item.name }}/passwd" >> "quorum/{{ item.name }}/logs/geth.log" 2>&1 &
+      set +v
+      
+      # TODO Find the way remove passwd file in safe way.
+      # rm -f "quorum/{{ item.name }}/passwd"
+      
+    args:
+      executable: /bin/bash
+      chdir: "{{ ansible_env.HOME }}"
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    tags: ['ethereum']
+    
+    
+      
+    
+    
