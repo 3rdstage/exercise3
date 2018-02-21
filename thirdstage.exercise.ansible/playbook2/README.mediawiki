@@ -1,0 +1,6 @@
+===Optimization===
+
+* Log Level
+* Disable automatic descovery using '--nodiscover' options 
+* Optimize the refersh interval of 'permissioned-nodes.json' or 'static-nodes.json' file
+* 

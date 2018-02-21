@@ -1,0 +1,36 @@
+- hosts: all
+  vars:
+  tasks:
+  - name: Stop Ethereum nodes
+    command: killall -HUP geth
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    ignore_errors: true
+    tags: ['process']
+
+  - name: Remove socket files of Ethereum nodes
+    file:
+      path: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/data/geth.ipc"
+      state: absent 
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: ['socket']
+    
+  - name: Stop constellation nodes
+    command: killall -HUP constellation-node
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    ignore_errors: true
+    tags: ['process']
+    
+  - name: Remove socket files of constellation nodes
+    file:
+      path: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/constellation/{{ item.constellation.socket }}"
+      state: absent 
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false  
+    tags: ['socket']
+    
+    

@@ -19,7 +19,7 @@ quorum:
         port : 9000
         socket : constellation.ipc
         verbosity: 3 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
-        tls: strict # 'strict', 'off' 
+        # tls: off # optional, enum('strict', 'off'), overriding common.quorum.constellation.tls
       
 
 

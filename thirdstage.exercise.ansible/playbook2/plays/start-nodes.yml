@@ -7,7 +7,10 @@
     #   - https://github.com/jpmorganchase/constellation/blob/master/sample.conf
     #   - https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options
     vars:
-      protocol: http
+      tls: "{{ item.constellation.tls|default(common.quorum.constellation.tls) }}"
+      
+      protocol: >-2
+        {%- if tls == 'strict' -%}'https'{%- else -%}'http'{%- endif -%}
     shell: |
       . ~/.profile
     
@@ -18,9 +21,12 @@
       
       # TODO Remove socket file created previously.
       
+      # TODO Generate TLS keys beforehand refering
+      #      - https://workaround.org/ispmail/jessie/create-certificate
+      
       # TODO Add global variable for TLS usage
       # TODO Generated tm.conf is not in use.
-      # TODO Trying to using 'nohup'
+      # TODO Try to using 'nohup'
       set -e
       constellation-node \
         --url={{ protocol }}://{{ ansible_host }}:{{ item.constellation.port }}/ \
@@ -29,7 +35,19 @@
         --socket={{ item.constellation.socket }} \
         --publickeys=tm.pub \
         --privatekeys=tm.key \
+        {% if tls == 'strict' %}
+        --tls=strict \
+        --tlsservercert=tls-server-cert.pem \
+        --tlsserverkey=tls-server-key.pem \
+        --tlsservertrust={{common.quorum.constellation.tlsservertrust}} \
+        --tlsknownclients=tls-known-clients \
+        --tlsclientcert=tls-client-cert.pem \
+        --tlsclientkey=tls-client-key.pem \
+        --tlsclienttrust={{common.quorum.constellation.tlsclienttrust}} \
+        --tlsknownservers=tls-known-servers \        
+        {%- else -%}
         --tls=off \
+        {% endif %}
         --verbosity={{ item.constellation.verbosity }} \
         --othernodes={{ protocol }}://169.56.90.131:9000/ >> "quorum/{{ item.name }}/logs/constellation.log" 2>&1 &
     args:
@@ -49,18 +67,26 @@
       # Create password file for prepared account
       echo "{{ item.accounts.prepared.password }}" > "quorum/{{ item.name }}/passwd"
       
-      # TODO Set permissioned
+      # TODO Set permissioned configurable
+      # TODO Try to use following options explicitly : 
+      #   --identity value         Custom node name
+      #   --cache value            Megabytes of memory allocated to internal caching (min 16MB / database forced) (default: 128)
+      #   --trie-cache-gens value  Number of trie node generations to keep in memory (default: 120)
+      #   --maxpeers value         Maximum number of network peers (network disabled if set to 0) (default: 25)
+      #   --nodiscover             Disables the peer discovery mechanism (manual peer addition)
+      #   --netrestrict value      Restricts network communication to the given IP networks (CIDR masks)
       set -e
       set -v
       PRIVATE_CONFIG=quorum/{{ item.name }}/constellation/{{ item.constellation.socket }} 
       nohup geth --datadir "quorum/{{ item.name }}/data" \
                  --port {{ item.port }} \
                  --permissioned \
+                 --nodiscover \ 
                  --verbosity {{ item.verbosity }} \
                  --rpc --rpcapi {{ common.quorum.rpcapi }} \
                  --rpcaddr {{ ansible_host }} --rpcport {{ item.rpcport }} \
                  --emitcheckpoints \
-                 --raftport {{ item.raftport }} \
+                 --raft --raftport {{ item.raftport }} \
                  --unlock 0 \  {# Comma separated list of accounts to unlock #}
                  --password "quorum/{{ item.name }}/passwd" >> "quorum/{{ item.name }}/logs/geth.log" 2>&1 &
       set +v

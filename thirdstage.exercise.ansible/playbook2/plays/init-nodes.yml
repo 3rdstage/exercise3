@@ -50,14 +50,16 @@
   # NOTE Quorum geth 2.0.0 has a bug about the location of permissioned-nodes.json
   #      By the official wiki, the file is supposed to be on datadir 
   #      But actually the geth try to find the file on the directory where geth is called.
-  - name: Copy 'permissioned-nodes.json' file to home directory
+  - name: Copy 'permissioned-nodes.json' and 'static-nodes.json' file to home directory
     copy:
-      src: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/data/permissioned-nodes.json"
-      dest: "{{ ansible_env.HOME }}/permissioned-nodes.json"
+      src: "{{ ansible_env.HOME }}/quorum/{{ item.0.name }}/data/{{ item.1 }}"
+      dest: "{{ ansible_env.HOME }}/{{ item.1 }}"
       remote_src: true
       backup: false
       mode: 0600
-    with_items: "{{ quorum.nodes }}"
+    with_netsted: 
+      - "{{ quorum.nodes }}"
+      - ['permissioned-nodes.json', 'static-nodes.json']
     when: (quorum|default({})).nodes|default([])
     become: false
     

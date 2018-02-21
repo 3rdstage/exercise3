@@ -30,7 +30,9 @@ common:
   
   quorum:
     skips:
-        generate_data: false
+      generate_data: false
+    cleans:
+      data: false
     version:
       node: '2.0.0' # without leading 'v' from the target tag of quorum git repository at https://github.com/jpmorganchase/quorum 
       constellation: '0.3.0'
@@ -50,5 +52,8 @@ common:
       extraData: '0x0000000000000000000000000000000000000000000000000000000000000000'
       gasLimit: '0xE0000000'
     rpcapi: 'admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum'
-    
+    constellation:
+      tls: off # 'strict', 'off'
+      tlsservertrust: 'insecure-no-validation' # options: whitelist, tofu, ca, ca-or-tofu, insecure-no-validation
+      tlsclienttrust: 'insecure-no-validation' # options: whitelist, tofu, ca, ca-or-tofu, insecure-no-validation
       

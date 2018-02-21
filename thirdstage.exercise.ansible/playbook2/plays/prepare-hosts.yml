@@ -14,6 +14,7 @@
       with_items: "{{ common.host.requirement.go.apt.repos }}"   
       become: true
       register: add_go_apt_repos_result
+
     - name: Update APT list before installing Go
       apt:
         force_apt_get: true
@@ -21,6 +22,7 @@
       when: add_go_apt_repos_result.changed
       become: true
       ignore_errors: true
+
     - name: Install Go if necessary
       apt:
         name: "{{ common.host.requirement.go.apt.package }}"
@@ -28,6 +30,7 @@
         force_apt_get: true
         update_cache: false
       become: true
+
     - name: Add 'GOPHATH' env. variable and update 'PATH' env. varialbe if necessary
       vars:
         unchanged_stdout: 'Current GOPATH and PATH env. variables are enough. Nothing has been changed.'
@@ -73,11 +76,13 @@
       become: false
       register: update_quorum_src_result
       changed_when: update_quorum_src_result.after != update_quorum_src_result.before
+
     - name: Build Quorum
       make:
        chdir: "{{ common.host.layout.git_repo_base }}/quorum"
        target: all
       become: false
+
     - name: Copy Quorum binaries to '/usr/local/bin'
       copy:
         src:  "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
@@ -87,12 +92,14 @@
         mode: 0755
       with_items: ['geth', 'bootnode']
       become: true
+
     - name: Install packages required for Constellation node
       apt:
         name: "{{ item }}" 
       with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
       when: (quorum|default({})).nodes|default([])
       become: true
+
     - name: Check whether the constellation is already installed or not
       shell :  |
         . ~/.profile > /dev/null
@@ -104,6 +111,7 @@
       ignore_errors: true
       register: check_constellation_result
       changed_when: false
+
     - name: Create directories to save downloaded files
       file:
         path: "{{ ansible_env.HOME }}/Downloads/"
@@ -111,6 +119,7 @@
         mode: 0755
       when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
       become: false
+
     - name: Downlaod Constellation binary archive
       get_url:
         url: "{{ common.quorum.download.constellation }}" 
@@ -119,6 +128,7 @@
       when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
       become: false
       register: download_constellation_result
+
     - name: Unzip Constellation binary archive
       vars: 
         filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
@@ -134,8 +144,16 @@
       become: true
     when: (quorum|default({})).nodes|default([])
     tags: ['quorum']
-    
-
-    
-    
+  
+  # References
+  #   - https://help.ubuntu.com/lts/serverguide/NTP.html  
+  - name: Install NTP
+    apt:
+      name: ntp
+      state: present
+      force_apt_get: true
+      update_cache: false
+    become: true    
+    when: true
+    tags: ['ntp']
   
