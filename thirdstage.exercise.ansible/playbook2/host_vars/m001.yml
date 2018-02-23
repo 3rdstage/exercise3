@@ -9,16 +9,16 @@ quorum:
       rpcport:  8545 # default 8545
       raftport: 50400
       discport: 0
-      verbosity: 5 # 0=silent, 1=error, 2=warn, 3=info, 4=debug, 5=detail (default: 3)
+      verbosity: 3 # 0=silent, 1=error, 2=warn, 3=info, 4=debug, 5=detail (default: 3)
       accounts:
         prepared:
           count: 2
-          password: user1234
+          password: 
       constellation: #constellation node
         # For reference, refer https://github.com/jpmorganchase/constellation/blob/master/sample.conf
         port : 9000
         socket : constellation.ipc
-        verbosity: 3 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
+        verbosity: 1 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
         # tls: off # optional, enum('strict', 'off'), overriding common.quorum.constellation.tls
       
 

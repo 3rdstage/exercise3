@@ -10,6 +10,11 @@
           3438
   tasks:
   
+    - name: Test nested variable
+      debug:
+        msg: 
+         - Golang package - "{{ common.host.requirement.go.apt.package }}"
+         
     - name: Test vault
       vars: 
         obj: {'a': 1, 'b': 2}

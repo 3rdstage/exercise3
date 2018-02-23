@@ -1,14 +1,14 @@
 common:
   host:
     layout:
-      git_repo_base: "~/git/repo" # base directory for git repositories
+      git_repo_base: "{{ ansible_env.HOME }}/git/repo" # base directory for git repositories
     requirement:
       go:
         ver:
           min: '1.8'
-          recommanded:  '1.8'
+          recommanded:  '1.9'
         apt: 
-          package: "golang-1.8-go"  # TODO Try "golang-{{ host.requirement.go.ver.recommanded }}-go"
+          package: "golang-1.9-go"  # TODO(Done) Try "golang-{{ common.host.requirement.go.ver.recommanded }}-go" - error !
           repos: ['ppa:gophers/archive', 'ppa:longsleep/golang-backports'] # TODO Check it is possible or not to specify the source file name for PPA
       nodejs:
         ver: # For all Node.js releases, refer 'https://nodejs.org/en/download/releases/'
@@ -27,18 +27,19 @@ common:
         ver:
           pattern: '3\.10\.10'
           recommanded: '3.10.10'
+      solc:
+        apt:
+          repos: ['ppa:ethereum/ethereum']
   
   quorum:
     skips:
       generate_data: false
     cleans:
-      data: false
-    version:
-      node: '2.0.0' # without leading 'v' from the target tag of quorum git repository at https://github.com/jpmorganchase/quorum 
-      constellation: '0.3.0'
-    download: # download URLs
-      # constellation: 'https://github.com/jpmorganchase/constellation/releases/download/v0.2.0/constellation-0.2.0-ubuntu1604.tar.xz'
-      constellation: 'https://github.com/jpmorganchase/constellation/releases/download/v0.3.0/constellation-0.3.0-ubuntu1604.tar.xz'
+      db: false
+      datadir: false
+    log:
+      rollovers: false
+    version: '2.0.1' # without leading 'v' from the target tag of quorum git repository at https://github.com/jpmorganchase/quorum 
     genesis:
       # https://github.com/jpmorganchase/quorum-examples/blob/master/examples/7nodes/genesis.json
       # https://github.com/ethereum/wiki/wiki/Ethereum-Chain-Spec-Format#subformat-genesis
@@ -51,9 +52,16 @@ common:
       parentHash: '0x0000000000000000000000000000000000000000000000000000000000000000'
       extraData: '0x0000000000000000000000000000000000000000000000000000000000000000'
       gasLimit: '0xE0000000'
+    cache: 640 # Megabytes of memory allocated to internal caching (min 16MB / database forced) (default: 128)
+    trie-cache-gens: 360 # Number of trie node generations to keep in memory (default: 120)
     rpcapi: 'admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum'
+    raftblocktime: 50 # Amount of time between raft block creations in milliseconds (default: 50) 
     constellation:
+      version: '0.3.2'
+      download: 'https://github.com/jpmorganchase/constellation/releases/download/v0.3.2/constellation-0.3.2-ubuntu1604.tar.xz'
       tls: off # 'strict', 'off'
       tlsservertrust: 'insecure-no-validation' # options: whitelist, tofu, ca, ca-or-tofu, insecure-no-validation
       tlsclienttrust: 'insecure-no-validation' # options: whitelist, tofu, ca, ca-or-tofu, insecure-no-validation
-      
+    posority:
+      version: '1.2.0'
+      download: https://github.com/jpmorganchase/quorum/releases/download/v1.2.0/porosity 

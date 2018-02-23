@@ -31,6 +31,13 @@
         update_cache: false
       become: true
 
+    - name: Add or update soft link to 'go' command
+      file:
+        src: "/usr/lib/go-{{ common.host.requirement.go.ver.recommanded }}/bin/go"
+        dest: /usr/local/bin/go
+        state: link 
+      become: true
+
     - name: Add 'GOPHATH' env. variable and update 'PATH' env. varialbe if necessary
       vars:
         unchanged_stdout: 'Current GOPATH and PATH env. variables are enough. Nothing has been changed.'
@@ -66,13 +73,49 @@
 
   - name: Install Quorum and Constellation for hosts which would run Quorum nodes
     block:
+    - name: Add APT repository for solc
+      apt_repository:
+        repo: "{{ item }}"
+        update_cache: false
+      with_items: "{{ common.host.requirement.solc.apt.repos }}"   
+      become: true
+      register: add_solc_repos_result
+
+    - name: Update APT list before installing solc
+      apt:
+        force_apt_get: true
+        update_cache: true
+      when: add_solc_repos_result.changed
+      become: true
+      ignore_errors: true
+      
+    - name: Install packages required for Ethereum or Constellation nodes
+      apt:
+        name: "{{ item }}" 
+      with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev', 'solc', 'sysvbanner', 'wrk']
+      when: (quorum|default({})).nodes|default([])
+      become: true
+
+    - name: Check whether the Quorum geth is already installed or not
+      shell: |
+        . ~/.profile > /dev/null
+        
+        if [ `which geth | wc -l` -gt 0 ]; then 
+          geth version | grep 'Quorum Version'
+        fi
+      become: true
+      ignore_errors: true
+      register: check_geth_result
+      changed_when: false
+
     - name: Clone or update Quorum source repository from GitHub
       git: 
         repo: 'https://github.com/jpmorganchase/quorum.git'
         dest: "{{ common.host.layout.git_repo_base }}/quorum"
         clone: true
         update: true
-        version: "v{{ common.quorum.version.node }}"
+        version: "v{{ common.quorum.version }}"
+      when: not check_geth_result.stdout.endswith(common.quorum.version)
       become: false
       register: update_quorum_src_result
       changed_when: update_quorum_src_result.after != update_quorum_src_result.before
@@ -81,27 +124,23 @@
       make:
        chdir: "{{ common.host.layout.git_repo_base }}/quorum"
        target: all
+      #when: not check_geth_result.stdout.endswith(common.quorum.version) 
       become: false
 
     - name: Copy Quorum binaries to '/usr/local/bin'
       copy:
-        src:  "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
+        src: "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
         dest: /usr/local/bin
+        remote_src: true
         owner: root
         group : root
         mode: 0755
+      #when: not check_geth_result.stdout.endswith(common.quorum.version)
       with_items: ['geth', 'bootnode']
       become: true
 
-    - name: Install packages required for Constellation node
-      apt:
-        name: "{{ item }}" 
-      with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev']
-      when: (quorum|default({})).nodes|default([])
-      become: true
-
     - name: Check whether the constellation is already installed or not
-      shell :  |
+      shell: |
         . ~/.profile > /dev/null
         
         if [ `which constellation-node | wc -l` -gt 0 ]; then 
@@ -117,21 +156,21 @@
         path: "{{ ansible_env.HOME }}/Downloads/"
         state: directory
         mode: 0755
-      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
       become: false
 
     - name: Downlaod Constellation binary archive
       get_url:
-        url: "{{ common.quorum.download.constellation }}" 
+        url: "{{ common.quorum.constellation.download }}" 
         dest: "{{ ansible_env.HOME }}/Downloads/"
         mode: 0644
-      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
       become: false
       register: download_constellation_result
 
     - name: Unzip Constellation binary archive
       vars: 
-        filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
+        filename: "{{ common.quorum.constellation.download|regex_replace('^.*/', '') }}"
       unarchive:
         remote_src: true
         src: "{{ ansible_env.HOME }}/Downloads/{{ filename }}"
@@ -140,10 +179,30 @@
         owner: root
         group: root
         mode: 0755
-      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
       become: true
-    when: (quorum|default({})).nodes|default([])
-    tags: ['quorum']
+
+    - name: Check whether the Porosity is already installed or not
+      shell: |
+        . ~/.profile > /dev/null
+        
+        echo `ls /usr/local/bin/porosity | wc -l` 
+      become: true
+      ignore_errors: true
+      register: check_porosity_result
+      changed_when: false    
+      tags: ['porosity']
+
+    # https://www.coindesk.com/first-ethereum-decompiler-launches-jp-morgan-quorum-integration/
+    - name: Download Porosity
+      get_url: 
+        url: "{{ common.quorum.posority.download }}"
+        dest: '/usr/local/bin'
+        mode: 0755
+      become: true
+      when: check_porosity_result.stdout == '0'
+      tags: ['porosity']
+    when: (quorum|default({})).nodes|default([]) 
   
   # References
   #   - https://help.ubuntu.com/lts/serverguide/NTP.html  

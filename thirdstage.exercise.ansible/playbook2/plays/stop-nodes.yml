@@ -2,7 +2,7 @@
   vars:
   tasks:
   - name: Stop Ethereum nodes
-    command: killall -HUP geth
+    command: killall geth # Don't use -HUP 'cause process started by nohup wouldn't be stoped.
     when: (quorum|default({})).nodes|default([])
     become: false
     ignore_errors: true
@@ -18,7 +18,7 @@
     tags: ['socket']
     
   - name: Stop constellation nodes
-    command: killall -HUP constellation-node
+    command: killall constellation-node
     when: (quorum|default({})).nodes|default([])
     become: false
     ignore_errors: true
@@ -32,5 +32,6 @@
     when: (quorum|default({})).nodes|default([])
     become: false  
     tags: ['socket']
+    
     
     

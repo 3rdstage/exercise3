@@ -14,6 +14,12 @@
     shell: |
       . ~/.profile
     
+      # Check whether the port is already in use or not
+      if [ `lsof -i -P -n | grep LISTEN | grep {{ item.constellation.port }} | wc -l` -gt 0 ]; then
+        exit 101
+        echo "The port {{ item.constellation.port }} for constellation node is already in use by another process."
+      fi
+      
       mkdir -p "quorum/{{ item.name }}/logs"
       
       # TODO Check wheter the port for constellation node is in use already or not
@@ -28,7 +34,7 @@
       # TODO Generated tm.conf is not in use.
       # TODO Try to using 'nohup'
       set -e
-      constellation-node \
+      nohup constellation-node \
         --url={{ protocol }}://{{ ansible_host }}:{{ item.constellation.port }}/ \
         --port={{ item.constellation.port }} \
         --workdir=quorum/{{ item.name }}/constellation/ \
@@ -56,8 +62,8 @@
     with_items: "{{ quorum.nodes }}"
     when: (quorum|default({})).nodes|default([])
     become: false
-    async: 15
-    poll: 0
+    #async: 15
+    #poll: 0
     tags: ['constellation']
     
   - name: Start Ethereum nodes
@@ -66,6 +72,12 @@
       
       # Create password file for prepared account
       echo "{{ item.accounts.prepared.password }}" > "quorum/{{ item.name }}/passwd"
+
+      unlocks=
+      for i in {2..99}; do
+        unlocks=${unlocks},${i}
+      done;
+      unlocks=${unlocks#,}
       
       # TODO Set permissioned configurable
       # TODO Try to use following options explicitly : 
@@ -83,11 +95,13 @@
                  --permissioned \
                  --nodiscover \ 
                  --verbosity {{ item.verbosity }} \
+                 --cache {{ common.quorum.cache }} --trie-cache-gens 360 \
                  --rpc --rpcapi {{ common.quorum.rpcapi }} \
-                 --rpcaddr {{ ansible_host }} --rpcport {{ item.rpcport }} \
+                 --rpcaddr 127.0.0.1 --rpcport {{ item.rpcport }} \
                  --emitcheckpoints \
                  --raft --raftport {{ item.raftport }} \
-                 --unlock 0 \  {# Comma separated list of accounts to unlock #}
+                 --raftblocktime {{ common.quorum.raftblocktime }} \
+                 --unlock ${unlocks} \  {# Comma separated list of accounts to unlock #}
                  --password "quorum/{{ item.name }}/passwd" >> "quorum/{{ item.name }}/logs/geth.log" 2>&1 &
       set +v
       

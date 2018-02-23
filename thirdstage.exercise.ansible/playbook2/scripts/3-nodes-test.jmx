@@ -15,10 +15,10 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">100</stringProp>
+          <stringProp name="LoopController.loops">1000</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">3</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">240</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">12</stringProp>
         <longProp name="ThreadGroup.start_time">1519192265000</longProp>
         <longProp name="ThreadGroup.end_time">1519192265000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -42,12 +42,12 @@
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="SetBalance Request" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
-              <elementProp name="id" elementType="HTTPArgument">
+              <elementProp name="accountIndex" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">A${accountIndex}</stringProp>
+                <stringProp name="Argument.value">${accountIndex}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">id</stringProp>
+                <stringProp name="Argument.name">accountIndex</stringProp>
               </elementProp>
               <elementProp name="balance" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -313,7 +313,7 @@
           <stringProp name="2461825">PORT</stringProp>
         </collectionProp>
         <collectionProp name="UserParameters.thread_values">
-          <collectionProp name="608854346">
+          <collectionProp name="-918646804">
             <stringProp name="-743267285">169.56.90.131</stringProp>
             <stringProp name="1567005">3000</stringProp>
           </collectionProp>

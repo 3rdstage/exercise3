@@ -34,7 +34,7 @@
         dest: "{{ common.host.layout.git_repo_base }}/quorum"
         clone: true
         update: true
-        version: "v{{ common.quorum.version.node }}"
+        version: "v{{ common.quorum.version }}"
       become: false
       register: update_quorum_src_result
       changed_when: update_quorum_src_result.after != update_quorum_src_result.before
@@ -78,21 +78,21 @@
         path: "{{ ansible_env.HOME }}/Downloads/"
         state: directory
         mode: 0755
-      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
       become: false
 
     - name: Downlaod Constellation binary archive
       get_url:
-        url: "{{ common.quorum.download.constellation }}" 
+        url: "{{ common.quorum.constellation.download }}" 
         dest: "{{ ansible_env.HOME }}/Downloads/"
         mode: 0644
-      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
       become: false
       register: download_constellation_result
 
     - name: Unzip Constellation binary archive
       vars: 
-        filename: "{{ common.quorum.download.constellation|regex_replace('^.*/', '') }}"
+        filename: "{{ common.quorum.constellation.download|regex_replace('^.*/', '') }}"
       unarchive:
         src: "{{ ansible_env.HOME }}/Downloads/{{ filename }}"
         dest: /usr/local/bin
@@ -100,7 +100,7 @@
         owner: root
         group: root
         mode: 0755
-      when: not check_constellation_result.stdout.endswith(common.quorum.version.constellation)
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
       become: true
     when: false
     tags: ['control-machine']
