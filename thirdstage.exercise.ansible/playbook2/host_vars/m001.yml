@@ -6,6 +6,7 @@ quorum:
       host: "{{ inventory_hostname }}"  # Reduntant, but required in some cases such as control machine local only tasks 
       type: permissioned # 'static' or 'permissioned'
       port: 30303 # TCP listening port
+      rpcaddr: '127.0.0.1'
       rpcport:  8545 # default 8545
       raftport: 50400
       discport: 0
@@ -17,8 +18,8 @@ quorum:
       constellation: #constellation node
         # For reference, refer https://github.com/jpmorganchase/constellation/blob/master/sample.conf
         port : 9000
-        socket : constellation.ipc
-        verbosity: 1 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
+        socket : tm.ipc
+        verbosity: 3 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
         # tls: off # optional, enum('strict', 'off'), overriding common.quorum.constellation.tls
       
 

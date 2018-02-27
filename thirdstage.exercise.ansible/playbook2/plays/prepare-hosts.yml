@@ -203,6 +203,23 @@
       when: check_porosity_result.stdout == '0'
       tags: ['porosity']
     when: (quorum|default({})).nodes|default([]) 
+
+  - name: Install pip (Pytho package manager)
+    apt:
+      name: "{{ common.host.requirement.python.pip.apt.package }}"
+      update_cache: false
+    become: true
+    tags: ['pip']
+    
+  - name: Install required Python libraries
+    pip:
+      name: "{{ item.name }}"
+      version: "{{ item.ver }}"
+      state: present
+    with_items: "{{ common.host.requirement.python.libraries|default([]) }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: ['python-lib']
   
   # References
   #   - https://help.ubuntu.com/lts/serverguide/NTP.html  
@@ -216,3 +233,36 @@
     when: true
     tags: ['ntp']
   
+  # References
+  #   - https://github.com/prometheus/node_exporter
+  - name: Install and configure Prometheus node exporter
+    block:
+    - name: Install Prometheus node exporter package
+      apt:
+        name: "{{ common.host.requirement['prometheus-node-exporter'].apt.package }}"
+        update_cache: false
+      become: true
+      register: install_prometheus_exporter_result
+
+    - name: Configure Prometheus node exporter
+      shell: |
+        . ~/.profile > /dev/null
+        
+        readonly collectors="{{ common.host.requirement['prometheus-node-exporter'].collectors.enabled }}"
+        readonly log_level="{{ common.host.requirement['prometheus-node-exporter'].log.level }}"
+
+        cp /etc/default/prometheus-node-exporter /etc/default/prometheus-node-exporter.default
+        unset ARG
+        
+        echo $collectors
+       
+        # Installing Node Exporter makes init.d can control(start/stop/restart) it
+        /etc/init.d/prometheus-node-exporter restart
+        
+      when: install_prometheus_exporter_result.changed
+      become: true
+    when: (quorum|default({})).nodes|default([])
+    tags: ['prometheus-exporter']   
+  
+  # TODO
+  # Check and increase open file 

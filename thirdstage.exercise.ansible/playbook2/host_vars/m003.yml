@@ -4,6 +4,7 @@ quorum:
       host: "{{ inventory_hostname }}"
       type: permissioned
       port: 30313
+      rpcaddr: '0.0.0.0'
       rpcport:  8555
       raftport: 50410
       discport: 0
@@ -15,6 +16,6 @@ quorum:
       constellation: 
         # For reference, refer https://github.com/jpmorganchase/constellation/blob/master/sample.conf
         port : 9000
-        socket : constellation.ipc
-        verbosity: 1 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
+        socket : tm.ipc
+        verbosity: 3 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
         # tls: off # optional, enum('strict', 'off'), overriding common.quorum.constellation.tls

@@ -27,15 +27,35 @@ common:
         ver:
           pattern: '3\.10\.10'
           recommanded: '3.10.10'
+      python:
+        pip:
+          apt:
+            package: 'python-pip'
+        libraries:
+          - name: pexpect
+            ver: '4.3'
+      prometheus:
+      prometheus-node-exporter:
+        # Refer https://github.com/prometheus/node_exporter
+        apt:
+          package: "prometheus-node-exporter"
+        collectors:
+          enabled: 'diskstats,filesystem,meminfo,netdev,stat,time'
+        log:
+          level: warn
+        #auth:
+        #  user:
+        #  pass:
       solc:
         apt:
           repos: ['ppa:ethereum/ethereum']
   
   quorum:
     skips:
-      generate_data: false
+      generate_data: false # TODO Rename to 'generate_artifacts'
+      transfer_artifacts: true
     cleans:
-      db: false
+      ledger: true
       datadir: false
     log:
       rollovers: false
@@ -59,7 +79,7 @@ common:
     constellation:
       version: '0.3.2'
       download: 'https://github.com/jpmorganchase/constellation/releases/download/v0.3.2/constellation-0.3.2-ubuntu1604.tar.xz'
-      tls: off # 'strict', 'off'
+      tls: strict # 'strict', 'off'
       tlsservertrust: 'insecure-no-validation' # options: whitelist, tofu, ca, ca-or-tofu, insecure-no-validation
       tlsclienttrust: 'insecure-no-validation' # options: whitelist, tofu, ca, ca-or-tofu, insecure-no-validation
     posority:

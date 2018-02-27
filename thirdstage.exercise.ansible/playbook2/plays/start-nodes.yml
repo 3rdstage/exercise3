@@ -10,7 +10,7 @@
       tls: "{{ item.constellation.tls|default(common.quorum.constellation.tls) }}"
       
       protocol: >-2
-        {%- if tls == 'strict' -%}'https'{%- else -%}'http'{%- endif -%}
+        {%- if tls == 'strict' -%}'http'{%- else -%}'http'{%- endif -%}
     shell: |
       . ~/.profile
     
@@ -43,14 +43,12 @@
         --privatekeys=tm.key \
         {% if tls == 'strict' %}
         --tls=strict \
-        --tlsservercert=tls-server-cert.pem \
-        --tlsserverkey=tls-server-key.pem \
-        --tlsservertrust={{common.quorum.constellation.tlsservertrust}} \
-        --tlsknownclients=tls-known-clients \
-        --tlsclientcert=tls-client-cert.pem \
-        --tlsclientkey=tls-client-key.pem \
-        --tlsclienttrust={{common.quorum.constellation.tlsclienttrust}} \
-        --tlsknownservers=tls-known-servers \        
+        --tlsservercert='tls-server-cert.pem' \
+        --tlsserverkey='tls-server-key.pem' \
+        --tlsservertrust='insecure-no-validation' \
+        --tlsclientcert='tls-client-cert.pem' \
+        --tlsclientkey='tls-client-key.pem' \
+        --tlsclienttrust='insecure-no-validation' \
         {%- else -%}
         --tls=off \
         {% endif %}
@@ -92,16 +90,14 @@
       PRIVATE_CONFIG=quorum/{{ item.name }}/constellation/{{ item.constellation.socket }} 
       nohup geth --datadir "quorum/{{ item.name }}/data" \
                  --port {{ item.port }} \
-                 --permissioned \
-                 --nodiscover \ 
                  --verbosity {{ item.verbosity }} \
                  --cache {{ common.quorum.cache }} --trie-cache-gens 360 \
                  --rpc --rpcapi {{ common.quorum.rpcapi }} \
-                 --rpcaddr 127.0.0.1 --rpcport {{ item.rpcport }} \
+                 --rpcaddr {{ item.rpcaddr }} --rpcport {{ item.rpcport }} \
                  --emitcheckpoints \
                  --raft --raftport {{ item.raftport }} \
                  --raftblocktime {{ common.quorum.raftblocktime }} \
-                 --unlock ${unlocks} \  {# Comma separated list of accounts to unlock #}
+                 --unlock 0 \  {# Comma separated list of accounts to unlock #}
                  --password "quorum/{{ item.name }}/passwd" >> "quorum/{{ item.name }}/logs/geth.log" 2>&1 &
       set +v
       

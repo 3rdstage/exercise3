@@ -4,75 +4,70 @@
     generation_dir: "{{ playbook_dir }}/../generated"
 
   tasks:
-  - name: Backup previous artifacts on each node
-    # NOTE As of Ansible 2.4, remote copy doesn't support recursive copy of directory.
-    shell: |
-      . ~/.profile
+  - name: Transfer artifacts
+    block:
+    - name: Backup previous artifacts on each node
+      # NOTE As of Ansible 2.4, remote copy doesn't support recursive copy of directory.
+      shell: |
+        . ~/.profile
+        
+        if [ -d quorum ]; then
+          mv quorum/ quorum-{{ lookup('pipe','date +%y%m%dT%H%M%S') }}/
+        fi
+      args:
+        executable: /bin/bash
+        chdir: "{{ ansible_env.HOME }}"
+    
+    - name: Remove previous artifacts except backup
+      file:
+        path: "{{ ansible_env.HOME }}/quorum/"
+        state: absent
       
-      if [ -d quorum ]; then
-        mv quorum/ quorum-{{ lookup('pipe','date +%y%m%dT%H%M%S') }}/
-      fi
-    args:
-      executable: /bin/bash
-    when: (quorum|default({})).nodes|default([])
-    become: false
+    - name: Copy respective artifacts into the nodes
+      copy:
+        src: "{{ generation_dir }}/quorum/{{ item.name }}/"
+        dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/"
+        backup: false
+        mode: 0600
+        directory_mode: 0740
+      with_items: "{{ quorum.nodes }}"
+      
+    # TODO Make configurable
+    - name: Create 'static-nodes.json' file
+      copy:
+        src: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/data/permissioned-nodes.json"
+        dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/data/static-nodes.json"
+        remote_src: true
+        backup: false
+        mode: 0600
+      with_items: "{{ quorum.nodes }}"
   
-  - name: Remove previous artifacts except backup
-    file:
-      path: "{{ ansible_env.HOME }}/quorum/"
-      state: absent
-    when: (quorum|default({})).nodes|default([])
+    # NOTE Quorum geth 2.0.0 has a bug about the location of permissioned-nodes.json
+    #      By the official wiki, the file is supposed to be on datadir 
+    #      But actually the geth try to find the file on the directory where geth is called.
+    - name: Copy 'permissioned-nodes.json' and 'static-nodes.json' file to home directory
+      copy:
+        src: "{{ ansible_env.HOME }}/quorum/{{ item.0.name }}/data/{{ item.1 }}"
+        dest: "{{ ansible_env.HOME }}/{{ item.1 }}"
+        remote_src: true
+        backup: false
+        mode: 0600
+      with_netsted: 
+        - "{{ quorum.nodes }}"
+        - ['permissioned-nodes.json', 'static-nodes.json']
+      
+    - name: Copy common configuration files into all nodes
+      copy:
+        src: "{{ generation_dir }}/quorum/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/quorum/{{ item }}"
+        backup: true
+        mode: 0600
+      with_items: ['genesis.json']
+      when: (quorum|default({})).nodes|default([])
+      become: false
+    when: (not common.quorum.skips.transfer_artifacts) and (quorum|default({})).nodes|default([]) 
     become: false
     
-  - name: Copy respective artifacts into the nodes
-    copy:
-      src: "{{ generation_dir }}/quorum/{{ item.name }}/"
-      dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/"
-      backup: false
-      mode: 0600
-      directory_mode: 0740
-    with_items: "{{ quorum.nodes }}"
-    when: (quorum|default({})).nodes|default([])
-    become: false
-    
-  # TODO Make configurable
-  - name: Create 'static-nodes.json' file
-    copy:
-      src: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/data/permissioned-nodes.json"
-      dest: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/data/static-nodes.json"
-      remote_src: true
-      backup: false
-      mode: 0600
-    with_items: "{{ quorum.nodes }}"
-    when: (quorum|default({})).nodes|default([])
-    become: false
-
-  # NOTE Quorum geth 2.0.0 has a bug about the location of permissioned-nodes.json
-  #      By the official wiki, the file is supposed to be on datadir 
-  #      But actually the geth try to find the file on the directory where geth is called.
-  - name: Copy 'permissioned-nodes.json' and 'static-nodes.json' file to home directory
-    copy:
-      src: "{{ ansible_env.HOME }}/quorum/{{ item.0.name }}/data/{{ item.1 }}"
-      dest: "{{ ansible_env.HOME }}/{{ item.1 }}"
-      remote_src: true
-      backup: false
-      mode: 0600
-    with_netsted: 
-      - "{{ quorum.nodes }}"
-      - ['permissioned-nodes.json', 'static-nodes.json']
-    when: (quorum|default({})).nodes|default([])
-    become: false
-    
-  - name: Copy common configuration files into all nodes
-    copy:
-      src: "{{ generation_dir }}/quorum/{{ item }}"
-      dest: "{{ ansible_env.HOME }}/quorum/{{ item }}"
-      backup: true
-      mode: 0600
-    with_items: ['genesis.json']
-    when: (quorum|default({})).nodes|default([])
-    become: false
-
   - name: Create directories for log files
     file:
       path: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/logs"

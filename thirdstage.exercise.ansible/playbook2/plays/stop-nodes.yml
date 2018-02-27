@@ -34,4 +34,39 @@
     tags: ['socket']
     
     
+  # TODO Confirm again common.quorum.cleans.ledger interactively when it is set to 'true'
+  - name: Remove ledger and intermediate data if set to
+    block:
+    - name: Remove ledger database
+      expect:
+        command: geth removedb --datadir "quorum/{{ item.name }}/data"
+        responses:
+          'Remove this database.*': 'y'
+          'Remove this database.*': 'y'
+        chdir: "{{ ansible_env.HOME }}"
+      with_items: "{{ quorum.nodes }}"
+      become: false
+    - name: Remove RAFT data and caches
+      shell: |
+        . ~/.profile > /dev/null
+        
+        rm -Rf "quorum/{{ item.name }}/data/geth/ethash"
+        rm -f "quorum/{{ item.name }}/data/geth/transactions.rlp"
+        rm -f "quorum/{{ item.name }}/data/geth/LOCK"
+        
+        rm -Rf "quorum/{{ item.name }}/data/quorum-raft-state/"
+        rm -Rf "quorum/{{ item.name }}/data/raft-snap/"
+        rm -Rf "quorum/{{ item.name }}/data/raft-wal/"
+        
+        rm -f "quorum/{{ item.name }}/constellation/tls-known-servers"
+        rm -f "quorum/{{ item.name }}/constellation/tls-known-clients"
+      args:
+        executable: /bin/bash
+        chdir: "{{ ansible_env.HOME }}"
+      with_items: "{{ quorum.nodes }}"
+      become: false
+    when: (quorum|default({})).nodes|default([]) and common.quorum.cleans.ledger
+    tags: ['ledger']
+    
+    
     
