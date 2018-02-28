@@ -3,19 +3,21 @@ quorum:
     - name: node2
       host: "{{ inventory_hostname }}"
       type: permissioned # 'static' or 'permissioned'
-      port: 30303 # TCP listening port
-      rpcaddr: '127.0.0.1'
-      rpcport:  8545
-      raftport: 50400
+      port: 30333 # TCP listening port
+      rpcaddr: '0.0.0.0'
+      rpcport:  8575
+      raftport: 50430
       discport: 0
-      verbosity: 2 # 0=silent, 1=error, 2=warn, 3=info, 4=debug, 5=detail (default: 3)
+      verbosity: 4 # 0=silent, 1=error, 2=warn, 3=info, 4=debug, 5=detail (default: 3)
       accounts:
         prepared:
           count: 1
           password: 
-      constellation: 
+      constellation:
+        name: tm2
+        bootnode: false
         # For reference, refer https://github.com/jpmorganchase/constellation/blob/master/sample.conf
-        port : 9000
-        socket : tm.ipc
+        port : 9030
+        socket : tm2.ipc
         verbosity: 3 # 0: Fatal, 1: Warn, 2: Info, 3: Debug
         # tls: off # optional, enum('strict', 'off'), overriding common.quorum.constellation.tls

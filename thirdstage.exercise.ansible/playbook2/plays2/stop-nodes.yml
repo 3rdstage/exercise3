@@ -1,0 +1,106 @@
+- hosts: all
+  vars:
+  tasks:
+  - name: Stop Ethereum nodes
+    shell: |
+      id=`ps x --format pid,command | grep -E '^\s*\w* geth --datadir {{ item.name }}/data' | awk '{print $1}'`
+      
+      if [ -z ${id} ]; then
+        echo "There's no 'geth' process for {{ item.name }}"
+      else
+        kill -9 ${id}
+        if [ $? -ne 0 ]; then
+          echo "Fail to kill 'geth' process whose PID is ${id}"
+          exit 101
+        else
+          echo "Removed 'geth' process whose PID is ${id} for {{ item.name }}"
+        fi
+      fi
+    args:
+      executable: /bin/bash
+      chdir: "{{ ansible_env.HOME }}"
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    ignore_errors: false
+    tags: ['geth-process']
+
+  - name: Remove socket files of Ethereum nodes
+    file:
+      path: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/data/geth.ipc"
+      state: absent 
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: ['geth-socket']
+    
+  - name: Stop constellation nodes
+    shell: |
+      id=`ps x --format pid,command | grep -E '^\s*\w* constellation-node {{ item.name }}/constellation/{{ item.constellation.name }}.conf' | awk '{print $1}'`
+      
+      if [ -z ${id} ]; then
+        echo "There's no 'constellation-node' process for {{ item.name }}"
+      else
+        kill -9 ${id}
+        if [ $? -ne 0 ]; then
+          echo "Fail to kill 'constellation-node' process whose PID is ${id}"
+          exit 101
+        else
+          echo "Removed 'constellation-node' process whose PID is ${id} for {{ item.name }}"
+        fi
+      fi
+    args:
+      executable: /bin/bash
+      chdir: "{{ ansible_env.HOME }}"
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    ignore_errors: false
+    tags: ['constellation-process']
+    
+  - name: Remove socket files of constellation nodes
+    file:
+      path: "{{ ansible_env.HOME }}/quorum/{{ item.name }}/constellation/{{ item.constellation.socket }}"
+      state: absent 
+    with_items: "{{ quorum.nodes }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false  
+    tags: ['constellation-socket']
+    
+    
+  # TODO Confirm again common.quorum.cleans.ledger interactively when it is set to 'true'
+  - name: Remove ledger and intermediate data if set to
+    block:
+    - name: Remove ledger database
+      expect:
+        command: geth removedb --datadir "quorum/{{ item.name }}/data"
+        responses:
+          'Remove this database.*': 'y'
+          'Remove this database.*': 'y'
+        chdir: "{{ ansible_env.HOME }}"
+      with_items: "{{ quorum.nodes }}"
+      become: false
+    - name: Remove RAFT data and caches
+      shell: |
+        . ~/.profile > /dev/null
+        
+        rm -Rf "quorum/{{ item.name }}/data/geth/ethash"
+        rm -f "quorum/{{ item.name }}/data/geth/transactions.rlp"
+        rm -f "quorum/{{ item.name }}/data/geth/LOCK"
+        
+        rm -Rf "quorum/{{ item.name }}/data/quorum-raft-state/"
+        rm -Rf "quorum/{{ item.name }}/data/raft-snap/"
+        rm -Rf "quorum/{{ item.name }}/data/raft-wal/"
+        
+        rm -f "quorum/{{ item.name }}/constellation/tls-known-servers"
+        rm -f "quorum/{{ item.name }}/constellation/tls-known-clients"
+      args:
+        executable: /bin/bash
+        chdir: "{{ ansible_env.HOME }}"
+      with_items: "{{ quorum.nodes }}"
+      become: false
+    when: (quorum|default({})).nodes|default([]) and common.quorum.cleans.ledger
+    tags: ['ledger']
+    
+    
+    

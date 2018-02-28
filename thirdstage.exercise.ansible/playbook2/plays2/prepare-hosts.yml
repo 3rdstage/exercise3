@@ -1,0 +1,260 @@
+
+- hosts: all
+  tasks:
+
+  # References
+  #   - https://help.ubuntu.com/lts/serverguide/NTP.html  
+  - name: Install NTP
+    apt:
+      name: ntp
+      state: present
+      force_apt_get: true
+      update_cache: false
+    become: true    
+    when: true
+    tags: ['ntp']
+
+  - name: Install pip (Pytho package manager)
+    apt:
+      name: "{{ common.host.requirement.python.pip.apt.package }}"
+      update_cache: false
+    become: true
+    tags: ['pip']
+    
+  - name: Install required Python libraries
+    pip:
+      name: "{{ item.name }}"
+      version: "{{ item.ver }}"
+      state: present
+    with_items: "{{ common.host.requirement.python.libraries|default([]) }}"
+    when: (quorum|default({})).nodes|default([])
+    become: false
+    tags: ['python-lib']
+
+  - name: Install Go for hosts which would run Quorum nodes
+    # References
+    #   - https://github.com/golang/go/wiki/Ubuntu/151aa825423ec740624969e75bf86fe15334aa7d
+    #   - https://github.com/golang/go/wiki/Ubuntu/cd1ce5cac7d7d48ee67a522c545a46c70ed57a19
+    block:
+    - name: Add APT repository for Go
+      apt_repository:
+        repo: "{{ item }}"
+        update_cache: false
+      with_items: "{{ common.host.requirement.go.apt.repos }}"   
+      become: true
+      register: add_go_apt_repos_result
+
+    - name: Install Go if necessary
+      apt:
+        name: "{{ common.host.requirement.go.apt.package }}"
+        state: present
+        force_apt_get: true
+        update_cache: "{{ add_go_apt_repos_result.changed }}"
+      become: true
+
+    - name: Add or update soft link to 'go' command
+      file:
+        src: "/usr/lib/go-{{ common.host.requirement.go.ver.recommanded }}/bin/go"
+        dest: /usr/local/bin/go
+        state: link 
+      become: true
+
+    - name: Add 'GOPHATH' env. variable and update 'PATH' env. varialbe if necessary
+      vars:
+        unchanged_stdout: 'Current GOPATH and PATH env. variables are enough. Nothing has been changed.'
+      shell: |
+        # Use '.profile' which is more general than '.bashrc'
+        . ~/.profile
+        
+        # TODO May need to make $HOME/go, $HOME/go/bin, $HOME/go/pkg, $HOME/go/src directories manually
+        
+        if [ -z `echo $GOPATH` ]; then
+          # GOPATH is not defined
+          sed -i '$ a \\nexport GOPATH=$HOME/go\nexport PATH=$GOPATH/bin:$PATH\n' ~/.profile
+        else
+          if [ `echo $GOPATH | grep "$HOME/go" | wc -l` -lt 1 ]; then
+            # GOPAHT is defined but doesn't include "$HOME/go"
+            sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$HOME/go/bin:$PATH\n' ~/.profile
+          else
+            if [ `echo $PATH | grep "$HOME/go/bin" | wc -l` -lt 1 ]; then
+              # PATH doesn't include "$HOME/go/bin"
+              sed -i '$ a \\nexport PATH=$HOME/go/bin:$PATH\n' ~/.profile
+            else
+              echo "{{ unchanged_stdout }}"
+            fi
+          fi
+        fi
+      args:
+        executable: /bin/bash # NEVER miss it for .profile to call .bashrc
+      become: false
+      register: add_gopath_result
+      changed_when: "unchanged_stdout not in add_gopath_result.stdout"
+    when: (quorum|default({})).nodes|default([])
+    tags: ['go']
+
+  - name: Install Quorum and Constellation for hosts which would run Quorum nodes
+    block:
+    - name: Add APT repository for solc
+      apt_repository:
+        repo: "{{ item }}"
+        update_cache: false
+      with_items: "{{ common.host.requirement.solc.apt.repos }}"   
+      become: true
+      register: add_solc_repos_result
+
+    - name: Install or update solc
+      apt:
+        name: 'solc'
+        state: present
+        force_apt_get: true
+        update_cache: "{{ add_solc_repos_result.changed }}"
+      become: true
+      
+    - name: Install packages required for Ethereum or Constellation nodes
+      apt:
+        name: "{{ item }}" 
+      with_items: ['libdb-dev', 'libleveldb-dev', 'libsodium-dev', 'zlib1g-dev', 'libtinfo-dev', 'solc', 'sysvbanner', 'wrk']
+      become: true
+
+    - name: Check whether the Quorum geth is already installed or not
+      shell: |
+        . ~/.profile > /dev/null
+        
+        if [ `which geth | wc -l` -gt 0 ]; then 
+          geth version | grep 'Quorum Version'
+        fi
+      become: true
+      ignore_errors: true
+      register: check_geth_result
+      changed_when: false
+
+    - name: Clone or update Quorum source repository from GitHub
+      git: 
+        repo: 'https://github.com/jpmorganchase/quorum.git'
+        dest: "{{ common.host.layout.git_repo_base }}/quorum"
+        clone: true
+        update: true
+        version: "v{{ common.quorum.version }}"
+      when: not check_geth_result.stdout.endswith(common.quorum.version)
+      become: false
+      register: update_quorum_src_result
+      changed_when: update_quorum_src_result.after != update_quorum_src_result.before
+
+    - name: Build Quorum
+      make:
+       chdir: "{{ common.host.layout.git_repo_base }}/quorum"
+       target: all
+      when: update_quorum_src_result.changed 
+      become: false
+
+    - name: Copy Quorum binaries to '/usr/local/bin'
+      copy:
+        src: "{{ common.host.layout.git_repo_base }}/quorum/build/bin/{{ item }}"
+        dest: /usr/local/bin
+        remote_src: true
+        owner: root
+        group : root
+        mode: 0755
+      when: not check_geth_result.stdout.endswith(common.quorum.version)
+      with_items: ['geth', 'bootnode']
+      become: true
+
+    - name: Check whether the constellation is already installed or not
+      shell: |
+        . ~/.profile > /dev/null
+        
+        if [ `which constellation-node | wc -l` -gt 0 ]; then 
+          constellation-node --version
+        fi
+      become: true
+      ignore_errors: true
+      register: check_constellation_result
+      changed_when: false
+
+    - name: Create directories to save downloaded files
+      file:
+        path: "{{ ansible_env.HOME }}/Downloads/"
+        state: directory
+        mode: 0755
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
+      become: false
+
+    - name: Downlaod Constellation binary archive
+      get_url:
+        url: "{{ common.quorum.constellation.download }}" 
+        dest: "{{ ansible_env.HOME }}/Downloads/"
+        mode: 0644
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
+      become: false
+      register: download_constellation_result
+
+    - name: Unzip Constellation binary archive
+      vars: 
+        filename: "{{ common.quorum.constellation.download|regex_replace('^.*/', '') }}"
+      unarchive:
+        remote_src: true
+        src: "{{ ansible_env.HOME }}/Downloads/{{ filename }}"
+        dest: /usr/local/bin
+        extra_opts: ['--strip-components=1']
+        owner: root
+        group: root
+        mode: 0755
+      when: not check_constellation_result.stdout.endswith(common.quorum.constellation.version)
+      become: true
+
+    - name: Check whether the Porosity is already installed or not
+      shell: |
+        . ~/.profile > /dev/null
+        
+        echo `ls /usr/local/bin/porosity | wc -l` 
+      become: true
+      ignore_errors: true
+      register: check_porosity_result
+      changed_when: false    
+      tags: ['porosity']
+
+    # https://www.coindesk.com/first-ethereum-decompiler-launches-jp-morgan-quorum-integration/
+    - name: Download Porosity
+      get_url: 
+        url: "{{ common.quorum.posority.download }}"
+        dest: '/usr/local/bin'
+        mode: 0755
+      become: true
+      when: check_porosity_result.stdout == '0'
+      tags: ['porosity']
+    when: (quorum|default({})).nodes|default([]) 
+
+  
+  # References
+  #   - https://github.com/prometheus/node_exporter
+  - name: Install and configure Prometheus node exporter
+    block:
+    - name: Install Prometheus node exporter package
+      apt:
+        name: "{{ common.host.requirement['prometheus-node-exporter'].apt.package }}"
+        update_cache: false
+      become: true
+      register: install_prometheus_exporter_result
+
+    - name: Configure Prometheus node exporter
+      shell: |
+        . ~/.profile > /dev/null
+        
+        readonly collectors="{{ common.host.requirement['prometheus-node-exporter'].collectors.enabled }}"
+        readonly log_level="{{ common.host.requirement['prometheus-node-exporter'].log.level }}"
+
+        cp /etc/default/prometheus-node-exporter /etc/default/prometheus-node-exporter.default
+        unset ARG
+        
+        echo $collectors
+       
+        # Installing Node Exporter makes init.d can control(start/stop/restart) it
+        /etc/init.d/prometheus-node-exporter restart
+        
+      when: install_prometheus_exporter_result.changed
+      become: true
+    when: (quorum|default({})).nodes|default([])
+    tags: ['prometheus-exporter']   
+  
+  # TODO
+  # Check and increase open file 

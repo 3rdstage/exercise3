@@ -45,14 +45,14 @@
     # NOTE Quorum geth 2.0.0 has a bug about the location of permissioned-nodes.json
     #      By the official wiki, the file is supposed to be on datadir 
     #      But actually the geth try to find the file on the directory where geth is called.
-    - name: Copy 'permissioned-nodes.json' and 'static-nodes.json' file to home directory
+    - name: Copy 'permissioned-nodes.json' and 'static-nodes.json' file to startup directory
       copy:
         src: "{{ ansible_env.HOME }}/quorum/{{ item.0.name }}/data/{{ item.1 }}"
-        dest: "{{ ansible_env.HOME }}/{{ item.1 }}"
+        dest: "{{ ansible_env.HOME }}/quorum/{{ item.1 }}"
         remote_src: true
         backup: false
         mode: 0600
-      with_netsted: 
+      with_nested: 
         - "{{ quorum.nodes }}"
         - ['permissioned-nodes.json', 'static-nodes.json']
       
@@ -70,13 +70,24 @@
         state: directory
         mode: 0750
       with_items: "{{ quorum.nodes }}"
+
+    - name: Create empty log files
+      file:
+        path: "{{ ansible_env.HOME }}/quorum/{{ item.0.name }}/logs/{{ item.1 }}"
+        state: touch
+        mode: 0640 
+      with_nested: 
+        - "{{ quorum.nodes }}"
+        - ['geth.log', 'constellation.log']
     when: (not common.quorum.skips.transfer_artifacts) and (quorum|default({})).nodes|default([]) 
     become: false
+    tags: ['transfer']
 
   - name: Init Ethereum node using genesis block
-    command: geth --datadir "quorum/{{ item.name }}/data" init quorum/genesis.json
+    command: geth --datadir "{{ item.name }}/data" init genesis.json
     args:
-      chdir: "{{ ansible_env.HOME }}"
+      chdir: "{{ ansible_env.HOME }}/quorum"
     with_items : "{{ quorum.nodes }}"
     when: (quorum|default({})).nodes|default([])
     become: false
+    tags: ['init']

@@ -52,10 +52,10 @@ common:
   
   quorum:
     skips:
-      generate_data: false # TODO Rename to 'generate_artifacts'
-      transfer_artifacts: true
+      generate_artifacts: false
+      transfer_artifacts: false
     cleans:
-      ledger: true
+      ledger: false
       datadir: false
     log:
       rollovers: false

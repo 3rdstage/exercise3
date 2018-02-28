@@ -32,3 +32,38 @@
         msg: "{{ hostvars['m001'].items() }}"
       when: true
 
+
+    - name: Test hostvar['all']
+      debug:
+        msg: tlsservertrust - "{{ hostvars['all'].common.quorum.constellation.tlsservertrust }}"
+      ignore_errors: true
+        
+    - name: Test complex filtering and aggregation
+      debug:
+        msg:
+          - "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
+          - "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|selectattr('constellation.bootnode')|list }}"
+
+    - name: Test complex filtering and aggregation 2
+      vars:
+        bootnode_str: >-2
+          {%- set bootnodes = hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|selectattr('constellation.bootnode')|list %}
+          {%- set urls = [] -%}
+          {%- for node in bootnodes -%}
+            {%- set url = 'http://' ~ node.host ~ ':' ~ node.constellation.port -%}
+            {%- do urls.append(url) -%}
+          {%- endfor -%}
+          
+          "{{ urls }}"
+      debug:
+        msg: "{{ bootnode_str }}"         
+ 
+    - name: Test complex template
+      template:
+        src: "{{ playbook_dir }}/../templates/tm.conf.j2"
+        dest: "{{ generation_dir }}/test/{{ item.constellation.name }}.conf"
+        mode: "u=rw,g=r,o=r"
+      with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
+      #with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|first }}"      
+      become: false  
+          

@@ -1,0 +1,50 @@
+- hosts: localhost
+  tasks:
+
+    - name: Install required Python libraries to validate inventory
+      pip:
+        name: "{{ item.name }}"
+        version: "{{ item.ver }}"
+        state: present
+      with_items:
+        - { name: jsonschema, ver: '2.6.0' } # https://github.com/Julian/jsonschema
+        - { name: kazoo, ver: '2.2' } # http://docs.ansible.com/ansible/2.4/znode_module.html
+      become: true
+    
+    - name: Downlaod schema for JSON schema if not already done.
+      get_url:
+        url: https://raw.githubusercontent.com/json-schema-org/json-schema-spec/draft-zyp-json-schema-04/schema.json
+        dest: "{{ playbook_dir }}/../files/schema.json"
+        mode: '0644'
+        force: false
+      become: false
+    
+    - name: Validate inventory data
+      vars:
+        generation_dir: "{{ playbook_dir }}/../generated"
+      block:
+      - name: Create project directory for generated files
+        file: 
+          path: "{{ generation_dir }}/host-config"
+          state: directory
+          mode: 0644
+        when: false
+      - name: Write entire 'hostvars' into a single YAML file
+        copy:
+          dest: "{{ generation_dir }}/host-config/hostvars.yaml"
+          content: " {{ hostvars|to_yaml }}"
+        when: false
+      # TODO Filter out unnecessary data mainly from Ansible built-in
+      - name: Write entire 'hostvars' into a single JSON file.
+        copy:
+          dest: "{{ generation_dir }}/host-config/hostvars.json"
+          content: " {{ hostvars|to_nice_json(indent=2) }}"
+        when: false
+      - name: Write hostvar for each host into repective file in JSON format.
+        copy:
+          dest: "{{ generation_dir }}/host-config/{{ item }}.json"
+          #content: " {{ ['common', 'quorum']|map('regex_search', hostvars[item])|list|to_nice_json(indent=2) }}"
+          content: " {{ hostvars[item] }}"
+        with_items: "{{ hostvars|list }}"
+        when: true
+      become: false
