@@ -1,7 +1,7 @@
 #! /bin/bash
 
 readonly script_dir=$(cd `dirname $0` && pwd)
-source "${script_dir}/private-network-config.sh"
+source "${script_dir}/config.sh"
 echo "Configuration for standalone private Ethereum network - networkid: $network_id, port: $port, rpcport: $rpc_port, coinbase: $coin_base, datadir: $data_dir"
 
 echo "Starting standalone private Ethereum network with single miner in background."
@@ -11,7 +11,7 @@ echo "Starting standalone private Ethereum network with single miner in backgrou
 geth --networkid $network_id --identity paul \
   --port $port --rpc --rpcport $rpc_port --rpcapi web3,net,eth,db,admin,personal \
   --mine --minerthreads 2 --etherbase $coin_base \
-  --cache 64 --datadir "$data_dir" > "${script_dir}/private-network.log" 2>&1 &
+  --cache 64 --datadir "$data_dir" > "${data_dir}/geth.log" 2>&1 &
 
 sleep 5s
 

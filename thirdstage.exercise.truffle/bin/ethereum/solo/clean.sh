@@ -3,7 +3,7 @@
 # Remove to clean the configuration and data for standalone private Ethereum network
 
 readonly script_dir=$(cd `dirname $0` && pwd)
-source "${script_dir}/private-network-config.sh"
+source "${script_dir}/config.sh"
 
 if [ `ps | grep geth | wc -l` -gt 0 ]; then
   echo "There seems to be currently running Ethereum node(s)."
