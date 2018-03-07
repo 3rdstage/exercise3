@@ -100,7 +100,7 @@
                  --permissioned --nodiscover --maxpeers 10 \
                  --cache {{ common.quorum.cache }} --trie-cache-gens 360 \
                  --raft --raftport {{ item.raftport }} --raftblocktime {{ common.quorum.raftblocktime }} \
-                 --rpc --rpcaddr 0.0.0.0 --rpcport {{ item.rpcport }} --rpcapi {{ common.quorum.rpcapi }} \
+                 --rpc --rpcaddr {{ item.rpcaddr }} --rpcport {{ item.rpcport }} --rpcapi {{ common.quorum.rpcapi }} \
                  --emitcheckpoints \
                  --unlock 0 \  {# Comma separated list of accounts to unlock #}
                  --password "{{ item.name }}/passwd" 2>> "{{ item.name }}/logs/geth.log" &

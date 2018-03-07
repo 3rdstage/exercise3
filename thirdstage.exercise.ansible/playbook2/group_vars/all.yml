@@ -35,6 +35,20 @@ common:
           - name: pexpect
             ver: '4.3'
       prometheus:
+        download: https://github.com/prometheus/prometheus/releases/download/v2.1.0/prometheus-2.1.0.linux-amd64.tar.gz
+        dpkg: http://http.us.debian.org/debian/pool/main/p/prometheus/prometheus_2.1.0+ds-1+b2_amd64.deb
+        dependencies:
+          - name: adduser
+          - name: daemon
+          - name: debconf
+          - name: libc6
+          - name: libjs-eonasdan-bootstrap-datetimepicker
+          - name: libjs-jquery
+          - name: libjs-jquery-hotkeys
+          - name: libjs-moment
+          - name: libjs-mustache
+          - name: libjs-rickshaw
+          - name: libjs-bootstrap
       prometheus-node-exporter:
         # Refer https://github.com/prometheus/node_exporter
         apt:
@@ -46,6 +60,9 @@ common:
         #auth:
         #  user:
         #  pass:
+      grafana:
+        version: '5.0.0'
+        downlaod: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_5.0.0_amd64.deb
       solc:
         apt:
           repos: ['ppa:ethereum/ethereum']

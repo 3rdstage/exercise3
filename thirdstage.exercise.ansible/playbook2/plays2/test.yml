@@ -66,4 +66,21 @@
       with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|sum(start=[])|list }}"
       #with_items: "{{ hostvars.values()|selectattr('quorum', 'defined')|map(attribute='quorum')|selectattr('nodes', 'defined')|map(attribute='nodes')|first }}"      
       become: false  
-          
+   
+   
+    - name: Test installing Prometheus from Debian package
+      block:
+      - name: Install dependencies
+        apt:
+          name: "{{ item.name }}"
+          state: present
+          force_apt_get: true
+          force: true
+        with_items: "{{ common.host.requirement.prometheus.dependencies|default([]) }}"
+        become: true
+      tags: ['prometheus']
+      
+    
+    - name: Test insalling Prometheus from binary distribution
+      tags: ['prometheus2']
+      
