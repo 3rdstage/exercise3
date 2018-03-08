@@ -5,16 +5,18 @@
 declare -r base_dir="${HOME}/quorum/solo"
 
 declare -Ar quorum=(
+  [networkid]=1991
   [name]='lonleynight'
-  [type]='permissioned'
   [port]=30303
-  [rpcaddr]='127.0.0.1'
+  [type]='permissioned'
+  [rpcaddr]='0.0.0.0'
   [rpcport]=8545
   [raftport]=50400
+  [discport]=0
   [verbosity]=4
 )
 
-declare -Ar accounts=([count]=2 [password]='user1234')
+declare -Ar accounts=([count]=5 [password]='user1234')
 
 declare -Ar constellation=(
   [port]='9030'

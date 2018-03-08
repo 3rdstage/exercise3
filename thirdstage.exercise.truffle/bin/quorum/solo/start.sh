@@ -28,6 +28,8 @@ sleep 3s
 PRIVATE_CONFIG=constellation/tm.conf
 nohup geth --datadir data \
   --port ${quorum[port]} \
+  --networkid ${quorum[networkid]} \
+  --identity ${quorum[name]} \
   --permissioned --nodiscover --maxpeers 10 \
   --raft --raftport ${quorum[raftport]} \
   --rpc --rpcaddr ${quorum[rpcaddr]} --rpcport ${quorum[rpcport]} \

@@ -30,11 +30,15 @@ bootnode -genkey "data/geth/nodekey"
 # Get Quorum node ID
 bootnode -nodekey "data/geth/nodekey" -writeaddress > "data/geth/nodeid"
 
-# Create permissioned-node.json file
-cat << HERE > "data/permissioned-nodes.json"
-  {
+# Get primary IP address of local machine
+readonly addr=`hostname -I | awk '{print $1}'`
 
-  }
+# Create permissioned-nodes.json file and static-nodes.json
+readonly nodeid=`cat data/geth/nodeid`
+cat << HERE > "data/permissioned-nodes.json"
+[
+  "enode://${nodeid}@${addr}:${quorum[port]}?discport=${quorum[discport]}&raftport=${quorum[raftport]}"
+]
 HERE
 
 # Create account password file
