@@ -19,31 +19,39 @@ contract("MetaCoin", function(accounts){
   it("shoud send coin correctly.", function(){
      
      var meta;
-     var acc1 = accounts[0];
-     var acc2 = accounts[1];
-     
-     var acc1Balance0;
-     var acc1Balance1;
-     var acc1Balance0;
-     var acc1Balance1;
+     var acc1 = accounts[0]; //sender
+     var acc2 = accounts[1]; //receiver
      
      var amt = 10;
+     var bal1From;
+     var bal1To;
+     var bal2From;
+     var bal2To;
+     var b
      
      return MetaCoin.deployed().then(function(instance){
         meta = instance;
+        return meta.getBalance.call(acc1);
         
-        //balances before transfer
-        acc1Balance0 = instance.getBalance.call(acc1).toNumber();
-        acc2Balance0 = instance.getBalance.call(acc2).toNumber();
-     }).then(function(){
+     }).then(function(bal){
+        bal1From = bal.toNumber();
+        
+        return meta.getBalance.call(acc2);
+     }).then(function(bal){
+        bal2From = bal.toNumber();
         return meta.sendCoin(acc2, amt, {from: acc1});
      }).then(function(){
-        //balances after transfer
-        acc1Balance1 = instance.getBalance.call(acc1).toNumber();
-        acc2Balance1 = instance.getBalance.call(acc2).toNumber();
-     }).then(function(){
-        assert.equal(acc1Balance1, acc1Balance0 - amt, "Amount wasn't correctly taken from the sender.");
-        assert.equal(acc2Balance1, acc2Balance0 + amt, "Amount wasn't correctly sent to the receiver.");
+        return meta.getBalance.call(acc1);
+     }).then(function(bal){
+        bal1To = bal.toNumber();
+        return meta.getBalance.call(acc2);
+     }).then(function(bal){
+        bal2To = bal.toNumber();
+
+        assert.equal(bal1To, bal1From - amt, "Amount wasn't correctly taken from the sender.");
+        assert.equal(bal2To, bal2From + amt, "Amount wasn't correctly sent to the receiver.");
+        
      });
   });
+  
 });

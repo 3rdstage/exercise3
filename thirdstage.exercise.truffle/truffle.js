@@ -1,3 +1,9 @@
+require("babel-polyfill");
+require("babel-register")({
+  "presets": ["env"],
+  "plugins": ["syntax-async-functions","transform-regenerator"]
+});
+
 module.exports = {
     networks: {
       development: {
@@ -12,7 +18,7 @@ module.exports = {
         host: "127.0.0.1",
         port: 8555,
         network_id: 37,
-        from: "90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+        from: "e38e22817778c0ea8e422eebe0ad924df50ad239",
         gasPrice: 20000000000,
         gas: 90000
       }
