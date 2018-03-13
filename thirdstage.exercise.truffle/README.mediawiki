@@ -61,3 +61,9 @@ mago.single$ ./private-network-start.sh
 ===References===
 
 * [http://truffleframework.com/docs/ Truffle official documentation]
+
+===Solidity===
+
+* Strong typed
+* Type inferring
+
