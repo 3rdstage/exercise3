@@ -1,33 +1,31 @@
 const MetaCoin = artifacts.require("MetaCoin");
 
+//http://truffleframework.com/docs/getting_started/javascript-tests
 contract('MetaCoin', function(accounts){
    
    it("should put 10,000 MetaCoin in the first account", async function(){
-      let instance = await MetaCoin.deployed();
-      let balance = await instance.getBalance.call(accounts[0]);
-      assert.equal(balance.valueOf(), 10000);
+
+      let coin = await MetaCoin.deployed();
+      let bal = await coin.getBalance(accounts[0]);
+      assert.equal(bal.valueOf(), 10000, "10,000 wasn't in the 1st account");
    });
    
    it("should send coin correctly", async function(){
-      let acc1 = accounts[0];
-      let acc2 = accounts[1];
+
+      let acc1 = accounts[0]; //sender
+      let acc2 = accounts[1]; //receiver
       let amt = 10;
-      let instance = await MetaCoin.deployed();
+      let coin = await MetaCoin.deployed();
       
-      let bal1From = (await instance.getBalance.call(acc1)).toNumber();
-      console.log(bal1From);
-      let bal2From = (await instance.getBalance.call(acc2)).toNumber();
-      console.log(bal2From);
+      let bal1From = (await coin.getBalance(acc1)).toNumber();
+      let bal2From = (await coin.getBalance(acc2)).toNumber();
       
-      await instance.sendCoin(acc2, amt, {from: acc1});
+      await coin.sendCoin(acc2, amt, {from: acc1});
       
-      let bal1To = (await instance.getBalance.call(acc1)).toNumber();
-      console.log(bal1To);
-      let bal2To = (await instance.getBalance.call(acc2)).toNumber();
-      console.log(bal2To);
+      let bal1To = (await coin.getBalance(acc1)).toNumber();
+      let bal2To = (await coin.getBalance(acc2)).toNumber();
       
       assert.equal(bal1To, bal1From - amt, "Amount wasn't correctly taken from the sender.");
       assert.equal(bal2To, bal2From + amt, "Amount wasn't correctly sent to the receiver.");
-      
    });
 });
