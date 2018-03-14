@@ -6,28 +6,28 @@
 * Install required pacakges running <code>npm install</code>
 
 <pre style="margin-left:40px">
-mago.single$ npm install
+$ npm install
 </pre>
 
 <p style="margin-left:40px">This may take a while. After that there will be local packages under <code>node_modules</code> directory.</p>
 
-* Customize settings in <code>private-network-config.sh</code>
-** <code>network_id</code> : Network ID of the Ethereum network
-** <code>port</code> : the TCP listening port for the Ethereum node
-** <code>rpc_port</code> : the RPC port for the Ethereum node
-** <code>data_dir</code> : the data directory to store keys and ledger for the Ethereum node
-** <code>passwd</code> : the shared(common) password for the accounts automatically generated
-** <code>coin_base</code> : 
+* Customize settings in <code>scripts/quorum/solo/config.sh</code>
+** <code>quorum[networkid]</code> : Network ID of the Quorum network
+** <code>quorum[name]</code> : the name of solo Quorum node, any alpha-numeric string 
+** <code>quorum[port]</code> : the TCP listening port of Quorum node, default : 30303
+** <code>quorum[type]</code> : 'permissioned', do NOT change
+** <code>quorum[rpcaddr]</code> : the binding address for the JSON-RPC service by the Quorum node 
+** <code>quorum[rpcaddr]</code> : 
+** ...
 
-* Initialize standalone private Ethereum network using <code>private-network-init.sh</code>
+* Initialize Quorum network using <code>scripts/quorum/solo/init.sh</code>
 
 <pre style="margin-left:40px">
-mago.single$ ./private-network-init.sh
+$ ./scripts/quorum/solo/init.sh
 </pre>
 
-* Update <code>truffle.js</code> in accordance with <code>private-network-config.sh</code> and initialized Ethereum network
-
-<p style="margin-left:40px">Update <code>port</code>, <code>network_id</code>, and <code>from</code> attribute of <code>networks.development</code> node
+* Update <code>truffle.js</code> in accordance with <code>config.sh</code>
+** Update <code>port</code>, <code>network_id</code>, and <code>from</code> attribute of <code>networks.development</code> node
 
 <pre style="margin-left:40px">
 module.exports = {
@@ -44,26 +44,80 @@ module.exports = {
 </pre>
 
 
-===Running the network and playing with stmart contracts===
+===Running the Quorum network===
 
-* Start standalone private Ethereum network
+* Start local Quorum network
 
 <pre style="margin-left:40px">
-mago.single$ ./private-network-start.sh
+$ ./scripts/quorum/solo/start.sh
 </pre>
+
+* Run <code>tcpdump</code> to inspect JSON-RPC conversations
+** Use another terminal
+
+<pre style="margin-left:40px">
+$ sudo tcpdump -n -i eth0 -A -s0 dst port 8545 and greater 100
+</pre>
+
+* Open Geth console to inspect the Quorum node
+** Use another terminal
+
+<pre style="margin-left:40px">
+$ geth attach ipc:data/geth.ipc
+</pre>
+
+
+===Playing with stmart contracts===
+
+* Write smart contracts
 
 * Compile smart contracts using <code>truffle</code>
 
-
 * Deploy smart contracts using <code>truffle</code>
 
+* Inspect deployed smart contract using <code>truffle</code>
 
-===References===
+* Write unit tests
 
-* [http://truffleframework.com/docs/ Truffle official documentation]
+* Run unit test using <code>truffle</code>
+
 
 ===Solidity===
 
 * Strong typed
 * Type inferring
+
+
+===DApp Programming Stack===
+
+====JavaScript====
+
+* JavaScript Application Code
+** Truffle API
+*** web3 API
+**** Ethereum JSON-RPC API
+
+====Java====
+
+* Java Application Code
+** web3j API
+*** Ethereum JSON-RPC API
+
+
+===References===
+
+* '''Ethereum/Geth'''
+** [https://github.com/ethereum/wiki/wiki/JavaScript-API Ethereum JavaScript API]
+** [https://github.com/ethereum/go-ethereum/wiki/Management-APIs Geth Management API] (Geth)
+** [https://github.com/ethereum/wiki/wiki/JSON-RPC Ethereum JSON-RPC API]
+** [https://github.com/ethereum/wiki/wiki Ethereum official wiki]
+** [http://www.ethdocs.org/en/latest/ Ethereum Homestead Documentation]
+** [https://ethereumbuilders.gitbooks.io/guide/content/en/index.html Ethereum Builder's Guide]
+
+* '''Truffle'''
+** [http://truffleframework.com/docs/ Truffle official documentation]
+** [http://truffleframework.com/docs/advanced/commands Truffle command reference]
+** [https://github.com/trufflesuite/truffle-contract#api Truffle Contract API]
+** [http://truffleframework.com/docs/getting_started/migrations#deployer-api Truffle Deployer API]
+
 

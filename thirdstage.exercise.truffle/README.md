@@ -8,12 +8,12 @@
 #### Install required pacakges running `npm install`
 
 ~~~~bash
-mago.single$ npm install
+$ npm install
 ~~~~
 
 This may take a while. After that there will be local packages under `node_modules` directory.
 
-#### Customize settings in `private-network-config.sh`
+#### Customize settings in `pconfig.sh`
 
 - `network_id` : Network ID of the Ethereum network
 - `port` : the TCP listening port for the Ethereum node
@@ -22,13 +22,13 @@ This may take a while. After that there will be local packages under `node_modul
 - `passwd` : the shared(common) password for the accounts automatically generated
 - `coin_base` : 
 
-#### Initialize standalone private Ethereum network using `private-network-init.sh`
+#### Initialize standalone private Ethereum network using `init.sh`
 
 ```bash
-mago.single$ ./private-network-init.sh
+mago.single$ ./init.sh
 ```
 
-#### Update `truffle.js` in accordance with `private-network-config.sh` and initialized Ethereum network
+#### Update `truffle.js` in accordance with `config.sh` and initialized Ethereum network
 
 Update `port`, `network_id`, and `from` attributes of `networks.development` node
 
@@ -52,7 +52,7 @@ module.exports = {
 #### Start standalone private Ethereum network
 
 ~~~~bash
-mago.single$ ./private-network-start.sh
+mago.single$ ./start.sh
 ~~~~
 
 #### Compile smart contracts using `truffle`

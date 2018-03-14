@@ -34,6 +34,7 @@ nohup geth --datadir data \
   --raft --raftport ${quorum[raftport]} \
   --rpc --rpcaddr ${quorum[rpcaddr]} --rpcport ${quorum[rpcport]} \
   --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum \
+  --rpccorsdomain “https://wallet.ethereum.org” \
   --emitcheckpoints \
   --unlock 0 --password data/passwd 2>> "logs/quorum.log" &
 echo "Quroum node starting.."
