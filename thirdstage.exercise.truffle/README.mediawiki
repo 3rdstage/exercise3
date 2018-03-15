@@ -86,23 +86,16 @@ $ geth attach ipc:data/geth.ipc
 
 * Strong typed
 * Type inferring
+* Compiled into binary and netr
 
 
 ===DApp Programming Stack===
 
-====JavaScript====
+* JavaScript
+** JavaScript Application ---> Truffle API ---> web3 API ---> Ethereum JSON-RPC API ---> Solidity Smart Contract
 
-* JavaScript Application Code
-** Truffle API
-*** web3 API
-**** Ethereum JSON-RPC API
-
-====Java====
-
-* Java Application Code
-** web3j API
-*** Ethereum JSON-RPC API
-
+* Java
+** Java Application ---> web3j API ---> Ethereum JSON-RPC API ---> Solidity Smart Contract
 
 ===References===
 
@@ -113,6 +106,12 @@ $ geth attach ipc:data/geth.ipc
 ** [https://github.com/ethereum/wiki/wiki Ethereum official wiki]
 ** [http://www.ethdocs.org/en/latest/ Ethereum Homestead Documentation]
 ** [https://ethereumbuilders.gitbooks.io/guide/content/en/index.html Ethereum Builder's Guide]
+
+* '''Solidity'''
+** [https://solidity.readthedocs.io/ Solidity official documentation]
+** [https://ethereumbuilders.gitbooks.io/guide/content/en/solidity_tutorials.html Solidity tutorials]
+** [https://monax.io/docs/solidity/ Solidity Series]
+** [http://solidity.readthedocs.io/en/develop/solidity-by-example.html#voting Solidity Votig Example]
 
 * '''Truffle'''
 ** [http://truffleframework.com/docs/ Truffle official documentation]

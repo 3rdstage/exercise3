@@ -1,5 +1,5 @@
 {
-  "name": "thirdstage.exercise.openzeppelin",
+  "name": "thirdstage.exercise.truffle",
   "version": "0.1.0",
   "dependencies": {
     "babel-polyfill": "^6.23.0",
@@ -14,12 +14,13 @@
     "grunt": "~1.0.1",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-nodeunit": "^1.0.0",
-    "grunt-contrib-uglify": "^3.3.0"
+    "grunt-contrib-uglify": "^3.3.0", 
+    "web3": "0.20.x"
   },
   "scripts": {
     "//": [
       "https://github.com/OpenZeppelin/zeppelin-solidity#getting-started"
     ],
-    "preinstall" : "npm install -g truffle ganache-cli"
+    "preinstall" : "npm install -g truffle@4.1.x"
   }
 }
