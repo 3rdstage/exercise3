@@ -3,7 +3,6 @@
 readonly script_dir=$(cd `dirname $0` && pwd)
 source "${script_dir}/config.sh"
 
-
 # Check availability of ports for Constellation node
 if [ `lsof -i -P -n | grep LISTEN | grep ${constellation[port]} | wc -l` -gt 0 ]; then
   echo "The port ${constellation[port]} for Constellation is already bound by another process"
@@ -18,6 +17,7 @@ set -u
 set -e
 nohup constellation-node constellation/tm.conf >> logs/constellation.log 2>&1 &
 echo "Costellation node starting..."
+echo "Check log file at '${base_dir}/logs/constellation.log'"
 
 # Wait a moment before Constellation fully has started
 sleep 3s
@@ -38,4 +38,5 @@ nohup geth --datadir data \
   --emitcheckpoints \
   --unlock 0 --password data/passwd 2>> "logs/quorum.log" &
 echo "Quroum node starting.."
-  
+echo "Check log file at '${base_dir}/logs/constellation.log'"
+

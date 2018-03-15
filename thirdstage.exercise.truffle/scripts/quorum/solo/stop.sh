@@ -2,15 +2,11 @@
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 source "${script_dir}/config.sh"
-
 cd "${base_dir}"
-echo ${quorum[port]}
 
-# Stop Quorum node
-readonly qid=`ps x --format pid,command | grep -E '^\s*\w* geth --datadir data \s*--port ${quorum[port]}' | awk '{print $1}'`
-# readonly qid=`ps x --format pid,command | grep -E '^\s*\w* geth --datadir data --port'`
-
-echo $qid
+# Stop Quorum node and it's socket file
+readonly qid=`ps x --format pid,command | grep -E "^\s*\w* geth --datadir data\s*--port ${quorum[port]}" | awk '{print $1}'`
+#echo $qid
 
 if [ -z ${qid} ]; then
   echo "There's no 'geth' process for ${quorum[name]}"
@@ -21,12 +17,11 @@ else
     exit 101
   else
     echo "Sucessfully removed 'geth' process whos PID is ${qid}"
+    rm -f data/geth.ipc
   fi
 fi
 
-rm -f data/geth.ipc
-
-# Stop Constellation node
+# Stop Constellation node and it's socket file
 readonly cid=`ps x --format pid,command | grep -E '^\s*\w* constellation-node constellation/tm.conf' | awk '{print $1}'`
 
 if [ -z ${cid} ]; then
@@ -38,9 +33,8 @@ else
     exit 101
   else
     echo "Sucessfully removed 'constellation-node' process whos PID is ${cid}"
+    rm -f constellation/tm.ipc
   fi
 fi
-
-rm -f constellation/tm.ipc
 
 
