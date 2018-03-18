@@ -8,7 +8,8 @@ type Employee1 struct {
 }
 
 func NewEmployee1(firstName string, lastName string, totalLeaves int, takenLeaves int) Employee1 {
-	return Employee1{firstName, lastName, totalLeaves, takenLeaves}
+	emp := Employee1{firstName, lastName, totalLeaves, takenLeaves}
+	return emp
 }
 
 func (emp Employee1) Create(firstName string, lastName string, totalLeaves int, takenLeaves int) Employee1 {

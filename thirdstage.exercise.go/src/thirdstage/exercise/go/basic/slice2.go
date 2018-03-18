@@ -1,4 +1,4 @@
-package main
+package basic
 
 func main2() {
 	var s []int
