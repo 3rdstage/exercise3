@@ -49,8 +49,8 @@ module.exports = {
 * Start local Quorum network
 
 <pre style="margin-left:40px">
-$ ./scripts/quorum/solo/start.sh
-</pre>
+$
+</pre>./scripts/quorum/solo/start.sh
 
 * Run <code>tcpdump</code> to inspect JSON-RPC conversations
 ** Use another terminal

@@ -13,19 +13,19 @@ $ npm install
 
 This may take a while. After that there will be local packages under `node_modules` directory.
 
-#### Customize settings in `pconfig.sh`
+#### Customize settings in `config.sh`
 
-- `network_id` : Network ID of the Ethereum network
-- `port` : the TCP listening port for the Ethereum node
-- `rpc_port` : the RPC port for the Ethereum node
-- `data_dir` : the data directory to store keys and ledger for the Ethereum node
-- `passwd` : the shared(common) password for the accounts automatically generated
-- `coin_base` : 
+- `quorum[networkid]` : Network ID of the Quorum network
+- `quorum[name]` : the name of solo Quorum node, any alpha-numeric string 
+- `quorum[port]` : the TCP listening port of Quorum node, default : 30303
+- `quorum[type]` : 'permissioned', do NOT change
+- `quorum[rpcaddr]` : the binding address for the JSON-RPC service by the Quorum node
+- `quorum[rpcaddr]` :
 
 #### Initialize standalone private Ethereum network using `init.sh`
 
 ```bash
-mago.single$ ./init.sh
+$ ./scripts/quorum/solo/init.sh
 ```
 
 #### Update `truffle.js` in accordance with `config.sh` and initialized Ethereum network
@@ -47,13 +47,15 @@ module.exports = {
 ```
 
 
-### Running the network and playing with stmart contracts
+### Running the Quorum network
 
 #### Start standalone private Ethereum network
 
 ~~~~bash
-mago.single$ ./start.sh
+$ ./scripts/quorum/solo/start.sh
 ~~~~
+
+#### Run `tcpdump` to inspect JSON-RPC conversations
 
 #### Compile smart contracts using `truffle`
 

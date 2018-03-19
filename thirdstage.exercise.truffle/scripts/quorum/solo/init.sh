@@ -20,10 +20,6 @@ mkdir -p "${base_dir}/logs"
 # Move to base directory
 cd "${base_dir}"
 
-# Copy genesis file
-cp "${script_dir}/genesis.json" "genesis.json"
-
-
 # Generate Quorum nodekey
 bootnode -genkey "data/geth/nodekey"
 
@@ -40,15 +36,27 @@ cat << HERE > "data/permissioned-nodes.json"
   "enode://${nodeid}@${addr}:${quorum[port]}?discport=${quorum[discport]}&raftport=${quorum[raftport]}"
 ]
 HERE
+cp "data/permissioned-nodes.json" "data/static-nodes.json"
 
 # Create account password file
 echo ${accounts[password]} > "data/passwd"
 
 # Generate Quorum accounts
 # TODO Check warning that says 'WARN [03-07|19:24:46] No etherbase set and no accounts found as default'
+declare -a addrs
+declare allocs="{"
 for (( i=0; i < ${accounts[count]}; i++ )); do
-  geth account new --keystore 'data/keystore' --password 'data/passwd'
+  addrs[i]=`geth account new --keystore 'data/keystore' --password 'data/passwd'`
+  addrs[i]=${addrs[i]:10:40}
+  allocs="${allocs}\n    \"0x${addrs[i]}\" : { \"balance\" : \"${balances[i]}\" },"
 done
+
+allocs="${allocs%,}\n  }"
+# echo -e ${allocs}
+
+# Generate genesis file
+sed "s/\"@allocs@\"/${allocs}/g" "${script_dir}/genesis.template.json" | \
+  sed "s/@coinbase@/0x${addrs[0]}/g" > "genesis.json"
 
 # Delete account password file
 # rm -f "data/passwd"

@@ -16,6 +16,7 @@ cd "${base_dir}"
 set -u  
 set -e
 nohup constellation-node constellation/tm.conf >> logs/constellation.log 2>&1 &
+echo ""
 echo "Costellation node starting..."
 echo "Check log file at '${base_dir}/logs/constellation.log'"
 
@@ -35,8 +36,10 @@ nohup geth --datadir data \
   --rpc --rpcaddr ${quorum[rpcaddr]} --rpcport ${quorum[rpcport]} \
   --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum \
   --rpccorsdomain “https://wallet.ethereum.org” \
+  --verbosity ${quorum[verbosity]} \
   --emitcheckpoints \
   --unlock 0 --password data/passwd 2>> "logs/quorum.log" &
+echo ""
 echo "Quroum node starting.."
-echo "Check log file at '${base_dir}/logs/constellation.log'"
+echo "Check log file at '${base_dir}/logs/quorum.log'"
 
