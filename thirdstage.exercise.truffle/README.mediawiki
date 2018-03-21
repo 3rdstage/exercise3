@@ -116,6 +116,7 @@ $ geth attach ipc:data/geth.ipc
 * '''Truffle'''
 ** [http://truffleframework.com/docs/ Truffle official documentation]
 ** [http://truffleframework.com/docs/advanced/commands Truffle command reference]
+** [http://truffleframework.com/docs/getting_started/contracts Interacting with your contracts]
 ** [https://github.com/trufflesuite/truffle-contract#api Truffle Contract API]
 ** [http://truffleframework.com/docs/getting_started/migrations#deployer-api Truffle Deployer API]
 

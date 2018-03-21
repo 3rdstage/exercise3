@@ -23,25 +23,25 @@ contract GlobalSessionRepo{
 
   mapping(string => Session) sessions;
 
-  /// @param domain
-  // @param id
-  // @param key
+  /// @param domain domain of session created or creating
+  // @param id authentication identity within the domain who own the session
+  // @param key unique identifier for the session
   function createSession(string domain, string id, string key) public payable returns(uint){
     Origin memory origin = Origin(domain, id);
     Session memory sess = Session(key, origin, block.timestamp, block.timestamp, 120);
 
   }
 
-  function createSession(string domain, string id, string key, uint createdAt) public payable returns(bool created){
+  function createSession(string domain, string id, string key, uint createdAt) public payable returns(bool){
 
 
   }
 
-  function updateSession(string domain, string id, string key) public payable returns(bool created){
+  function updateSession(string domain, string id, string key) public payable returns(bool){
 
   }
 
-  function findSession(string domain, string key) public view returns(uint lastCheckedAt){
+  function findSession(string domain, string key) public view returns(uint){
 
   }
 }

@@ -5,7 +5,7 @@ import "truffle/DeployedAddresses.sol";
 import "../contracts/MetaCoin.sol";
 
 
-contract MetaCoinTest{
+contract TestMetaCoin{
 
   function testInitialBalanceUsingDeployedContract() public{
 

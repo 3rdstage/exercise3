@@ -12,7 +12,7 @@ module.exports = {
         network_id: 1991,
         from: "74b2df69b079ab425c3636a814e19104b7eb6d08",
         gasPrice: 0,
-        gas: 0x2fefd8
+        gas: 0x10000000
       },
       ganache: {
         host: "127.0.0.1",

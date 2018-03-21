@@ -1,6 +1,10 @@
 var MetaCoin = artifacts.require("MetaCoin");
 
-// http://truffleframework.com/docs/getting_started/javascript-tests
+/* References
+     http://truffleframework.com/docs/getting_started/javascript-tests
+     http://truffleframework.com/docs/getting_started/contracts
+     https://github.com/trufflesuite/truffle-contract/blob/develop/README.md
+  */
 contract("MetaCoin", function(accounts){
    
   it("shoud send coin correctly.", function(){
