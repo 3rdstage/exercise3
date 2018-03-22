@@ -1,8 +1,12 @@
-var BareCoin = artifacts.require("./BareCoin.sol");
-var MetaCoin = artifacts.require("./MetaCoin.sol");
-var StringUtils = artifacts.require("./StringUtils.sol");
+var BareCoin = artifacts.require("BareCoin");
+var MetaCoin = artifacts.require("MetaCoin");
+var GlobalSessionRepo = artifacts.require("GlobalSessionRepo");
+var StringUtils = artifacts.require("StringUtils");
+
 
 module.exports = function(deployer) {
   deployer.deploy(BareCoin);
   deployer.deploy(MetaCoin);
+  deployer.deploy(GlobalSessionRepo);
+
 };

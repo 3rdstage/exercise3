@@ -1,7 +1,11 @@
 pragma solidity ^0.4.2;
 
+// Follows StringUtils.class of apache-commons-lang as possible
+// https://commons.apache.org/proper/commons-lang/javadocs/api-release/index.html?org/apache/commons/lang3/StringUtils.html
+/// @title String utilities
 library StringUtils{
 
+  /// @notice Concatenates the specified two strings
   function concat(string str1, string str2) internal pure returns(string){
     bytes memory b1 = bytes(str1);
     bytes memory b2 = bytes(str2);
@@ -15,4 +19,12 @@ library StringUtils{
 
     return string(b);
   }
+
+  /// @notice Checks if a specified string is empty ("") or null
+  /// @param str string to check
+  /// @return `true` if the `str` is empty or null, `false` otherwise
+  function isEmpty(string str) internal pure returns(bool){
+    return (bytes(str).length == 0);
+  }
+
 }
