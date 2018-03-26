@@ -2,10 +2,11 @@ pragma solidity ^0.4.2;
 
 // Follows StringUtils.class of apache-commons-lang as possible
 // https://commons.apache.org/proper/commons-lang/javadocs/api-release/index.html?org/apache/commons/lang3/StringUtils.html
-/// @title String utilities
+
+/// @title Provides utilities for `string` type.
 library StringUtils{
 
-  /// @notice Concatenates the specified two strings
+  /// @notice Concatenates the specified two strings.
   function concat(string str1, string str2) internal pure returns(string){
     bytes memory b1 = bytes(str1);
     bytes memory b2 = bytes(str2);
@@ -20,7 +21,7 @@ library StringUtils{
     return string(b);
   }
 
-  /// @notice Checks if a specified string is empty ("") or null
+  /// @notice Checks if a specified string is empty ("") or null.
   /// @param str string to check
   /// @return `true` if the `str` is empty or null, `false` otherwise
   function isEmpty(string str) internal pure returns(bool){
@@ -28,3 +29,28 @@ library StringUtils{
   }
 
 }
+
+/// @title Provides utilities for `bytes32` type
+library Bytes32Utils{
+
+  /// @notice Concatenates the specified two `byte32` strings.
+  function concat(bytes32 a, bytes32 b) internal pure returns(bytes){
+    uint l1 = a.length;
+    uint l2 = b.length;
+
+    bytes memory c;
+    uint i;
+    uint p = 0;
+
+    for(i = 0; i < 32; i++){
+      if(a[i] != 0x00){ c[p++] = a[i]; }
+    }
+
+    for(i = 0; i < 32; i++){
+      if(b[i] != 0x00){ c[p++] = b[i]; }
+    }
+
+    return c;
+  }
+}
+
