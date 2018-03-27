@@ -35,8 +35,6 @@ library Bytes32Utils{
 
   /// @notice Concatenates the specified two `byte32` strings.
   function concat(bytes32 a, bytes32 b) internal pure returns(bytes){
-    uint l1 = a.length;
-    uint l2 = b.length;
 
     bytes memory c;
     uint i;
