@@ -17,5 +17,5 @@ data
 *.log
 *.bak
 .idea
-temp/
-tmp/
+temp
+tmp
