@@ -16,5 +16,6 @@ build
 data
 *.log
 *.bak
-.idea/
-.temp/
+.idea
+temp/
+tmp/
