@@ -1,0 +1,35 @@
+{
+  "name": "thirdstage.exercise.truffle.webpack",
+  "version": "0.1.0",
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "request": "^2.65.0",
+    "web3": "0.20.x",
+    "truffle-contract": "^1.1.11"
+  },
+  "devDependencies": {
+    "grunt": "~1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-nodeunit": "^1.0.0",
+    "grunt-contrib-uglify": "^3.3.0",
+    "babel-register": "^6.23.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-plugin-syntax-async-functions": "^6.1.4",
+    "babel-plugin-transform-regenerator": "^6.1.4",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0",
+    "copy-webpack-plugin": "^4.0.1",
+    "html-webpack-plugin": "^2.28.0",
+    "css-loader": "^0.26.1",
+    "json-loader": "^0.5.4",
+    "style-loader": "^0.13.1"
+  },
+  "scripts": {
+    "//": [
+      "https://github.com/truffle-box/webpack-box/blob/master/package.json"
+    ],
+    "preinstall": "npm install -g truffle@4.1.x",
+    "build": "webpack",
+    "dev": "webpack-dev-server"
+  }
+}
