@@ -5,6 +5,7 @@ require("babel-register")({
 });
 
 module.exports = {
+   // http://truffleframework.com/docs/advanced/configuration
     networks: {
       development: {
         host: "192.168.56.101",
@@ -30,6 +31,4 @@ module.exports = {
         runs: 200
       }
     }
-
-
 };
