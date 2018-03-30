@@ -23,12 +23,25 @@ echo "Check log file at '${base_dir}/logs/constellation.log'"
 # Wait a moment before Constellation fully has started
 sleep 3s
 
-# Copy addresses of accounts to run file
-rm -f "${script_dir}/run/accounts"
+# Write down addresses of accounts to run file
+rm -f "${script_dir}/../../run/accounts"
+mkdir -p "${script_dir}/../../run"
 for f in data/keystore/*; do
-  cat "$f" | sed -r 's/^\{"address":"(\w*)".*/\1\n/g' >> "${script_dir}/run/accounts"
+  cat "$f" | sed -r 's/^\{"address":"(\w*)".*/\1\n/g' >> "${script_dir}/../../run/accounts"
   # TODO limit the max. number of accounts to write-down
 done
+
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "The addresses of accounts for the quroum node to run are written down to the file '${script_dir}/../../run/accounts'"
+fi
+
+# Write down IP address to run file
+# https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/
+rm -f "${script_dir}/../../run/host"
+ipstr=`ip address show label eth*`;
+if [ -z $ipstr ]; then ipstr=`ip address show label enp*`; fi
+echo $ipstr | sed -r 's/.*inet ([0-9.]*)\/.*/\1/' | tr -d '\n' >> "${script_dir}/../../run/host"
 
 # TODO Check availability of ports for Quorum node
 
