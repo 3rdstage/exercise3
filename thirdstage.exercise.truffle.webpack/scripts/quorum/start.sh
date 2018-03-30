@@ -23,6 +23,13 @@ echo "Check log file at '${base_dir}/logs/constellation.log'"
 # Wait a moment before Constellation fully has started
 sleep 3s
 
+# Copy addresses of accounts to run file
+rm -f "${script_dir}/run/accounts"
+for f in data/keystore/*; do
+  cat "$f" | sed -r 's/^\{"address":"(\w*)".*/\1\n/g' >> "${script_dir}/run/accounts"
+  # TODO limit the max. number of accounts to write-down
+done
+
 # TODO Check availability of ports for Quorum node
 
 # Start Quorum node
