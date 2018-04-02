@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="thirdstage.exercise.truffle" basedir="." default="echo.env" 
+  xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+  xmlns:antelope="antlib:ise.antelope.tasks" 
+  xmlns:contrib="antlib:net.sf.antcontrib">
+ 
+  <!-- Ant references :
+      Manual : http://ant.apache.org/manual/index.html
+      Path-like Structures : http://ant.apache.org/manual/using.html#path
+      Resource Collections : http://ant.apache.org/manual/Types/resources.html#collection
+  -->
+  <description>Solidity Programming Scaffold Project</description>
+ 
+  <property environment="env" />
+ 
+  <!-- Define Maven-Ant tasks -->
+  <!-- For more on Maven-Ant tasks, refer http://maven.apache.org/ant-tasks/ -->
+  <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+   uri="antlib:org.apache.maven.artifact.ant"
+   classpath="lib/maven-ant-tasks-2.1.3.jar">
+  </typedef>
+ 
+  <artifact:dependencies pathId="ant.tasks.classpath">
+    <!-- libraries only necessary for Ant task not application. -->
+    <!-- Ant-Contrib tasks. For more, refer http://ant-contrib.sourceforge.net/tasks/ -->
+    <dependency groupId="ant-contrib" artifactId="ant-contrib" version="1.0b3" />
+    <!-- Antelope tasks. For more, refer http://antelope.stage.tigris.org/nonav/docs/manual/index.html -->
+    <dependency groupId="org.tigris.antelope" artifactId="antelopetasks" version="3.2.10" />
+    <dependency groupId="org.umlgraph" artifactId="umlgraph" version="5.6.6" />
+    <dependency groupId="com.lunatech.jax-doclets" artifactId="doclets" version="0.10.0" />
+    <remoteRepository id="centeral2" url="http://repo2.maven.org/maven2/" />
+  </artifact:dependencies>
+ 
+  <!-- Define Ant-Contrib tasks -->
+  <taskdef resource="net/sf/antcontrib/antlib.xml" uri="antlib:net.sf.antcontrib"
+   classpathref="ant.tasks.classpath" />
+ 
+  <!-- Define Antelope tasks -->
+  <taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+  <taskdef name="if" classname="ise.antelope.tasks.IfTask"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+  <taskdef name="var" classname="ise.antelope.tasks.Variable"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+  <taskdef name="unset" classname="ise.antelope.tasks.Unset"
+   uri="antlib:ise.antelope.tasks" classpathref="ant.tasks.classpath" />
+ 
+  <artifact:pom id="project.pom" file="${basedir}/pom.xml" />
+  <artifact:dependencies pomRefId="project.pom" pathId="project.classpath" />
+ 
+  <target name="echo.env">
+    <!-- @todo How to sort the list -->
+    <pathconvert pathsep="${line.separator}" refid="project.classpath" property="project.classpath.list">
+      <mapper type="regexp" from="(.*\\\.m2\\repository\\)?(.*)" to="  \2" />
+    </pathconvert>
+ 
+    <echo>Defined properties : </echo>
+    <echoproperties />
+    <echo>
+    </echo>
+    <echo>Classpath : </echo>
+    <echo>${project.classpath.list}</echo>
+  </target>
+ 
+  <target name="check.env">
+    <fail unless="env.MAVEN_HOME">Environment variable MAVEN_HOME should be specified properly.</fail>
+  </target>
+  
+  <target name="generate.javaWrapper">
+    <java classpathref="project.classpath"
+      classname="org.web3j.codegen.TruffleJsonFunctionWrapperGenerator">
+      <arg value="--javaTypes"/>
+      <arg value="D:\home\git\exercise3\thirdstage.exercise.truffle\build\contracts\MetaCoin.json"/>
+      <arg value="-p"/>
+      <arg value="thirdstage.exercise.truffle.contracts"/>
+      <arg value="-o"/>
+      <arg value="${basedir}/src/main/java"/>
+    </java>
+  </target>
+
+</project>

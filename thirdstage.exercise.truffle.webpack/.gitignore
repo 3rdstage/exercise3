@@ -2,6 +2,7 @@ CVS/
 .svn/
 /.idea/
 /node_modules/
+/target/
 /build/
 /data/
 /run/
