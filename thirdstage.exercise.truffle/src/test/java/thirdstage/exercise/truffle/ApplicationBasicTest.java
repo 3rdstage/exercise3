@@ -15,54 +15,63 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 public class ApplicationBasicTest{
-  
+
   protected Logger logger = LoggerFactory.getLogger(this.getClass());
-  
-  private AnnotationConfigApplicationContext appl;
-  
+
+  private ConfigurableApplicationContext appl;
+
   private Lock lock = new ReentrantLock();
-  
+
   @Before
   public void beforeClass() {
-    
+
     if(this.appl == null) {
       this.lock.lock();
       try {
-        this.appl = new AnnotationConfigApplicationContext(thirdstage.exercise.truffle.Application.class);
+        this.appl = SpringApplication.run(thirdstage.exercise.truffle.Application.class);
       }finally {
         this.lock.unlock();
       }
     }
   }
-  
+
   @Test
   public void testJustLoad() {
-    
+
     Assert.assertNotNull(this.appl);
-    
+
     String[] names = appl.getBeanDefinitionNames();
     logger.info("{} beans are defined for {}", names.length, appl.getDisplayName());
-    for(String name: names) {
-      logger.info("     {}", name);
-    }
-    
+    if(this.logger.isDebugEnabled()) for(String name: names) logger.debug("     {}", name);
+
     Assert.assertTrue(names.length > 0);
   }
-  
-  
+
+
   @Test
   public void testProperties() {
-    
+
     ConfigurableEnvironment env = this.appl.getEnvironment();
-    
+
     String name = env.getProperty("spring.application.name");
-    
+
     logger.info("spring.application.name : {}", name);
     logger.info("foo.bar : {}", env.getProperty("foo.bar"));
+  }
+
+  @Test
+  public void testGetBeans() {
+    ContractFacade facade = this.appl.getBean(ContractFacade.class);
+
+    Assert.assertNotNull(facade);
+
+    Assert.assertEquals(facade.getQuorumUrl(), "http://127.0.0.1:8054");
   }
 
 }

@@ -1,6 +1,10 @@
 foo:
-  bar: "foo.bar"
+  bar: "FOO.BAR"
 
 spring:
   application:
     name: 'Scaffold project for Spring Boot 2.0 + Solidity development'
+    
+quorum:
+  address: '127.0.0.1'
+  port: 8054
