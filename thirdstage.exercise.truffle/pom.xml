@@ -1,8 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>thirdstage.exercise</groupId>
   <artifactId>thirdstage-exercise-truffle</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.0.0.RELEASE</version>
+  </parent>
 
   <prerequisites>
     <maven>3.0</maven>
@@ -24,20 +31,24 @@
     <dependencies.release.updatePolicy>never</dependencies.release.updatePolicy>
     <!-- versions for Java SDK and dependencies -->
     <java.version>1.8</java.version>
-    <jsr305.version>3.0.1</jsr305.version>
-    <slf4j.version>1.7.21</slf4j.version>
-    <logback.version>1.1.7</logback.version>
+    <jsr305.version>3.0.2</jsr305.version>
+    <validation-api.version>1.1.0.Final</validation-api.version> <!-- latest stable 2.0.1.Final -->
+    <hibernate-validator.version>5.4.2.Final</hibernate-validator.version> <!-- latest stable 6.0.9.Final -->
+    <slf4j.version>1.7.25</slf4j.version>
+    <logback.version>1.1.11</logback.version> <!-- latest stable 1.2.3 -->
     <junit.version>4.12</junit.version>
-    <commons.lang3.version>3.5</commons.lang3.version>
+    <commons.lang3.version>3.7</commons.lang3.version>
+    <commons.collections4.version>4.1</commons.collections4.version>
     <web3j.version>3.3.1</web3j.version>
+    <web3j.quorum.version>0.8.0</web3j.quorum.version>
     <!-- version for Maven plugins -->
-    <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
-    <maven-site-plugin.version>3.6</maven-site-plugin.version>
+    <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version> <!-- latest stable 3.7.0 -->
+    <maven-site-plugin.version>3.6</maven-site-plugin.version> <!-- latest stable 3.7 -->
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version> <!-- latest stable 3.0.0 -->
     <findbugs-maven-plugin.version>3.0.4</findbugs-maven-plugin.version>
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-    <duplicate-finder-maven-plugin.version>1.2.1</duplicate-finder-maven-plugin.version>
+    <duplicate-finder-maven-plugin.version>1.3.0</duplicate-finder-maven-plugin.version>
     <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
   </properties>
 
@@ -107,16 +118,20 @@
           <reportSet>
             <reports>
               <report>index</report>
-<!--               <report>dependencies</report> -->
-<!--               <report>project-team</report> -->
-<!--               <report>mailing-list</report> -->
-<!--               <report>cim</report> -->
-<!--               <report>issue-tracking</report> -->
-<!--               <report>license</report> -->
-<!--               <report>scm</report> -->
+              <!-- <report>dependencies</report> -->
+              <!-- <report>project-team</report> -->
+              <!-- <report>mailing-list</report> -->
+              <!-- <report>cim</report> -->
+              <!-- <report>issue-tracking</report> -->
+              <!-- <report>license</report> -->
+              <!-- <report>scm</report> -->
             </reports>
           </reportSet>
         </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -139,6 +154,10 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.basepom.maven</groupId>
         <artifactId>duplicate-finder-maven-plugin</artifactId>
@@ -309,7 +328,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -322,7 +341,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -336,7 +355,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -349,7 +368,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -364,7 +383,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -392,13 +411,13 @@
       <!-- JSR 349: Bean Validation 1.1 (https://jcp.org/en/jsr/detail?id=349) -->
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-      <version>1.1.0.Final</version>
+      <version>${validation-api.version}</version>
     </dependency>
     <dependency>
       <!-- Hibernate Validator -->
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>5.2.4.Final</version>
+      <version>${hibernate-validator.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -438,14 +457,47 @@
       <version>${commons.lang3.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>${commons.collections4.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.web3j</groupId>
       <artifactId>core</artifactId>
       <version>${web3j.version}</version>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>org.web3j</groupId>
       <artifactId>codegen</artifactId>
       <version>${web3j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.web3j</groupId>
+      <artifactId>quorum</artifactId>
+      <version>${web3j.quorum.version}</version>
     </dependency>
   </dependencies>
 </project>
