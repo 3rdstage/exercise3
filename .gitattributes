@@ -39,6 +39,7 @@
 *.com binary
 *.exe binary
 *.dll binary
+*.bin binary
 *.zip binary
 *.7z binary
 *.png binary
