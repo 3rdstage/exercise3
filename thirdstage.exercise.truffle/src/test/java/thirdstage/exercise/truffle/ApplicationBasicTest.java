@@ -19,6 +19,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.web3j.quorum.Quorum;
 
 public class ApplicationBasicTest{
 
@@ -66,12 +67,12 @@ public class ApplicationBasicTest{
   }
 
   @Test
-  public void testGetBeans() {
-    ContractFacade facade = this.appl.getBean(ContractFacade.class);
-
-    Assert.assertNotNull(facade);
-
-    Assert.assertEquals(facade.getQuorumUrl(), "http://127.0.0.1:8054");
+  public void testGetDefaultQuorumBean() {
+    Quorum defaultQr = this.appl.getBean("defaultQuorum", Quorum.class);
+    Assert.assertNotNull(defaultQr);
+    
+    Quorum fallbackQr = this.appl.getBean("fallbackQuorum", Quorum.class);
+    Assert.assertNotNull(fallbackQr);
   }
 
 }

@@ -32,8 +32,8 @@
     <!-- versions for Java SDK and dependencies -->
     <java.version>1.8</java.version>
     <jsr305.version>3.0.2</jsr305.version>
-    <validation-api.version>1.1.0.Final</validation-api.version> <!-- latest stable 2.0.1.Final -->
-    <hibernate-validator.version>5.4.2.Final</hibernate-validator.version> <!-- latest stable 6.0.9.Final -->
+    <validation-api.version>2.0.1.Final</validation-api.version> <!-- latest stable 2.0.1.Final -->
+    <hibernate-validator.version>6.0.9.Final</hibernate-validator.version> <!-- latest stable 6.0.9.Final -->
     <slf4j.version>1.7.25</slf4j.version>
     <logback.version>1.1.11</logback.version> <!-- latest stable 1.2.3 -->
     <junit.version>4.12</junit.version>

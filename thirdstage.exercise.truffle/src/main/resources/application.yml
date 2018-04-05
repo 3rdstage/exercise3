@@ -6,5 +6,9 @@ spring:
     name: 'Scaffold project for Spring Boot 2.0 + Solidity development'
     
 quorum:
-  address: '127.0.0.1'
+  address: '192.168.0.1'
   port: 8054
+  
+quorum-fallback:
+  address: '192.168.0.2'
+  port: 8055
