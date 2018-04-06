@@ -56,7 +56,7 @@ $
 ** Use another terminal
 
 <pre style="margin-left:40px">
-$ sudo tcpdump -n -i eth0 -A -s0 dst port 8545 and greater 100
+$ sudo tcpdump -n -i eth0 -A -s0 tcp port 8545 and greater 100
 </pre>
 
 * Open Geth console to inspect the Quorum node

@@ -14,31 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import thirdstage.sirius.support.web3j.AbstractQuorumContractFacade;
 
 @Component
-public class ContractFacade{
-
-  @Value("${quorum.address}")
-  private String quorumAddr;
-
-  @Value("${quorum.port}")
-  private int quorumPort;
+public class ContractFacade extends AbstractQuorumContractFacade{
   
   
-  public ContractFacade() {
-    
-  }
-
-  public ContractFacade(@NotEmpty String quorumAddr, @Positive @Max(65000) int quorumPort) {
-    this.quorumAddr = quorumAddr;
-    this.quorumPort = quorumPort;
-    
-  }
-
-  public String getQuorumUrl() {
-    return String.format("http://%s:%d", this.quorumAddr, this.quorumPort);
-  }
-
+  
+  
+  
 }
 
 
