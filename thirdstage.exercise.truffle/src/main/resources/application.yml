@@ -8,7 +8,16 @@ spring:
 quorum:
   address: '192.168.56.101'
   port: 8545
+  from: '0x58de4669321d33f91d05d51d85b0be8dd304b511'
+  gasPrice: 0
+  gas: '0x10000000'
+  contracts:
+    MetaCoin:
+      address: '0x46b7e1b682dde9b02f7e2800a7287c0261b78b62'
   
 quorum-fallback:
   address: '192.168.0.2'
   port: 8055
+  from:
+  gasPrice: 0
+  gas:

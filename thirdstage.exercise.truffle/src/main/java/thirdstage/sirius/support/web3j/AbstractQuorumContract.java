@@ -6,27 +6,53 @@ import java.util.Map;
 import java.util.HashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.web3j.quorum.Quorum;
 
 @Component
 public abstract class AbstractQuorumContract{
 
-  @Autowired
-  private Quorum defaultQuorum;
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
   
-  @Autowired
+  private Quorum defaultQuorum;
+    
+  protected Quorum getDefaultQuorum() { return this.defaultQuorum; } 
+  
   private Quorum fallbackQuorum;
+  
+  protected Quorum getFallbackQuorum() { return this.fallbackQuorum; }
  
   private Quorum quorum;
+
+  protected Quorum getQuorum() { return this.quorum; }
   
-  public AbstractQuorumContract() {
-    this.quorum = defaultQuorum;
-    
-  }  
+  @Value("${quorum.from}")
+  private String from;
   
+  public String getFrom() { return this.from; }
+  
+  protected AbstractQuorumContract setFrom(@NotEmpty final String from) {
+    this.from = from;
+    return this;
+  }
+  
+  abstract protected String getAddress();
+  
+  public AbstractQuorumContract(@Nonnull final Quorum defaultQr, @Nonnull final Quorum fallbackQr) {
+    this.defaultQuorum = defaultQr;
+    this.fallbackQuorum = fallbackQr;
+  }
+  
+  @PostConstruct
+  protected void postConstruct() {
+    this.quorum = this.defaultQuorum;
+  }
 }

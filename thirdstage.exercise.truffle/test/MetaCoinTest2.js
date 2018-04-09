@@ -3,6 +3,20 @@ const MetaCoin = artifacts.require("MetaCoin");
 //http://truffleframework.com/docs/getting_started/javascript-tests
 contract('MetaCoin', function(accounts){
    
+   it("should get balance correctly", async function(){
+     let acc1 = accounts[0]; 
+     let acc2 = accounts[1];
+     let coin = await MetaCoin.deployed();
+     
+     
+     let bal1 = (await coin.getBalance(acc1)).toNumber();
+     let bal2 = (await coin.getBalance(acc2)).toNumber();
+     
+     console.log('Account: %s, Balance: %s', acc1, bal1);
+     console.log('Account: %s, Balance: %s', acc2, bal2);
+     
+   })
+  
    it("should send coin correctly", async function(){
 
       let acc1 = accounts[0]; //sender

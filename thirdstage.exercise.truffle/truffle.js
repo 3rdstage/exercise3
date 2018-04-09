@@ -6,7 +6,7 @@ require("babel-register")({
 
 const fs = require('fs');
 
-const accounts = fs.readFileSync('scripts/quorum/solo/run/accounts').toString().split('\n');
+const accounts = fs.readFileSync('run/accounts').toString().split('\n');
 const config = fs.readFileSync('scripts/quorum/solo/config.sh').toString();
 const rpcPort = config.match(/\[rpcport\]=[0-9]*/g)[0].substring(10);
 const networkId = config.match(/\[networkid\]=[0-9]*/g)[0].substring(12);
