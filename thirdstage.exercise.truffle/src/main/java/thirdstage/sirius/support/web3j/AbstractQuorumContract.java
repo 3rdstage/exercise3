@@ -17,6 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.web3j.quorum.Quorum;
 
+/**
+ * @author 3rdstage
+ * @since 2018-04-09
+ */
 @Component
 public abstract class AbstractQuorumContract{
 
