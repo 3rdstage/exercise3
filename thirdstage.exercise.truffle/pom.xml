@@ -43,6 +43,7 @@
     <testng.version>6.14.2</testng.version>
     <commons.lang3.version>3.7</commons.lang3.version>
     <commons.collections4.version>4.1</commons.collections4.version>
+    <json-path.version>2.3.0</json-path.version>
     <web3j.version>3.3.1</web3j.version>
     <web3j.quorum.version>0.8.0</web3j.quorum.version>
     <!-- version for Maven plugins -->
@@ -502,6 +503,11 @@
       <version>${commons.collections4.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.jayway.jsonpath</groupId>
+      <artifactId>json-path</artifactId>
+      <version>${json-path.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
@@ -509,13 +515,13 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
-    <!-- 
-    <dependency>
+    <!--
+      <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
       <scope>runtime</scope>
-    </dependency>
-     -->
+      </dependency>
+    -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>

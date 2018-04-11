@@ -44,7 +44,7 @@
         copy:
           dest: "{{ generation_dir }}/host-config/{{ item }}.json"
           #content: " {{ ['common', 'quorum']|map('regex_search', hostvars[item])|list|to_nice_json(indent=2) }}"
-          content: " {{ hostvars[item] }}"
+          content: " {{ hostvars[item]|to_nice_json(indent=2) }}"
         with_items: "{{ hostvars|list }}"
         when: true
       become: false
