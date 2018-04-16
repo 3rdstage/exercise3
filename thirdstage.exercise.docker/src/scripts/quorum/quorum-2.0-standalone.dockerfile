@@ -6,12 +6,17 @@
 FROM ubuntu:16.04
 MAINTAINER Sangmoon Oh
 
-RUN add-apt-repository ppa:ethereum/ethereum && \
-    add-apt-repository ppa:gophers/archive && \
-    add-apt-repository ppa:longsleep/golang-backports
+RUN apt-get update && \
+    apt-get -y install software-properties-common
+
+# Add repositories for Git, Golang and solc
+RUN add-apt-repository -y ppa:git-core/ppa && \
+    add-apt-repository -y ppa:gophers/archive && \
+    add-apt-repository -y ppa:longsleep/golang-backports && \
+    add-apt-repository -y ppa:ethereum/ethereum
 
 RUN apt-get update && \
-    apt-get install -y ntp python-pip golang-1.9-go solc && \
+    apt-get install -y sudo ntp git golang-1.9-go python-pip solc && \
     apt-get install -y libdb-dev libleveldb-dev libsodium-dev zlib1g-dev libtinfo-dev sysvbanner
 
 # Install Quorum binaries from source
