@@ -1,0 +1,65 @@
+# References
+#   - https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.5/bk_ambari-installation/content/ch_Getting_Ready.html
+#   - http://docs.ansible.com/ansible/2.4/list_of_all_modules.html
+
+# Currently, the following tasks runs on only Ubuntu 16
+- hosts: m000
+  tasks:
+  
+  - name: Prepare the host
+    block:
+    - name: Install NTP
+      # https://help.ubuntu.com/lts/serverguide/NTP.html  
+      apt:
+        name: ntp
+        state: present
+        force_apt_get: true
+        update_cache: false
+      become: true    
+      when: true
+      tags: ['ntp']
+      
+    - name: Install Java 8 RE
+      # https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-12-04-with-apt-get
+      apt:
+        name: default-jre
+        state: present
+        force_apt_get: true
+        update_cache: false
+      become: true
+      when: true
+      tags: ['jdk']
+
+  # TODO Add target hosts into /etc/hosts file 
+      
+  - name: Download Ambari repository file
+    get_url:
+      url: "{{ ambari.apt.repoBase }}/{{ ambari.ver }}/ambari.list"
+      dest: '/etc/apt/sources.list.d/ambari.list'
+      mode: 0644
+      owner: root
+      group: root
+    become: true
+  
+  - name: Add apt key for Ambari
+    apt_key:
+      keyserver: "{{ ambari.apt.key.server }}"
+      id: "{{ ambari.apt.key.id }}"
+    become: true
+    
+  - name: Install Ambari server
+    apt:
+      name: ambari-server
+      force_apt_get: true
+      update_cache: true
+    become: true
+ 
+  # TODO Need to check Ambari server setup was done before or not to prevent repeated setup. 
+  - name: Setup Ambari server
+    # https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.5/bk_ambari-installation/content/set_up_the_ambari_server.html
+    # https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.1.5/bk_ambari-installation/content/setup_options.html
+    command: ambari-server setup -s -j /usr/lib/jvm/default-java # for Ubuntu 16.04 
+    become: true
+
+    
+    

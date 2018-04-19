@@ -1,0 +1,10 @@
+ambari:
+  ver: '2.6.1.5'
+  apt:
+    repoBase: 'http://public-repo-1.hortonworks.com/ambari/ubuntu16/2.x/updates'
+    key:
+      server: 'keyserver.ubuntu.com'
+      id: 'B9733A7A07513CAD'
+  targets:
+    - hostname: skcoin09
+      address: 169.56.125.119
