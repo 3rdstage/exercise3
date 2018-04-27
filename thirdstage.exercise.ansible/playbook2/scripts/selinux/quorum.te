@@ -1,0 +1,3 @@
+# .te : contains type enforcememt rules
+# .if : contains interface and template definitions
+# .fc : contains file file context expressions.

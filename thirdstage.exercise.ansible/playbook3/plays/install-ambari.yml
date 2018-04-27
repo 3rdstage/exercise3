@@ -61,5 +61,6 @@
     command: ambari-server setup -s -j /usr/lib/jvm/default-java # for Ubuntu 16.04 
     become: true
 
-    
+  # TODO Change the password (in /etc/ambari-server/conf/password.conf file) for psql
+  # TODO Change the admin password of Ambari server (
     
