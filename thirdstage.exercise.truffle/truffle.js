@@ -4,6 +4,9 @@ require("babel-register")({
   "plugins": ["syntax-async-functions","transform-regenerator"]
 });
 
+const HDWalletProvider = require("truffle-hdwallet-provider");
+const mnemonic = "hell bent for leather";
+
 const fs = require('fs');
 
 const accounts = fs.readFileSync('run/accounts').toString().split('\n');
@@ -22,6 +25,27 @@ module.exports = {
         gasPrice: 0,
         gas: 0x10000000
       }
+    },
+    
+    ropsten: {
+      provider: function(){
+        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/Sqj6qg9ix47UK1EBQQb0");
+      },
+      network_id: 3,
+    }
+    
+    rinkeby: {
+      provider: function(){
+        return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/Sqj6qg9ix47UK1EBQQb0");
+      },
+      network_id: 4,
+    },
+    
+    kovan: {
+      provider: function(){
+        return new HDWalletProvider(mnemonic, "https://kovan.infura.io/Sqj6qg9ix47UK1EBQQb0");
+      },
+      network_id: 6,
     },
 
     solc: {

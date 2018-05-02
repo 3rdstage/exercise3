@@ -33,5 +33,4 @@ sudo passwd tom
 
 # Comments out all contexts in 'contexts/users/unconfined_u' file.
 
-
 # TODO Change SELinux enforcing mode for both current session and configuration
