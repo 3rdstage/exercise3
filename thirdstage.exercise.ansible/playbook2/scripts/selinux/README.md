@@ -19,6 +19,10 @@ $ sudo sed 's/^\s*handle-unknown\s*=\s*(.*)$/handle-unknown = deny/' /etc/selinu
 
 ### Goal
 
+* Prevent login as a ```root``` user even using ```ssh```.
+
+* Prevent all Linux users from using ```su```.
+
 * Prevent all Linux users from logging-on the system not using ```ssh```. 
 
 * Prevent ```sshd``` from using the default port.
