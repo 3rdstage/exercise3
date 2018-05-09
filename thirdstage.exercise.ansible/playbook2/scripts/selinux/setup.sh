@@ -9,14 +9,14 @@ sudo setenforce 0
 
 # Add a new SELinux user named 'quorum_u'
 sudo semanage user -a -L s0 -r "SystemLow-SystemHigh" -R user_r quorum_u
-# sudo semanage user -m -L s0 -r "SystemLow-SystemHigh" -R staff_r quorum_u
+# sudo semanage user -m -L s0 -r "SystemLow-SystemHigh" -R "staff_r sysadm_r" quorum_u
   
 # TODO Check 'sudo semanage user -l' include a row starting with 'quorum_u'
 
 # Assign the Linux user to 'quorum_u' 
 if [ `sudo semanage login -l | grep "^administrator" | wc -l` -eq 0 ]; then
   sudo semanage login -a -s quorum_u ${quorum_linux_user}
-else
+else 
   sudo semanage login -m -s quorum_u ${quorum_linux_user}
 fi
 

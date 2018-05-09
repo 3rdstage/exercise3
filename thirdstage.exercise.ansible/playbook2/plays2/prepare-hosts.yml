@@ -33,8 +33,9 @@
 
   - name: Install Go for hosts which would run Quorum nodes
     # References
-    #   - https://github.com/golang/go/wiki/Ubuntu/151aa825423ec740624969e75bf86fe15334aa7d
-    #   - https://github.com/golang/go/wiki/Ubuntu/cd1ce5cac7d7d48ee67a522c545a46c70ed57a19
+    #   - https://github.com/golang/go/wiki/Ubuntu
+    #   - https://github.com/golang/go/wiki/Ubuntu/151aa825423ec740624969e75bf86fe15334aa7d for Go 1.8 
+    #   - https://github.com/golang/go/wiki/Ubuntu/cd1ce5cac7d7d48ee67a522c545a46c70ed57a19 for Go 1.9
     block:
     - name: Add APT repository for Go
       apt_repository:
@@ -77,7 +78,7 @@
             sed -i '$ a \\nexport GOPATH=$HOME/go:$GOPATH\nexport PATH=$HOME/go/bin:$PATH\n' ~/.profile
           else
             if [ `echo $PATH | grep "$HOME/go/bin" | wc -l` -lt 1 ]; then
-              # PATH doesn't include "$HOME/go/bin"
+              # PAT=H doesn't include "$HOME/go/bin"
               sed -i '$ a \\nexport PATH=$HOME/go/bin:$PATH\n' ~/.profile
             else
               echo "{{ unchanged_stdout }}"
@@ -128,6 +129,7 @@
       register: check_geth_result
       changed_when: false
 
+    # https://github.com/jpmorganchase/quorum/wiki/Getting-Set-Up#building-quorum-node-from-source
     - name: Clone or update Quorum source repository from GitHub
       git: 
         repo: 'https://github.com/jpmorganchase/quorum.git'
