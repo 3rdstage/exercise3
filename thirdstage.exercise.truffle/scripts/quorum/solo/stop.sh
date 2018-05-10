@@ -37,4 +37,10 @@ else
   fi
 fi
 
+if [ "$1" == '--clear' ]; then
+  rm -Rf ${base_dir}/*
+else
+  echo ""
+  echo "If you want remote all the data including block data, accounts, and logs, use '--clear' flag jus like 'stop.sh --clear'."
+fi
 

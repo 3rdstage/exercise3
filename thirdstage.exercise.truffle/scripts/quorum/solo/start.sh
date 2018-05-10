@@ -1,8 +1,8 @@
 #! /bin/bash
 
 readonly script_dir=$(cd `dirname $0` && pwd)
-readonly run_dir=$(mkdir -p "${script_dir}/../../../run" && cd "${script_dir}/../../../run" && pwd)
 source "${script_dir}/config.sh"
+readonly run_dir=$(mkdir -p "${script_dir}/../../../run" && cd "${script_dir}/../../../run" && pwd)
 
 # Check availability of ports for Constellation node
 if [ `lsof -i -P -n | grep LISTEN | grep ${constellation[port]} | wc -l` -gt 0 ]; then
