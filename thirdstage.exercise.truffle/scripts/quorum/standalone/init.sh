@@ -6,9 +6,9 @@ source "${script_dir}/config.sh"
 # echo $base_dir
 
 if [ -f "${base_dir}/data/geth/chaindata/CURRENT" ]; then
-  echo "The solo Quorum network seems to be initialized already."
+  echo "The standalone Quorum network seems to be initialized already."
   echo "Check the contents directory of '${base_dir}'."
-  echo "If you want init again, backup '${base_dir}' directory, delete the directory and then try this script." 
+  echo "If you want init again, backup '${base_dir}' directory, delete the directory and then try this script."
   exit 101
 fi
 
@@ -62,7 +62,7 @@ sed "s/\"@allocs@\"/${allocs}/g" "${script_dir}/genesis.template.json" | \
 # rm -f "data/passwd"
 
 # Create Constellation configuration file
-# Note that '-i' option of sed is not used to support Mac OS 
+# Note that '-i' option of sed is not used to support Mac OS
 sed "s/@port@/${constellation[port]}/g" "${script_dir}/tm.template.conf" | \
   sed "s/@verbosity@/${constellation[verbosity]}/g" > "constellation/tm.conf"
 
