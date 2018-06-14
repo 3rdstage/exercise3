@@ -14,7 +14,7 @@ fi
 cd "${base_dir}"
 
 # Start Constellation node
-set -u  
+set -u
 set -e
 nohup constellation-node constellation/tm.conf >> logs/constellation.log 2>&1 &
 echo ""
@@ -69,7 +69,7 @@ nohup geth --datadir data \
   --raft --raftport ${quorum[raftport]} \
   --rpc --rpcaddr ${quorum[rpcaddr]} --rpcport ${quorum[rpcport]} \
   --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum \
-  --rpccorsdomain “https://wallet.ethereum.org” \
+  --rpccorsdomain "https://wallet.ethereum.org" \
   --verbosity ${quorum[verbosity]} \
   --emitcheckpoints \
   --unlock 0 --password data/passwd 2>> "logs/quorum.log" &

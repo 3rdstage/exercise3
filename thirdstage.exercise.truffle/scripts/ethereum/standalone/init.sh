@@ -15,27 +15,31 @@ if [ -f "${data_dir}/genesis.json" ]; then
 fi
 
 mkdir -p "${data_dir}"
-echo "${passwd}" > "${data_dir}/passwd"
+cd "${data_dir}"
+echo "${accounts[password]}" > "passwd"
 
+# Generate Ethereum accounts
 declare -a addrs
-readonly addrs_size=3
-allocs="{"
-
-for (( i=0; i < ${addrs_size}; i++ )); do
-  addrs[i]=`geth account new --datadir "${data_dir}" --password "${data_dir}/passwd"`
+declare allocs="{"
+for (( i=0; i < ${accounts[count]}; i++ )); do
+  addrs[i]=`geth account new --keystore keystore --password passwd`
   addrs[i]=${addrs[i]:10:40}
   # echo ${addrs[i]}
-  allocs="${allocs}\n    \"${addrs[i]}\" : { \"balance\" : \"100000000000000000000\" },"
+  allocs="${allocs}\n    \"0x${addrs[i]}\" : { \"balance\" : \"${balances[i]}\" },"
 done
 
 allocs="${allocs%,}\n  }"
 # echo -e ${allocs}
 
-sed "s/\"@allocs@\"/${allocs}/g" "${script_dir}/genesis.template.json" | sed "s/@coin_base@/${coin_base}/g" > "${data_dir}/genesis.json"
-rm -f "${data_dir}/passwd"
+# Generate gensis file
+sed "s/\"@allocs@\"/${allocs}/g; s/@coinbase@/0x${addrs[0]}/g" \
+  "${script_dir}/genesis.template.json" > genesis.json
+
+# Delete account password file
+# rm -f "${data_dir}/passwd"
 
 echo "Initializaing private Ethereum network..."
 
 # https://github.com/ethereum/go-ethereum/wiki/Private-network
 # geth --datadir "${data_dir}" --unlock ${addrs[1]},${addrs[2]},${addrs[3]} --password "${data_dir}/passwd" init "${script_dir}/genesis.json"
-geth --datadir "${data_dir}" init "${data_dir}/genesis.json"
+geth --datadir ./ init genesis.json

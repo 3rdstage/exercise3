@@ -1,12 +1,11 @@
 #! /bin/bash
 
-
 # Note that it would cause error to try to init geth with 'datadir' on shared folder of VirtualBox
-declare -r base_dir="${HOME}/quorum/solo"
+declare -r base_dir="${HOME}/quorum/standalone"
 
 # For more, refer https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options
 declare -Ar quorum=(
-  [networkid]=1991
+  [networkid]=31
   [name]='lonleynight'
   [port]=30303
   [type]='permissioned'

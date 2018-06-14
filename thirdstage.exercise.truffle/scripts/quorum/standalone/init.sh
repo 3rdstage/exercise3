@@ -55,16 +55,16 @@ allocs="${allocs%,}\n  }"
 # echo -e ${allocs}
 
 # Generate genesis file
-sed "s/\"@allocs@\"/${allocs}/g" "${script_dir}/genesis.template.json" | \
-  sed "s/@coinbase@/0x${addrs[0]}/g" > "genesis.json"
+sed "s/\"@allocs@\"/${allocs}/g; s/@coinbase@/0x${addrs[0]}/g" \
+  "${script_dir}/genesis.template.json" > genesis.json
 
 # Delete account password file
 # rm -f "data/passwd"
 
 # Create Constellation configuration file
 # Note that '-i' option of sed is not used to support Mac OS
-sed "s/@port@/${constellation[port]}/g" "${script_dir}/tm.template.conf" | \
-  sed "s/@verbosity@/${constellation[verbosity]}/g" > "constellation/tm.conf"
+sed "s/@port@/${constellation[port]}/g; s/@verbosity@/${constellation[verbosity]}/g" \
+  "${script_dir}/tm.template.conf" > constellation/tm.conf
 
 # Generate Constellation's key files
 cd constellation
