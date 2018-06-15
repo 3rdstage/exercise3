@@ -1,0 +1,8 @@
+*.cnf
+!test-ca.cnf
+!sample.cnf
+*.key
+*.csr
+*.crt
+!test-ca.key
+!test-ca.crt

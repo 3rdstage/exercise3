@@ -1,0 +1,24 @@
+[req]
+default_bits = 4096
+prompt = no 
+output_password = skcc
+distinguished_name = dn
+x509_extensions = x509
+
+# https://www.openssl.org/docs/manmaster/man5/x509v3_config.html
+# https://tools.ietf.org/html/rfc5280#section-4.2.1.3
+# https://tools.ietf.org/html/rfc5280#section-4.2.1.12
+[x509]
+basicConstraints = critical,CA:TRUE,pathlen:0
+keyUsage=critical,keyCertSign,cRLSign
+subjectKeyIdentifier=hash
+subjectAltName=dirName:dn
+
+[dn]
+countryName = KR
+stateOrProvinceName = Gyeonggi-do
+localityName = Seongnam-si
+organizationName = SK Holding C&C
+organizationalUnitName = Solution Lab
+commonName = Test CA Certificate
+emailAddress = test-ca@sk.com
