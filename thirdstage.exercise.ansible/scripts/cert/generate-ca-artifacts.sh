@@ -8,14 +8,33 @@ readonly script_dir=$(cd `dirname $0` && pwd)
 
 cd ${script_dir}
 
+# TODO Warn if OpenSSL 1.1 or more is available or not
+# TODO Warn and stop if there exist previously generated files
+
 # Generate key and self-signed certificate for CA
 openssl req \
   -config test-ca.cnf \
   -newkey rsa \
   -keyout test-ca.key -keyform PEM \
-  -x509 -days 3650 -sha512 \
+  -x509 -days 3650 \
   -out test-ca.crt -outform PEM
 
+# Modify permissions of generated file
+chmod 644 test-ca.{key,crt}
+
 # Display the contents of CA certificate
-openssl x509 -in test-ca.crt -text -noout
+openssl x509 -in test-ca.crt -text -purpose -noout
    
+# TODO(Done) Print out the pull paths for the generated files
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "Key and certificate files for Test CA are generated successfully."
+  echo "  key file: '${script_dir}/test-ca.key'"
+  echo "  certiciate file: '${script_dir}/test-ca.crt'"
+  echo ""
+  echo "You can try 'openssl x509 -in test-ca.crt -text -purpose -noout' to confirme the details of generated certificate."
+  echo ""
+fi
+
+
+

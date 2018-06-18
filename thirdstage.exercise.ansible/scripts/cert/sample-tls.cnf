@@ -1,7 +1,9 @@
 [req]
 default_bits = 4096
-prompt = no 
-output_password = 
+default_md = sha512
+encrypt_key = no
+prompt = no
+output_password = 1234
 distinguished_name = dn
 x509_extensions = x509
 
@@ -12,6 +14,8 @@ x509_extensions = x509
 basicConstraints = critical,CA:FALSE
 keyUsage = critical,digitalSignature,keyEncipherment,keyAgreement
 extendedKeyUsage = critical,serverAuth,clientAuth
+authorityKeyIdentifier = keyid,issuer
+issuerAltName = issuer:copy
 subjectKeyIdentifier = hash
 subjectAltName = dirName:dn
 
@@ -21,5 +25,5 @@ stateOrProvinceName = Gyeonggi-do
 localityName = Seongnam-si
 organizationName = SK Holding C&C
 organizationalUnitName = Solution Lab
-commonName = Test TLS Client or Server
-emailAddress = test-ca@sk.com
+commonName = Test TLS Server 001
+# emailAddress = test-tls-server-001@sk.com

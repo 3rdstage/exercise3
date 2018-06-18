@@ -1,7 +1,9 @@
 [req]
 default_bits = 4096
+default_md = sha512
+encrypt_key = no
 prompt = no 
-output_password = skcc
+output_password = skcc@summer
 distinguished_name = dn
 x509_extensions = x509
 
