@@ -9,10 +9,10 @@ x509_extensions = x509
 # https://tools.ietf.org/html/rfc5280#section-4.2.1.3
 # https://tools.ietf.org/html/rfc5280#section-4.2.1.12
 [x509]
-basicConstraints = critical,CA:TRUE,pathlen:0
-keyUsage=critical,keyCertSign,cRLSign
-subjectKeyIdentifier=hash
-subjectAltName=dirName:dn
+basicConstraints = critical,CA:TRUE,pathlen:1
+keyUsage = critical,keyCertSign,cRLSign
+subjectKeyIdentifier = hash
+subjectAltName = dirName:dn
 
 [dn]
 countryName = KR
@@ -20,5 +20,5 @@ stateOrProvinceName = Gyeonggi-do
 localityName = Seongnam-si
 organizationName = SK Holding C&C
 organizationalUnitName = Solution Lab
-commonName = Test CA Certificate
+commonName = Test CA
 emailAddress = test-ca@sk.com
