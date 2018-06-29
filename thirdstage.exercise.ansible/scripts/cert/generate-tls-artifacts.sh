@@ -6,7 +6,7 @@
 
 readonly init_dir=$(pwd)
 readonly script_dir=$(cd `dirname $0` && pwd)
-readonly file_name_only='tls-server'
+readonly file_name_only='test-tls'
 
 cd ${script_dir}
 
@@ -30,15 +30,23 @@ openssl req \
   -out ${file_name_only}.crt -outform PEM
 
 # Display the contents of the generated certificate
-openssl x509 -in ${file_name_only}.crt -text -purpose -noout
+# openssl x509 -in ${file_name_only}.crt -text -purpose -noout
 
 if [ $? -eq 0 ]; then
   echo ""
-  echo "Key and certificate files for test or PoC are generated successfully."
-  echo "  key file: '${script_dir}/${file_name_only}.key'"
-  echo "  certiciate file: '${script_dir}/${file_name_only}.crt'"
+  echo "Successfully generated key file and certificate file."
+  echo "These files can be used only for TLS servers or clients."
+  echo "These files are only for test or PoC purpose. NEVER use these files for production system."
+  echo ""   
+  echo "  key file: '${file_name_only}.key'"
+  echo "  certiciate file: '${file_name_only}.crt'"
   echo ""
-  echo "You can try 'openssl x509 -in ${file_name_only}.crt -text -purpose -noout' to confirme the details of generated certificate."
+  echo "To review the details of generated certificate. Try the following command"
   echo ""
+  echo "'openssl x509 -in ${file_name_only}.crt -text -purpose -noout'"
+  echo ""
+else
+  echo ""
+  echo "Fail to generate key and certificate files." 
 fi
   
