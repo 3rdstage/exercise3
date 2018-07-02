@@ -1,5 +1,6 @@
 *.cnf
 !test-ca.cnf
+!test-tls.cnf
 !sample-tls.cnf
 *.key
 *.csr

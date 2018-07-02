@@ -19,7 +19,7 @@ cd ${script_dir}
 
 # Generate key and certificate
 openssl req \
-  -config sample-tls.cnf \
+  -config test-tls.cnf \
   -newkey rsa \
   -keyout ${file_name_only}.key -keyform PEM \
   -outform PEM | openssl x509 -req \
@@ -43,7 +43,7 @@ if [ $? -eq 0 ]; then
   echo ""
   echo "To review the details of generated certificate. Try the following command"
   echo ""
-  echo "'openssl x509 -in ${file_name_only}.crt -text -purpose -noout'"
+  echo "  '$ openssl x509 -in ${file_name_only}.crt -text -purpose -noout'"
   echo ""
 else
   echo ""
