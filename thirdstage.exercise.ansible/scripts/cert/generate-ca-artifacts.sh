@@ -8,19 +8,27 @@ readonly script_dir=$(cd `dirname $0` && pwd)
 
 cd ${script_dir}
 
+if [[ -f ${script_dir}/test-ca.key || -f ${script_dir}/test-ca.crt ]]; then
+  echo "Previously generated test CA key and cert files (test-ca.key, test-ca,crt) exists."
+  echo "To generated new key and cert files, remove those files first and try again."
+  echo ""
+  exit 101
+fi  
+
 # TODO Warn if OpenSSL 1.1 or more is available or not
 # TODO Warn and stop if there exist previously generated files
 
 # Generate key and self-signed certificate for CA
 openssl req \
-  -config test-ca.cnf \
   -newkey rsa \
   -keyout test-ca.key -keyform PEM \
+  -nodes -sha512 \
+  -config test-ca.cnf \
   -x509 -days 3650 \
   -out test-ca.crt -outform PEM
 
 # Modify permissions of generated file
-chmod 644 test-ca.{key,crt}
+chmod 444 test-ca.{key,crt}
 
 # Display the contents of CA certificate
 openssl x509 -in test-ca.crt -text -purpose -noout

@@ -4,9 +4,76 @@
 #   https://help.ubuntu.com/community/OpenSSL
 #   https://www.openssl.org/docs/man1.1.0/apps/openssl-req.html
 
+# Check 'openSSL' is installed and available or not
+readonly openssl_ver=`openssl version 2> /dev/null`
+
+if [ $? -ne 0 ]; then
+  echo "OpenSSL is not installed or 'openssl' is not in the PATH."
+  echo "Check whether OpenSSL is installed or not, execute 'dpkg -l | grep -w openssl'." 
+  echo "To install OpenSSL, execute 'sudo apt-get install openssl'."
+  exit 101
+fi
+
+echo $0
+
+options=$(getopt -o s:f:h --long "subj:,filename:,help" --name "generate-tls-artifacts-options" -- "$@")
+
+if [ $? -ne 0 ]; then
+  echo "Unable to parse command line, for help, type '$0 -h'."
+  echo ""
+  exit 300
+fi
+
+eval set -- "$options"
+
+declare filename='test-tls'  # only file name part without extension or directory
+declare subj=
+
+while true; do
+  case "$1" in
+    -h|--help)
+      echo "Show help"
+      exit 0
+      shift;;
+    -s|--subj)
+      if [ -z "$2" ]; then
+        echo "-s or --subj option requires argument like '-s \"/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown\"'."
+        exit 301
+      else
+        subj=$2
+      fi
+      shift 2;;
+    -f|--filename)
+      if [ -z "$2" ]; then
+        echo "-f or --filename option requires argument like '-s test-tls-server'."
+        exit 302
+      else
+        filename=$2
+      fi
+      shift 2;;
+    --)
+      shift
+      break;;
+   esac
+done
+
+echo 'subj='${subj}
+echo 'filename='${filename}
+
+# TODO Validate subject
+
+if [ -z ${subj} ]; then
+  subj="/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown"
+  echo "No subject (identity for the generated key and certifiate) is specified."
+  echo "Default subject '/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown' will be used."
+  echo "To specify subejct use -s or --subj option. for more type '$0 --help'"
+  echo ""
+fi
+
+exit 0
+
 readonly init_dir=$(pwd)
 readonly script_dir=$(cd `dirname $0` && pwd)
-readonly file_name_only='test-tls'
 
 cd ${script_dir}
 
@@ -17,20 +84,27 @@ cd ${script_dir}
 # TODO(Done) Notify the full paths of created files
 # TODO(Done) Try to piplining 'openssl req' and 'openssl x509' not to write-down CSR file 
 
-# Generate key and certificate
-openssl req \
-  -config test-tls.cnf \
+# Build command
+declare command="openssl req \
   -newkey rsa \
-  -keyout ${file_name_only}.key -keyform PEM \
+  -keyout ${filename}.key -keyform PEM \
+  -nodes -sha512 \
+  -config test-tls.cnf \
+  -subj \"${subj}\" \
   -outform PEM | openssl x509 -req \
-  -extfile sample-tls.cnf -extensions x509 \
+  -extfile test-tls.cnf -extensions x509 \
   -days 7300 -sha512 \
   -CA test-ca.crt -CAkey test-ca.key -CAcreateserial \
   -inform PEM \
-  -out ${file_name_only}.crt -outform PEM
+  -out ${filename}.crt -outform PEM"
+
+# echo ${command}
+
+# Generate key and certificate
+eval ${command}
 
 # Display the contents of the generated certificate
-# openssl x509 -in ${file_name_only}.crt -text -purpose -noout
+# openssl x509 -in ${filename}.crt -text -purpose -noout
 
 if [ $? -eq 0 ]; then
   echo ""
@@ -38,12 +112,12 @@ if [ $? -eq 0 ]; then
   echo "These files can be used only for TLS servers or clients."
   echo "These files are only for test or PoC purpose. NEVER use these files for production system."
   echo ""   
-  echo "  key file: '${file_name_only}.key'"
-  echo "  certiciate file: '${file_name_only}.crt'"
+  echo "  key file: '${filename}.key'"
+  echo "  certificate file: '${filename}.crt'"
   echo ""
   echo "To review the details of generated certificate. Try the following command"
   echo ""
-  echo "  '$ openssl x509 -in ${file_name_only}.crt -text -purpose -noout'"
+  echo "  'openssl x509 -in ${filename}.crt -text -purpose -noout'"
   echo ""
 else
   echo ""
