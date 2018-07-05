@@ -10,7 +10,7 @@ readonly script_dir=$(cd `dirname $0` && pwd)
 readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert'
 declare options=
 
-for arg in $@; do
+for arg in "$@"; do
   if [ ${arg:0:1} == '-' ]; then 
     options=${options}" ${arg}"
   else
