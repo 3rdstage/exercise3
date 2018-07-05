@@ -6,14 +6,11 @@
 #  $ curl -sSL http://.../get-tls-key-cert.sh | bash -s -- --subj '/C=EN/...' --filename test-tls-server-1
 # 
 
-echo 'ver23'
+echo 'ver24'
 readonly script_dir=$(cd `dirname $0` && pwd)
 readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert'
 
-curl -sSLOOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf,generate-tls-artifacts.sh}
-chmod 750 ${script_dir}/generate-tls-artifacts.sh
-
-curl -sSL ${url_base}/get-tls-key-cert-2.sh | bash -s
+curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
 
 declare command="curl -sSL ${url_base}/generate-tls-artifacts.sh | bash -s --"
 for arg in "$@"; do
@@ -35,11 +32,6 @@ fi
 if [ -f ${script_dir}/test-tls.cnf ]; then
   rm ${script_dir}/test-tls.cnf; 
 fi
-if [ -f ${script_dir}/generate-tls-artifacts.sh ]; then
-  rm ${script_dir}/generate-tls-artifacts.sh; 
-fi
-
-
 
  
 
