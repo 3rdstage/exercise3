@@ -1,10 +1,14 @@
 #! /bin/bash
 
-# Check 'openSSL' is available or not
+# This script is expected to be launched from remote via 'curl'
+# like the following
+#
+#  $ curl -sSL http://.../get-tls-key-cert.sh | bash -s -- --subj '/C=EN/...' --filename test-tls-server-1
+# 
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert'
-readonly options="$@"
+declare options=$*
 
 echo '$@ : '$@
 echo '$* : '$*
