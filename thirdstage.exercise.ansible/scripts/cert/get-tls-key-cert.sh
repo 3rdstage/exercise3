@@ -26,9 +26,9 @@ echo $options
 curl -sSLOOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf,generate-tls-artifacts.sh}
  
 if [ -z "${options}" ]; then
-  curl -sSL ${url_base}/generate-tls-artifacts.sh | bash -s
+  generate-tls-artifacts.sh 
 else
-  curl -sSL ${url_base}/generate-tls-artifacts.sh | bash -s -- ${options}
+  generate-tls-artifacts.sh ${options}
 fi
 
 # After generation, removes unnecessary files
