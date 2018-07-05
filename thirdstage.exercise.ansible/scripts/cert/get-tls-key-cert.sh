@@ -21,6 +21,8 @@ done
 
 echo $options
 
+eval set -- "$options"
+
 # curl -sSLOOO ${url_base}/{test-ca.key,test-c./a.crt,test-tls.cnf}
 # chmod 750 ${script_dir}/generate-tls-artifacts.sh
  
