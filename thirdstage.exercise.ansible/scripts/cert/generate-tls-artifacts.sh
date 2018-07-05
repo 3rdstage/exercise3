@@ -26,7 +26,6 @@ eval set -- "$options"
 
 declare filename='test-tls'  # only file name part without extension or directory
 declare subj=
-
 while true; do
   case "$1" in
     -h | --help )
@@ -110,13 +109,10 @@ declare command="openssl req \
   -inform PEM \
   -out ${filename}.crt -outform PEM"
 
-# echo ${command}
 
 # Generate key and certificate
+# echo ${command}
 eval ${command}
-
-# Display the contents of the generated certificate
-# openssl x509 -in ${filename}.crt -text -purpose -noout
 
 if [ $? -eq 0 ]; then
   echo ""
