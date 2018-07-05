@@ -16,13 +16,13 @@ fi
 
 # After generation, removes unnecessary files
 
-#if [ -f ${script_dir}/test-ca.key ]; then
-#  rm ${script_dir}/test-ca.key
-#fi
-#
-#if [ -f ${script_dir}/test-tls.cnf ]; then
-#  rm ${script_dir}/test-tls.cnf
-#fi
+if [ -f ${script_dir}/test-ca.key ]; then
+  rm ${script_dir}/test-ca.key
+fi
+
+if [ -f ${script_dir}/test-tls.cnf ]; then
+  rm ${script_dir}/test-tls.cnf
+fi
 
  
 

@@ -62,7 +62,7 @@ if [ -z ${subj} ]; then
   subj="/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown"
   echo "No subject (identity for the generated key and certifiate) is specified."
   echo "Default subject '/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown' will be used."
-  echo "To specify subejct use -s or --subj option. for more type '$0 --help'"
+  echo "To specify subejct use -s or --subj option. For more, refer help using -h option."
   echo ""
 fi
 
