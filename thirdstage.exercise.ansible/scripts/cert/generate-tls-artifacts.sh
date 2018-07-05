@@ -80,7 +80,7 @@ fi
 
 echo "Generating private key and X.509 certificate."
 echo "Using "
-echo "  Subject : &{subj}"
+echo "  Subject : ${subj}"
 echo "  Filename: ${filename}"
 echo ""
 
