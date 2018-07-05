@@ -6,6 +6,10 @@ readonly script_dir=$(cd `dirname $0` && pwd)
 readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert'
 readonly options="$@"
 
+echo '$@ : '$@
+echo '$* : '$*
+
+
 echo $options
 
 curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
