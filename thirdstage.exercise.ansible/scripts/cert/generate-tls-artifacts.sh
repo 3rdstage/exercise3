@@ -58,15 +58,16 @@ done
 # echo 'subj='${subj}
 # echo 'filename='${filename}
 
-# TODO Validate subject
-if 
 if [ -z ${subj} ]; then
   subj="/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown"
   echo "No subject (identity for the generated key and certifiate) is specified."
   echo "Default subject '/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown' will be used."
   echo "To specify subejct use -s or --subj option. for more type '$0 --help'"
   echo ""
-else if [[ ! ${subj} =~ (/C=[^=]+|/ST=[^=]+|/L=[^=]+|/O=[^=]+|/OU=[^=]+|/CN=[^=]+) ]]; then
+fi
+
+# Validate subject format
+if [[ ! ${subj} =~ (/C=[^=]+|/ST=[^=]+|/L=[^=]+|/O=[^=]+|/OU=[^=]+|/CN=[^=]+) ]]; then
   echo "Specified subject(via 'subj' option) has wrong format."
   echo "Subject is expected to be in '/C=contry code/ST=state/L=city/O=company/OU=department/CN=common name' format
   echo ""
