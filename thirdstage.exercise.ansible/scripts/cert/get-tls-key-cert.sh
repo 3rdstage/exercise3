@@ -6,7 +6,7 @@
 #  $ curl -sSL http://.../get-tls-key-cert.sh | bash -s -- --subj '/C=EN/...' --filename test-tls-server-1
 # 
 
-echo ver10
+echo 'ver10'
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert'
@@ -35,7 +35,6 @@ else
 fi
 
 eval ${command}
-
 
 ## After generation, removes unnecessary files
 #
