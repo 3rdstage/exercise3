@@ -15,7 +15,7 @@ for arg in $@; do
     options=${options}" ${arg}"
   else
     options=${options}" '${arg}'"
-  if
+  fi
 done
 
 curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
