@@ -21,7 +21,7 @@ done
 
 echo $options
 
-curl -sSLOOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf,generate-tls-artifacts.sh}
+curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
 chmod 750 ${script_dir}/generate-tls-artifacts.sh
  
 if [ -z "${options}" ]; then
