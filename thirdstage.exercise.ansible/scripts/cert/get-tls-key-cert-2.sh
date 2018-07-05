@@ -13,9 +13,9 @@ readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.e
 curl -sSLOOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf,generate-tls-artifacts.sh}
 chmod 750 ${script_dir}/generate-tls-artifacts.sh
 
-curl -sSL ${url_base}/get-tls-key-cert.sh | bash -s
+curl -sSL ${url_base}/get-tls-key-cert-2.sh | bash -s
 
-declare command="curl -sSL ${url_base}/get-tls-key-cert.sh | bash -s --"
+declare command="curl -sSL ${url_base}/generate-tls-artifacts.sh | bash -s --"
 for arg in "$@"; do
   # echo 'current arg: '${arg}
   if [ ${arg:0:1} == '-' ]; then 
