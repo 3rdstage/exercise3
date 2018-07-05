@@ -38,7 +38,8 @@ while true; do
         echo "-s or --subj option requires argument like '-s \"/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown\"'."
         exit 301
       else
-        subj=$2
+        subj=${2## }
+        subj=${subj%% }
       fi
       shift 2 ;;
     -f | --filename )
@@ -56,7 +57,7 @@ done
 # echo 'subj='${subj}
 # echo 'filename='${filename}
 
-if [ -z ${subj} ]; then
+if [ -z "${subj}" ]; then
   subj="/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown"
   echo "No subject (identity for the generated key and certifiate) is specified."
   echo "Default subject '/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown' will be used."
