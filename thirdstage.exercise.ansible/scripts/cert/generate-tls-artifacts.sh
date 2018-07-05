@@ -15,7 +15,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo 'before getopt'
-options=$(getopt -o hs:f: --long "help,subj:,filename:" --name "generate-tls-artifacts-options" -- "$@")
+options=$(getopt -o hs:f: --long subj:,filename:help" --name 'generate-tls-artifacts-options' -- "$@");
 echo 'after getopt'
 
 if [ $? -ne 0 ]; then
