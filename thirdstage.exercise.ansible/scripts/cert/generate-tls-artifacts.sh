@@ -35,7 +35,7 @@ while true; do
     -h | --help )
       echo "Show help"
       exit 0
-      shift;;
+      shift ;;
     -s | --subj )
       if [ -z "$2" ]; then
         echo "-s or --subj option requires argument like '-s \"/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown\"'."
@@ -43,8 +43,7 @@ while true; do
       else
         subj=$2
       fi
-      shift 2
-      ;;
+      shift 2 ;;
     -f | --filename )
       if [ -z "$2" ]; then
         echo "-f or --filename option requires argument like '-s test-tls-server'."
@@ -52,12 +51,8 @@ while true; do
       else
         filename=$2
       fi
-      shift 2
-      ;;
-    -- )
-      shift
-      break
-      ;;
+      shift 2 ;;
+    -- ) shift; break ;;
    esac
 done
 
