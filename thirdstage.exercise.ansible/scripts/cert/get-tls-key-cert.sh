@@ -11,7 +11,7 @@ readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.e
 declare options=
 
 for arg in "$@"; do
-  echo 'current arg: '${arg}
+  # echo 'current arg: '${arg}
   if [ ${arg:0:1} == '-' ]; then 
     options=${options}" ${arg}"
   else
