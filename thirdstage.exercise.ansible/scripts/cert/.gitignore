@@ -1,10 +1,10 @@
 *.cnf
-!test-ca.cnf
-!test-tls.cnf
-!sample-tls.cnf
 *.key
 *.csr
 *.crt
 *.srl
+!test-ca.cnf
+!test-tls.cnf
+!sample-tls.cnf
 !test-ca.key
 !test-ca.crt

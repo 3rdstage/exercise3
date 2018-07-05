@@ -14,8 +14,6 @@ if [ $? -ne 0 ]; then
   exit 101
 fi
 
-echo $0
-
 options=$(getopt -o s:f:h --long "subj:,filename:,help" --name "generate-tls-artifacts-options" -- "$@")
 
 if [ $? -ne 0 ]; then
@@ -57,20 +55,33 @@ while true; do
    esac
 done
 
-echo 'subj='${subj}
-echo 'filename='${filename}
+# echo 'subj='${subj}
+# echo 'filename='${filename}
 
 # TODO Validate subject
-
+if 
 if [ -z ${subj} ]; then
   subj="/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown"
   echo "No subject (identity for the generated key and certifiate) is specified."
   echo "Default subject '/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown' will be used."
   echo "To specify subejct use -s or --subj option. for more type '$0 --help'"
   echo ""
+else if [[ ! ${subj} =~ (/C=[^=]+|/ST=[^=]+|/L=[^=]+|/O=[^=]+|/OU=[^=]+|/CN=[^=]+) ]]; then
+  echo "Specified subject(via 'subj' option) has wrong format."
+  echo "Subject is expected to be in '/C=contry code/ST=state/L=city/O=company/OU=department/CN=common name' format
+  echo ""
+  echo "Example : '/C=KR/ST=Gyeonggi-do/L=Sungnam/O=SK C&C/OU=Solution Lab/CN=Test TLS Server 1'
+  echo ""
+  echo "C: Country, ST: State or Province, L: Locality, O: Organization, OU: organizational unit, CN: Common Name"
+  echo ""
+  exit 301
 fi
 
-exit 0
+echo "Generating private key and X.509 certificate."
+echo "Using "
+echo "  Subject : &{subj}"
+echo "  Filename: ${filename}"
+echo ""
 
 readonly init_dir=$(pwd)
 readonly script_dir=$(cd `dirname $0` && pwd)
