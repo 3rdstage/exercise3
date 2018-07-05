@@ -14,7 +14,7 @@ if [ $? -ne 0 ]; then
   exit 101
 fi
 
-options=$(getopt -o s:f:h --long "subj:,filename:,help" --name "generate-tls-artifacts-options" -- "$@")
+options=$(getopt -o hs:f: --long "help,subj:,filename:" --name "generate-tls-artifacts-options" -- "$@")
 
 if [ $? -ne 0 ]; then
   echo "Unable to parse command line, for help, type '$0 -h'."
@@ -23,6 +23,9 @@ if [ $? -ne 0 ]; then
 fi
 
 eval set -- "$options"
+
+echo $0
+echo $options
 
 declare filename='test-tls'  # only file name part without extension or directory
 declare subj=
@@ -71,9 +74,9 @@ if [[ ! ${subj} =~ (/C=[^=]+|/ST=[^=]+|/L=[^=]+|/O=[^=]+|/OU=[^=]+|/CN=[^=]+) ]]
   echo "Specified subject '${subj}' has wrong format."
   echo "Subject is expected to be in '/C=contry code/ST=state/L=city/O=company/OU=department/CN=common name' format"
   echo ""
-  echo "Example : '/C=KR/ST=Gyeonggi-do/L=Sungnam/O=SK C&C/OU=Solution Lab/CN=Test TLS Server 1"
+  echo "  Example : '/C=KR/ST=Gyeonggi-do/L=Sungnam/O=SK C&C/OU=Solution Lab/CN=Test TLS Server 1"
   echo ""
-  echo "C: Country, ST: State or Province, L: Locality, O: Organization, OU: organizational unit, CN: Common Name"
+  echo "  Where C: Country, ST: State or Province, L: Locality, O: Organization, OU: organizational unit, CN: Common Name"
   echo ""
   exit 301
 fi
