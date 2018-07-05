@@ -11,12 +11,15 @@ readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.e
 declare options=
 
 for arg in "$@"; do
+  echo 'current arg: '${arg}
   if [ ${arg:0:1} == '-' ]; then 
     options=${options}" ${arg}"
   else
     options=${options}" '${arg}'"
   fi
 done
+
+echo $options
 
 curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
  
