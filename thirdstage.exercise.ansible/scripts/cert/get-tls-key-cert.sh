@@ -21,7 +21,7 @@ done
 
 echo $options
 
-curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
+# curl -sSLOOO ${url_base}/{test-ca.key,test-c./a.crt,test-tls.cnf}
 chmod 750 ${script_dir}/generate-tls-artifacts.sh
  
 if [ -z "${options}" ]; then
@@ -30,15 +30,15 @@ else
   ${script_dir}/generate-tls-artifacts.sh ${options}
 fi
 
-# After generation, removes unnecessary files
-
-if [ -f ${script_dir}/test-ca.key ]; then
-  rm ${script_dir}/test-ca.key
-fi
-
-if [ -f ${script_dir}/test-tls.cnf ]; then
-  rm ${script_dir}/test-tls.cnf
-fi
+## After generation, removes unnecessary files
+#
+#if [ -f ${script_dir}/test-ca.key ]; then
+#  rm ${script_dir}/test-ca.key
+#fi
+#
+#if [ -f ${script_dir}/test-tls.cnf ]; then
+#  rm ${script_dir}/test-tls.cnf
+#fi
 
  
 
