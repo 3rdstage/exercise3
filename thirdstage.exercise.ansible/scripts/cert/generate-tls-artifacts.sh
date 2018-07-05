@@ -22,6 +22,8 @@ if [ $? -ne 0 ]; then
   exit 300
 fi
 
+echo 'before eval'
+
 eval set -- "$options"
 
 echo $@
