@@ -22,12 +22,7 @@ if [ $? -ne 0 ]; then
   exit 300
 fi
 
-echo 'before eval'
-
 eval set -- "$options"
-
-echo $@
-echo $options
 
 declare filename='test-tls'  # only file name part without extension or directory
 declare subj=
