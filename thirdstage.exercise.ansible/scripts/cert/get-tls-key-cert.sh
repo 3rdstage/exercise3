@@ -8,8 +8,6 @@ readonly options="$@"
 
 echo '$@ : '$@
 echo '$* : '$*
-
-
 echo $options
 
 curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
