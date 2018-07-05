@@ -77,10 +77,10 @@ if [[ ! ${subj} =~ (/C=[^=]+|/ST=[^=]+|/L=[^=]+|/O=[^=]+|/OU=[^=]+|/CN=[^=]+) ]]
 fi
 
 echo ""
-echo "Generating private key and X.509 certificate."
-echo "Using "
-echo "  Subject : ${subj}"
-echo "  Filename: ${filename}"
+echo "Generating private key and X.509 certificate, using"
+echo ""
+echo "  - Subject : ${subj}"
+echo "  - Filename: ${filename}"
 echo ""
 
 readonly init_dir=$(pwd)
