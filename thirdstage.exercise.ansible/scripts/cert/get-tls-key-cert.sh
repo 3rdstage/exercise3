@@ -15,7 +15,7 @@ for arg in "$@"; do
   if [ ${arg:0:1} == '-' ]; then 
     options=${options}" ${arg}"
   else
-    options=${options}" \"${arg}\""
+    options=${options}" '${arg}'"
   fi
 done
 
