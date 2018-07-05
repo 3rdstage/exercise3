@@ -14,10 +14,7 @@ if [ $? -ne 0 ]; then
   exit 101
 fi
 
-echo 'before getopt'
-options=$(getopt -o hs:f: --long "subj:,filename:help" --name 'generate-tls-artifacts-options' -- "$@");
-echo 'after getopt'
-echo $LINENO
+options=$(getopt -o hs:f: --long "subj:,filename:,help" --name 'generate-tls-artifacts-options' -- "$@");
 
 if [ $? -ne 0 ]; then
   echo "Unable to parse command line, For help, try '-h' option."
