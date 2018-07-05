@@ -32,11 +32,11 @@ declare subj=
 
 while true; do
   case "$1" in
-    -h|--help)
+    -h | --help )
       echo "Show help"
       exit 0
       shift;;
-    -s|--subj)
+    -s | --subj )
       if [ -z "$2" ]; then
         echo "-s or --subj option requires argument like '-s \"/C=ZZ/ST=Unknown/L=Unknown/O=Unknown/OU=Unknown/CN=Unknown\"'."
         exit 301
@@ -44,7 +44,7 @@ while true; do
         subj=$2
       fi
       shift 2;;
-    -f|--filename)
+    -f | --filename )
       if [ -z "$2" ]; then
         echo "-f or --filename option requires argument like '-s test-tls-server'."
         exit 302
@@ -52,7 +52,7 @@ while true; do
         filename=$2
       fi
       shift 2;;
-    --)
+    -- )
       shift
       break;;
    esac
