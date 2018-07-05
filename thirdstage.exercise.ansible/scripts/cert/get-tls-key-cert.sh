@@ -6,9 +6,7 @@
 #  $ curl -sSL http://.../get-tls-key-cert.sh | bash -s -- --subj '/C=EN/...' --filename test-tls-server-1
 # 
 
-echo $0
 readonly script_dir=$(cd `dirname $0` && pwd)
-echo $script_dir
 readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert'
 declare options=
 
@@ -26,9 +24,9 @@ echo $options
 curl -sSLOOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf,generate-tls-artifacts.sh}
  
 if [ -z "${options}" ]; then
-  generate-tls-artifacts.sh 
+  ${script_dir}/generate-tls-artifacts.sh 
 else
-  generate-tls-artifacts.sh ${options}
+  ${script_dir}/generate-tls-artifacts.sh ${options}
 fi
 
 # After generation, removes unnecessary files
