@@ -8,7 +8,7 @@
 readonly openssl_ver=`openssl version 2> /dev/null`
 
 if [ $? -ne 0 ]; then
-  echo "OpenSSL is not installed or 'openssl' is not in the PATH."
+  echo "OpenSSL is not installed or 'openssl'  is not in the PATH."
   echo "Check whether OpenSSL is installed or not, execute 'dpkg -l | grep -w openssl'." 
   echo "To install OpenSSL, execute 'sudo apt-get install openssl'."
   exit 101
@@ -17,14 +17,14 @@ fi
 options=$(getopt -o hs:f: --long "help,subj:,filename:" --name "generate-tls-artifacts-options" -- "$@")
 
 if [ $? -ne 0 ]; then
-  echo "Unable to parse command line, for help, type '$0 -h'."
+  echo "Unable to parse command line, For help, try '-h' option."
   echo ""
   exit 300
 fi
 
 eval set -- "$options"
 
-echo $0
+echo $@
 echo $options
 
 declare filename='test-tls'  # only file name part without extension or directory
