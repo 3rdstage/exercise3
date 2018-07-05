@@ -8,7 +8,7 @@
 readonly openssl_ver=`openssl version 2> /dev/null`
 
 if [ $? -ne 0 ]; then
-  echo "OpenSSL is not installed or 'openssl'  is not in the PATH."
+  echo "OpenSSL is not installed or 'openssl' is not in the PATH."
   echo "Check whether OpenSSL is installed or not, execute 'dpkg -l | grep -w openssl'." 
   echo "To install OpenSSL, execute 'sudo apt-get install openssl'."
   exit 101
@@ -17,6 +17,7 @@ fi
 echo 'before getopt'
 options=$(getopt -o hs:f: --long "subj:,filename:help" --name 'generate-tls-artifacts-options' -- "$@");
 echo 'after getopt'
+echo $LINENO
 
 if [ $? -ne 0 ]; then
   echo "Unable to parse command line, For help, try '-h' option."
