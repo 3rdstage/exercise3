@@ -6,33 +6,30 @@
 #  $ curl -sSL http://.../get-tls-key-cert.sh | bash -s -- --subj '/C=EN/...' --filename test-tls-server-1
 # 
 
-echo 'ver10'
+echo 'ver11'
 
 readonly script_dir=$(cd `dirname $0` && pwd)
 readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert'
-declare options=
 
-for arg in "$@"; do
-  # echo 'current arg: '${arg}
-  if [ ${arg:0:1} == '-' ]; then 
-    options=${options}" ${arg}"
-  else
-    options=${options}" '${arg}'"
-  fi
-done
 
-echo $options
 
 declare command
 
 # curl -sSLOOO ${url_base}/{test-ca.key,test-c./a.crt,test-tls.cnf}
 # chmod 750 ${script_dir}/generate-tls-artifacts.sh
  
-if [ -z "${options}" ]; then
-  command=${script_dir}/generate-tls-artifacts.sh 
-else
-  command=${script_dir}/generate-tls-artifacts.sh ${options}
-fi
+command=${script_dir}/generate-tls-artifacts.sh
+
+for arg in "$@"; do
+  # echo 'current arg: '${arg}
+  if [ ${arg:0:1} == '-' ]; then 
+    command=${command}" ${arg}"
+  else
+    command=${command}" '${arg}'"
+  fi
+done
+
+echo $command
 
 eval ${command}
 
