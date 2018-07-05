@@ -68,10 +68,10 @@ fi
 
 # Validate subject format
 if [[ ! ${subj} =~ (/C=[^=]+|/ST=[^=]+|/L=[^=]+|/O=[^=]+|/OU=[^=]+|/CN=[^=]+) ]]; then
-  echo "Specified subject(via 'subj' option) has wrong format."
-  echo "Subject is expected to be in '/C=contry code/ST=state/L=city/O=company/OU=department/CN=common name' format
+  echo "Specified subject '${subj}' has wrong format."
+  echo "Subject is expected to be in '/C=contry code/ST=state/L=city/O=company/OU=department/CN=common name' format"
   echo ""
-  echo "Example : '/C=KR/ST=Gyeonggi-do/L=Sungnam/O=SK C&C/OU=Solution Lab/CN=Test TLS Server 1'
+  echo "Example : '/C=KR/ST=Gyeonggi-do/L=Sungnam/O=SK C&C/OU=Solution Lab/CN=Test TLS Server 1"
   echo ""
   echo "C: Country, ST: State or Province, L: Locality, O: Organization, OU: organizational unit, CN: Common Name"
   echo ""
