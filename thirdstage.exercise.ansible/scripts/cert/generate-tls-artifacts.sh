@@ -83,17 +83,16 @@ echo "  - Subject : ${subj}"
 echo "  - Filename: ${filename}"
 echo ""
 
-readonly ini
-cript_dir=$(cd `dirname $0` && pwd)
-
+readonly init_dir=$(pwd)
+readonly script_dir=$(cd `dirname $0` && pwd)
 cd ${script_dir}
 
-# TODO Make configuration file and output file are read from parameters
+# TODO(Canceled) Make configuration file and output file are read from parameters
 # TODO Warn if OpenSSL 1.1 or more is available or not
 # TODO Check whether or not the previous files exist
 # TODO Move back to the initial directory
 # TODO(Done) Notify the full paths of created files
-# TODO(Done) Try to piplining 'openssl req' and 'openssl x509' not to write-down CSR file 
+# TODO(Done) Try to pipelining 'openssl req' and 'openssl x509' not to write-down CSR file 
 
 # Build command
 declare command="openssl req \
