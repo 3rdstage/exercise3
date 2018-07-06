@@ -6,11 +6,9 @@ $ mkdir tls
 
 $ cd tls
 
-$ curl -sSLOO https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert/test-ca.{key,crt}
- 
-$ curl -sSLO https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert/sample-tls.cnf
-
-$ curl -sSL https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert/generate-tls-artifacts.sh | bash -s
+$ curl -sSL https://github.com/3rdstage/exercise3/raw/master/thirdstage.exercise.ansible/scripts/cert/get-tls-key-cert-2.sh \
+  | bash -s -- \
+  --subj '/C=KR/ST=Seoul/L=Seoul/O=SK C&C/OU=Lab/CN=Test TLS Server 2' \
+  --filename test-tls-server-2```
 ```
-
 
