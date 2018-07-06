@@ -96,7 +96,7 @@ if [[ -f "${filename}.key" || -f "${filename}.key" ]]; then
   echo "  key file: '${filename}.key'"
   echo "  certificate file: '${filename}.crt'"
   echo ""
-  echo "Rename the above files or try another name"
+  echo "Rename the above files or specify another name with '-f' or '--filename' option"
   echo ""
   exit 302
 fi

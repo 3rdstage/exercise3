@@ -13,11 +13,14 @@ readonly url_base='https://github.com/3rdstage/exercise3/raw/master/thirdstage.e
 curl -sSLOOO ${url_base}/{test-ca.key,test-ca.crt,test-tls.cnf}
 
 declare -A args
+declare arg
 for (( i = 1; i <= $#; i++ )); do
-  # echo ${@:$i:1}
+  arg=${@:$i:1}
+  # echo ${arg}
+  if [ ! ${arg:0:1} == '-' ]; then arg="'${arg}'"; fi
   args[$i]=${@:$i:1}
 done
-echo ${args[@]} 
+# echo ${args[@]} 
 
 curl -sSL ${url_base}/generate-tls-artifacts.sh | bash -s -- ${args[@]}
 
@@ -26,7 +29,7 @@ if [ -f ${script_dir}/test-ca.key ]; then
   rm ${script_dir}/test-ca.key; 
 fi
 if [ -f ${script_dir}/test-tls.cnf ]; then
-  #rm ${script_dir}/test-tls.cnf; 
+  rm ${script_dir}/test-tls.cnf; 
 fi
 
  
