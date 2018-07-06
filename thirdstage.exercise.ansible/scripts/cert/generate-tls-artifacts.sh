@@ -65,7 +65,7 @@ if [ -z "${subj}" ]; then
 fi
 
 # Validate subject format
-if [[ ! ${subj} =~ (/C=[^=]+|/ST=[^=]+|/L=[^=]+|/O=[^=]+|/OU=[^=]+|/CN=[^=]+) ]]; then
+if [[ ! ${subj} =~ ^(/C=[^/=]+|/ST=[^/=]+|/L=[^/=]+|/O=[^/=]+|/OU=[^/=]+|/CN=[^/=]+)+$ ]]; then
   echo ""
   echo "Specified subject(via -s or --subj option) '${subj}' has wrong format."
   echo "Subject is expected to be in '/C=contry code/ST=state/L=city/O=company/OU=department/CN=common name' format"
@@ -83,8 +83,8 @@ echo "  - Subject : ${subj}"
 echo "  - Filename: ${filename}"
 echo ""
 
-readonly init_dir=$(pwd)
-readonly script_dir=$(cd `dirname $0` && pwd)
+readonly ini
+cript_dir=$(cd `dirname $0` && pwd)
 
 cd ${script_dir}
 
