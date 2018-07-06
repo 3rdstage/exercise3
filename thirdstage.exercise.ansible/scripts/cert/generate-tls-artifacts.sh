@@ -76,16 +76,29 @@ if [[ ! ${subj} =~ ^(/C=[^/=]+|/ST=[^/=]+|/L=[^/=]+|/O=[^/=]+|/OU=[^/=]+|/CN=[^/
   exit 301
 fi
 
+readonly init_dir=$(pwd)
+readonly script_dir=$(cd `dirname $0` && pwd)
+cd ${script_dir}
+
+# Check previously generated key/cert files
+if [[ -f "${filename}.key" || -f "${filename}.key" ]; then
+  echo ""
+  echo "Previously generated key/cert files with SAME name already exists"
+  echo ""
+  echo "  key file: '${filename}.key'"
+  echo "  certificate file: '${filename}.crt'"
+  echo ""
+  echo "Rename the above files or try another name"
+  echo ""
+  exit 302
+fi
+  
 echo ""
 echo "Generating private key and X.509 certificate, using"
 echo ""
 echo "  - Subject : ${subj}"
 echo "  - Filename: ${filename}"
 echo ""
-
-readonly init_dir=$(pwd)
-readonly script_dir=$(cd `dirname $0` && pwd)
-cd ${script_dir}
 
 # TODO(Canceled) Make configuration file and output file are read from parameters
 # TODO Warn if OpenSSL 1.1 or more is available or not
