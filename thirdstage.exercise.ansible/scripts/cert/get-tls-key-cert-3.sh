@@ -20,7 +20,7 @@ for (( i = 1; i <= $#; i++ )); do
   if [ ! ${arg:0:1} == '-' ]; then arg="'${arg}'"; fi
   args[$i]=${@:$i:1}
 done
-# echo ${args[@]} 
+echo ${args[@]} 
 
 curl -sSL ${url_base}/generate-tls-artifacts.sh | bash -s -- ${args[@]}
 
