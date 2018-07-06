@@ -22,7 +22,7 @@ for arg in "$@"; do
   fi
 done
 
-echo $command
+# echo $command
 eval ${command}
 
 # After generation, removes unnecessary files

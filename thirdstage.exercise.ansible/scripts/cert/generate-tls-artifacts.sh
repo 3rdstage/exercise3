@@ -89,7 +89,7 @@ readonly script_dir=$(cd `dirname $0` && pwd)
 cd ${script_dir}
 
 # Check previously generated key/cert files
-if [[ -f "${filename}.key" || -f "${filename}.key" ]]; then
+if [[ -f "${filename}.key || -f "${filename}.key" ]]; then
   echo ""
   echo "Previously generated key/cert files with SAME name already exists"
   echo ""
