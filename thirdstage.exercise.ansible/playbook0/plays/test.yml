@@ -1,0 +1,8 @@
+- hosts: controller
+  vars:
+  tasks:
+  
+
+- hosts: all
+  vars:
+  tasks:  

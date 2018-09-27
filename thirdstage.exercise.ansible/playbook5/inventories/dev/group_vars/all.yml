@@ -1,0 +1,11 @@
+common:
+  identity:
+    system: &system 'The System'
+    env: &env dev
+    isProduction: false
+  apt:
+    cacheValidTime: 36000
+    
+  layout:
+    
+  prerequisite:
