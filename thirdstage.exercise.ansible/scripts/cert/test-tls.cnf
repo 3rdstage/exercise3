@@ -1,0 +1,30 @@
+# https://www.openssl.org/docs/man1.1.0/apps/openssl-req.html
+# /usr/lib/ssl/openssl.cnf
+[req]
+default_bits = 4096
+default_md = sha512
+encrypt_key = no
+# prompt = no            # shoudn't be specified for -subj option to be applied
+# output_password = 1234 # not used
+distinguished_name = dn  # mandatory
+x509_extensions = x509
+
+[dn]
+countryName = ZZ
+stateOrProvinceName = Unknown
+localityName = Unknown
+organizationName = Unknown
+organizationalUnitName = Unknown
+commonName = Unknown
+
+# https://www.openssl.org/docs/manmaster/man5/x509v3_config.html
+# https://tools.ietf.org/html/rfc5280#section-4.2.1.3
+# https://tools.ietf.org/html/rfc5280#section-4.2.1.12
+[x509]
+basicConstraints = critical,CA:FALSE
+keyUsage = critical,digitalSignature,keyEncipherment,keyAgreement
+extendedKeyUsage = critical,serverAuth,clientAuth
+authorityKeyIdentifier = keyid,issuer
+issuerAltName = issuer:copy
+subjectKeyIdentifier = hash
+# subjectAltName = dirName:dn

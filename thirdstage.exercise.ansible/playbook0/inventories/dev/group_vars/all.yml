@@ -1,0 +1,62 @@
+common:
+  identity:
+    system: &system 'The System'
+    env: &env dev
+    isProduction: false
+
+  layout:
+  
+  ssh:
+    # https://linux-audit.com/audit-and-harden-your-ssh-configuration/
+    conf:
+      Protocol: 2
+      IgnoreRhosts: yes
+      X11Forwarding: no
+      AllowTcpForwarding: no
+      AllowAgentForwarding: no
+      PermitRootLogin: no
+      PubkeyAuthentication: yes
+      PasswordAuthentication: yes
+      PermitEmptyPasswords: no
+      MaxAuthTries: 3
+      MaxSessions: 3
+      ClientAliveCountMax: 2
+
+  apt:
+    conf:
+      cacheValidTime: 36000
+      translation: []   # https://askubuntu.com/questions/74653/how-can-i-remove-the-translation-entries-in-apt
+    prerequisites:
+      - 'apt-transport-https'
+      - 'libpam-cracklib'
+  
+  cracklib:
+    options: { retry: 2, minlen: 6, minclass: 2, maxrepeat: 2 } # https://linux.die.net/man/8/pam_cracklib 
+  
+  prerequisites:
+    websocat:
+      required: false
+      version: 1.1-pre
+      download: 
+        url: 'https://github.com/vi/websocat/releases/download/v1.1-pre/websocat_amd64-linux-static'
+    nmap:
+      required: false
+      version: 7.70-1
+      rpm:
+        url: 'https://nmap.org/dist/nmap-7.70-1.x86_64.rpm'
+        signature : 'https://nmap.org/dist/sigs/nmap-7.70-1.x86_64.rpm.asc'
+    lynis:
+      required: false
+      version: 2.6.9
+      apt:   # https://packages.cisofy.com/community/#debian-ubuntu
+        repository: 'deb https://packages.cisofy.com/community/lynis/deb/ stable main'
+        srcListFile: 'cisofy-lynis.list'  # under '/etc/apt/sources.list.d/'
+        key: https://packages.cisofy.com/keys/cisofy-software-public.key
+      config:
+        skipTests:
+          - FILE-6310   # Separation of partitions, https://cisofy.com/lynis/controls/FILE-6310/
+          - PKGS-7308   # RPM output, https://cisofy.com/lynis/controls/PKGS-7308/
+          - PKGS-7384   # yum-utils package, https://cisofy.com/lynis/controls/PKGS-7384/
+          - PKGS-7386   # yum-plugin-security, https://cisofy.com/lynis/controls/PKGS-7386/
+          - 'SSH-7408:tcpkeepalive' # https://cisofy.com/lynis/controls/SSH-7408/
+          

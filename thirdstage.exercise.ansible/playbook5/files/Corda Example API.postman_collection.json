@@ -1,0 +1,132 @@
+{
+	"info": {
+		"_postman_id": "ae9cad44-996b-42b3-95da-14add892426a",
+		"name": "Corda Example API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/api/example/me",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{node.addr}}:{{node.port}}/api/example/me",
+					"protocol": "http",
+					"host": [
+						"{{node.addr}}"
+					],
+					"port": "{{node.port}}",
+					"path": [
+						"api",
+						"example",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/example/peers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{node.addr}}:{{node.port}}/api/example/me",
+					"protocol": "http",
+					"host": [
+						"{{node.addr}}"
+					],
+					"port": "{{node.port}}",
+					"path": [
+						"api",
+						"example",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/example/ious",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{node.addr}}:{{node.port}}/api/example/ious",
+					"protocol": "http",
+					"host": [
+						"{{node.addr}}"
+					],
+					"port": "{{node.port}}",
+					"path": [
+						"api",
+						"example",
+						"ious"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/web/example",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{node.addr}}:{{node.port}}/web/example",
+					"protocol": "http",
+					"host": [
+						"{{node.addr}}"
+					],
+					"port": "{{node.port}}",
+					"path": [
+						"web",
+						"example"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bef1c267-e49e-4d25-b12c-f033553797ff",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7736cb91-8871-4206-81e8-50d4c6316070",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "6d9e73a1-2e85-4e26-baaf-006662876c05",
+			"key": "node.addr",
+			"value": "127.0.0.1",
+			"type": "string"
+		},
+		{
+			"id": "6713a7c5-9d00-4880-83c3-0891b471f102",
+			"key": "node.port",
+			"value": "10012",
+			"type": "string"
+		}
+	]
+}

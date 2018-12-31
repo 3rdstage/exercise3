@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+# References
+#   - https://www.virtualbox.org/manual/ch08.html#headless-vm-steps
+#   - https://www.virtualbox.org/manual/ch09.html
+#   - http://zacklalanne.me/using-vagrant-to-virtualize-multiple-hard-drives/
+
+VAGRANT_BOX = 'ubuntu/xenial64'
+
+VM_NAME = 'ubuntu-lvm'
+VM_USER = 'vagrant'
+
+VM_DISK1_PATH = './disk1.vdi'
+VM_DISK2_PATH = './disk2.vdi'
+
+Vagrant.configure("2") do |config|
+  config.vm.box = VAGRANT_BOX
+
+  config.vm.hostname = VM_NAME
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.name = VM_NAME
+
+    vb.memory = "2048"
+
+    if not File.exists?(VM_DISK1_PATH)
+      vb.customize ['createmedium', '--filename', VM_DISK1_PATH, '--format', 'VDI', '--variant', 'Fixed', '--size', 512]
+    end
+    if not File.exists?(VM_DISK2_PATH)
+      vb.customize ['createmedium', '--filename', VM_DISK2_PATH, '--format', 'VDI', '--variant', 'Fixed', '--size', 512]
+
+      vb.customize ['storagectl', :id, '--name', 'SCSI Controller', '--add', 'scsi', '--portcount', 4]
+
+    end
+
+  end
+
+end
