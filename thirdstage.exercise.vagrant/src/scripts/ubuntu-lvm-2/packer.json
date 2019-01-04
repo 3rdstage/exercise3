@@ -15,8 +15,9 @@
       "iso_url": "http://old-releases.ubuntu.com/releases/16.04.3/ubuntu-16.04.3-server-amd64.iso",
       "iso_checksum_url": "http://old-releases.ubuntu.com/releases/16.04.3/MD5SUMS",
       "iso_checksum_type": "md5",
-      "headless": true,
+      "headless": false,
       "http_directory": "http",
+      "disk_size": 4096,
       "boot_wait": "5s",
       "boot_command": [
         "<enter><wait>",
@@ -45,7 +46,15 @@
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--memory", 512],
         ["modifyvm", "{{.Name}}", "--cpus", 1],
-        ["createmedium", "--filename", "disk1.vdi", "--format", "VDI", "--variant", "Fixed", "--size", "512"]
+        ["createmedium", "--filename", "disk1.vdi", "--format", "VDI", "--variant", "Fixed", "--size", "4096"],
+        ["createmedium", "--filename", "disk2.vdi", "--format", "VDI", "--variant", "Fixed", "--size", "4096"],
+        ["createmedium", "--filename", "disk3.vdi", "--format", "VDI", "--variant", "Fixed", "--size", "4096"],
+        ["createmedium", "--filename", "disk4.vdi", "--format", "VDI", "--variant", "Fixed", "--size", "4096"],
+        ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--add", "sata", "--portcount", 5],
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "1", "--type", "hdd", "--medium", "disk1.vdi" ],
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "hdd", "--medium", "disk2.vdi" ],
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "3", "--type", "hdd", "--medium", "disk3.vdi" ],
+        ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "4", "--type", "hdd", "--medium", "disk4.vdi" ]
       ]
     }
   ],
