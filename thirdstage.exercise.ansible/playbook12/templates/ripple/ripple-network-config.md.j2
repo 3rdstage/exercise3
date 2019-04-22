@@ -1,0 +1,47 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+
+{# References
+
+    - https://docs.python.org/2.7/library/string.html#formatspec
+#}
+
+## Ripple Nodes
+
+| Name | Type | RPC Port | WS(S) Port | Peer Port |
+| ---- | ---- | -------- | ---------- | --------- |
+{% for node in network.rippleds|d([])|sort(attribute='name') %}
+  {%- set rpc = node|json_query('config.ports[?name==`port_rpc`]|[0]') -%}
+  {%- set rpc = rpc.protocol ~ "://" ~ rpc.ip ~ ":" ~ rpc.port -%}
+
+  {%- set ws = node|json_query('config.ports[?name==`port_ws`]|[0]') -%}
+  {%- if ws is none -%}
+    {%- set ws = "" -%}
+  {%- else -%}
+    {%- set ws = ws.protocol ~ "://" ~ ws.ip ~ ":" ~ ws.port -%}
+  {%- endif -%}
+  {%- set peer = node|json_query('config.ports[?name==`port_peer`]|[0]') -%}
+  {%- set peer = peer.ip ~ ":" ~ peer.port -%}
+
+| {{ node.name }} | {{ node.type}} | {{ rpc }}  |  {{ ws }} |  {{ peer }} |
+{% endfor %}
+
+
+## Ripple Proxies
+
+| Name | Proxy For | HTTP | HTTPS | WS | WSS |
+| ---- | --------- | ---- | ----- | -- | --- |
+{% for node in network.rippleds|d([])|sort(attribute='name') %}
+  {%- set proxy = node.proxy|d([]) -%}
+  {%- set http = node|json_query('proxy.frontends[?name==`http`]|[0]') -%}
+  {%- set http = "" if http is none else (http.protocol ~ "://" ~ http.address ~ ":"  ~ http.port) -%}
+  {%- set https = node|json_query('proxy.frontends[?name==`https`]|[0]') -%}
+  {%- set https = "" if https is none else (https.protocol ~ "://" ~ https.address ~ ":" ~ https.port) -%}
+
+  {%- set ws = node|json_query('proxy.frontends[?name==`ws`]|[0]') -%}
+  {%- set ws = "" if ws is none else (ws.protocol ~ "://" ~ ws.address ~ ":" ~ ws.port) -%}
+  {%- set wss = node|json_query('proxy.frontends[?name==`wss`]|[0]') -%}
+  {%- set wss = "" if wss is none else (wss.protocol ~ "://" ~ wss.address ~ ":" ~ wss.port) -%}
+
+| {{ proxy.name|d([]) }} | {{ node.name }} | {{ http }} | {{ https }} | {{ ws }} | {{ wss }}  |
+{% endfor %}
+

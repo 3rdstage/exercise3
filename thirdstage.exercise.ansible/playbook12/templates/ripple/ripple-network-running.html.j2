@@ -1,0 +1,195 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+
+{# References
+
+    - https://docs.python.org/2.7/library/string.html#formatspec
+#}
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ripple Network Summary</title>
+<style type="text/css">
+body {
+  font-family: Georgia, Verdana, sans-serif;
+  font-size: 1.0em; 
+  line-height:1.5;
+  margin-left:2.0em;
+  counter-reset: step-h3;
+}
+
+table { 
+  border-collapse: collapse;
+  min-width: 800px 
+}
+th, td { border: 1px solid #999;padding: 0.2em; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Helvetica, "Trebuchet MS", Verdana;
+  margin-top:1.0em;
+  margin-bottom:1px;
+  padding-top:0px;
+  padding-bottom:0px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size:1.8em; }
+h2 { font-size:1.5em; }
+h3 { font-size:1.4em; }
+h4 { font-size:1.3em; }
+h5 { font-size:1.2em; }
+h6 { font-size:1.15em; }
+
+#cy {
+  width: 1000px;
+  height: 800px;
+  display: block;
+  border: black thin;
+}
+</style>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.20/cytoscape.min.js' type='text/javascript'></script>
+</head>
+
+<body>
+
+<h1>Ripple Network State</h1>
+
+<ul>
+  <li>System: "{{ common.identity.system }}"</li>
+  <li>Env: "{{ common.identity.env }}"</li>
+</ul>
+
+<table>
+  <tr>
+    <th>Name</th>
+    {%- for node in network -%}
+      <td>{{ node.name }}</td>
+    {%- endfor -%}
+  </tr><tr>
+    <th>Type</th>
+    {%- for node in network -%}
+      <td>{{ node.type }}</td>
+    {%- endfor -%}
+  </tr><tr>
+    <th>Defined Peers</th>
+    {%- for node in network -%}
+      <td>{{ node.peers_defined | to_json }}</td>
+    {%- endfor -%}
+  </tr><tr>
+    <th>Complete Ledgers</th>
+    {%- for node in network -%}
+      <td>{{ node|json_query('complete_ledgers') }}</td>
+    {%- endfor -%}
+  </tr><tr>
+    <th>Server State</th>
+    {%- for node in network -%}
+      <td>{{ node|json_query('server_state') }}</td>
+    {%- endfor -%}
+  </tr><tr>
+    <th>Uptime (s)</th>
+    {%- for node in network -%}
+      <td>{{ "{:,d}".format(node|json_query('uptime || `0`')) }}</td>
+    {%- endfor -%}
+  </tr><tr>
+    <th>Ledger Height</th>
+    {%- for node in network -%}
+      <td>{{ "{:,d}".format(node|json_query('validated_ledger_seq || `0`')) }}</td>
+    {%- endfor -%}
+  </tr><tr>
+    <th>Connected Peers</th>
+    {%- for node in network -%}
+      <td>{{ node|json_query('peers_found_named[*].name || ``')|to_json }}</td>
+    {%- endfor -%}
+  </tr>  
+</table>
+
+<div id='cy'/>
+
+
+<script type='text/javascript'>
+
+var cy = cytoscape({
+
+  container: document.getElementById('cy'),
+  
+  elements: [
+    {% for node in network %}
+    {
+      group: 'nodes',
+      data: { id: '{{ node.name }}', name: '{{ node.name }}' }
+    },
+    {%- endfor -%}
+    
+    {% for node in network %}
+    {% for peer0 in node|json_query('peers_defined || `[]`') %}
+    {
+      group: 'edges',
+      data: { 
+        id: '{{ node.name }}-{{ peer0 }}:defined', 
+        source: '{{ node.name }}', 
+        target: '{{ peer0 }}'
+      },
+      classes: 'defined'
+    },
+    {%- endfor -%}
+    {%- endfor -%}
+
+    {% for node in network %}
+    {% for peer1 in node|json_query('peers_found_named || `[]`') %}
+    {
+      group: 'edges',
+      data: { 
+        id: '{{ node.name }}-{{ peer1.name }}:connected', 
+        source: '{{ node.name }}', 
+        target: '{{ peer1.name }}'
+      },
+      classes: 'connected'
+    },
+    {%- endfor -%}
+    {%- endfor -%}
+  ],
+  
+  style: [
+    {
+      selector: 'node',
+      style: {
+        'width': 5,
+        'height': 5,
+        'background-color': '#666',
+        'label': 'data(id)',
+        'font-size': 2
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        'width': 1 
+      }
+    },
+    {
+      selector: 'edge.defined',
+      style: {
+        'curve-style': 'bezier',
+        'line-style': 'dashed',
+        'target-arrow-shape': 'triangle',
+        'visibility': 'hidden' 
+      }
+    }
+  ],
+  
+  layout: { name: 'cose', padding: 10 },
+  
+  zoom: 1,
+  maxZoom: 1e1
+
+  
+});
+
+
+</script>
+
+</body>
+</html>

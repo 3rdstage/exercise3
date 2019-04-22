@@ -1,0 +1,86 @@
+- hosts: all
+  tasks:
+
+  - name: Generate script file containing simple tests of Ripple network
+    template:
+      src: "{{ playbook_dir }}/../templates/ripple/test-ripple-network.sh.j2"
+      dest: "{{ inventory_dir }}/generated/ripple-network-test.sh"
+      newline_sequence: '\n'
+      force: true
+      mode: 0750
+      # validate: # Use 'validate' parameter if possible
+    when: true
+    become: flase
+    run_once: true
+    delegate_to: controller
+    tags: ['generateTestScript']
+
+  - name: Inspect the running Ripple network
+    block:
+      - name: Generate JSON file containing the configuration of Ripple network
+        template:
+          src: "{{ playbook_dir }}/../templates/ripple/ripple-network-config.json.j2"
+          dest: "{{ inventory_dir }}/generated/ripple-network-config.json"
+          newline_sequence: '\n'
+          force: true
+          mode: 0750
+        when: true
+        become: flase
+        run_once: true
+        delegate_to: controller
+        tags: ['generateInvetorySummary']
+
+      - name: Generate Markdown file containing the configuration fo Ripple network
+        vars:
+          network: "{{ lookup('file', '{{ inventory_dir }}/generated/ripple-network-config.json') | from_json }}"
+        template:
+          src: "{{ playbook_dir }}/../templates/ripple/ripple-network-config.md.j2"
+          dest: "{{ inventory_dir }}/generated/ripple-network-config.md"
+          newline_sequence: '\n'
+          force: true
+          mode: 0750
+        when: true
+        become: false
+        run_once: true
+        delegate_to: controller
+        tags: ['generateInvetorySummary']
+
+      - name: Inspect the running Ripple network
+        command: ./scripts/ripple/ripple-inspect-network.sh '{{ inventory_dir }}/generated/ripple-network-config.json' '{{ inventory_dir }}/generated/ripple-network-running.json'
+        args:
+          chdir: "{{ playbook_dir }}/.."
+          # removes: "{{ playbook_dir }}/../generated/ripple-network-config.json"
+        when: true
+        become: false
+        run_once: true
+        delegate_to: controller
+        register: inspect_ripple_network
+        failed_when: inspect_ripple_network.rc != 0
+        tags: ['inspectRippleNetwork']
+
+      - name: Generate summary of running Ripple network
+        vars:
+          network: "{{ lookup('file', '{{ inventory_dir }}/generated/ripple-network-running.json') | from_json }}"
+        template:
+          src: "{{ playbook_dir }}/../templates/ripple/ripple-network-running.html.j2"
+          dest: "{{ inventory_dir }}/generated/ripple-network-running.html"
+          newline_sequence: '\n'
+          force: true
+          mode: 0750
+        when: true
+        become: false
+        run_once: true
+        delegate_to: controller
+        tags: ['generateRippleNetworkSummary']
+
+
+      - name: Debug
+        vars:
+          running: "{{ lookup('file', '../generated/ripple-network-running.json') | from_json }}"
+        debug:
+          msg: "{{ running[0].name }}"
+        when: false
+        become: false
+        run_once: true
+        delegate_to: controller
+        tags: ['printRippleNetworkRunning']

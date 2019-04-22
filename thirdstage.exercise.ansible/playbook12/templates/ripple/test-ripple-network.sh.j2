@@ -1,0 +1,36 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: True, keep_trailing_newline: True
+# Test Rippled API 
+
+# RippleAPI : https://developers.ripple.com/rippled-api.html
+# server_info : https://developers.ripple.com/server_info.html
+# ledger : https://developers.ripple.com/ledger.html
+# consensus_info: https://developers.ripple.com/consensus_info.html
+# feature : https://developers.ripple.com/feature.html
+# peers : https://developers.ripple.com/peers.html
+# validators : https://developers.ripple.com/validators.html
+
+# If you get error message about 'jq', install 'jq'(command-line JSON processor) via 'sudo apt-get install jq'
+# For more, refer https://stedolan.github.io/jq/manual/
+
+{% for host in ansible_play_hosts|sort -%}
+  {% for node in hostvars[host]|json_query('ripple.trackers')|select|flatten %}
+# Test for {{ node.type }}/{{ node.name }}
+    {%- for port in node|json_query("config.ports[?name=='port_rpc']")|select|flatten %}
+curl -ksS --interface lo \
+  --data '{"method": "server_info", "params": [{}]}' {{ port.protocol }}://{{ port.ip }}:{{ port.port }} | jq
+curl -ksS --interface lo \
+  --data '{"method": "ledger", "params": [{}]}' {{ port.protocol }}://{{ port.ip }}:{{ port.port }} | jq
+curl -ksS --interface lo \
+  --data '{"method": "ledger_current", "params": [{}]}' {{ port.protocol }}://{{ port.ip }}:{{ port.port }} | jq
+curl -ksS --interface lo \
+  --data '{"method": "consensus_info", "params": [{}]}' {{ port.protocol }}://{{ port.ip }}:{{ port.port }} | jq
+curl -ksS --interface lo \
+  --data '{"method": "feature", "params": [{}]}' {{ port.protocol }}://{{ port.ip }}:{{ port.port }} | jq
+curl -ksS --interface lo \
+  --data '{"method": "peers", "params": [{}]}' {{ port.protocol }}://{{ port.ip }}:{{ port.port }} | jq
+curl -ksS --interface lo \
+  --data '{"method": "validators", "params": [{}]}' {{ port.protocol }}://{{ port.ip }}:{{ port.port }} | jq
+    {%- endfor %}
+  {% endfor %}
+{%- endfor -%}
+

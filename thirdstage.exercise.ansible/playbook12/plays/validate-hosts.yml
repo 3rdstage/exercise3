@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+
+  # TODO -name: Check whether or not there is any fulled partition
+
+  # TODO -name: Execute 'sudo apt-get autoremove' if necessary

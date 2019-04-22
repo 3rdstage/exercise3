@@ -1,0 +1,18 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+
+{#
+  @TODO Order nodes by name first
+#}
+
+{
+{% set nodes = [] -%}
+{%- for host in hostvars|json_query('*') -%}
+  {%- set rippleds = host|json_query('ripple.[validators, trackers][]')|d([], true) -%}
+  {%- for rippled in rippleds -%}
+    {%- set proxy = host|json_query('haproxy.rippleProxies[?backends[?@.servers[?@.name==`' ~ rippled.name ~ '`]]]')|first or {} -%}
+    {%- do rippled.update({'proxy': proxy}) -%}
+    {%- do nodes.append(rippled) -%}
+  {%- endfor -%}
+{%- endfor -%}
+"rippleds" : {{ nodes|to_nice_json(indent=2) }}
+}

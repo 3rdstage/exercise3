@@ -1,0 +1,8 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: True, keep_trailing_newline: True
+[validators]
+{% for key in validatorPubKeys -%}
+  {%- if key[0] != item.name -%}
+# {{ key[0] }}
+{{ key[1] }}
+  {%- endif %}
+{% endfor %}

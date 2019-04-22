@@ -1,0 +1,60 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+# https://www.elastic.co/guide/en/beats/filebeat/6.4/
+# https://github.com/elastic/beats/blob/master/filebeat/filebeat.yml
+# https://github.com/elastic/beats/blob/master/filebeat/filebeat.reference.yml
+
+{%- set config = filebeat %}
+{% set configDefault = common.filebeat.configDefault %}
+name: {{ config.name }}
+fields_under_root: true
+fields: { system.name: "{{ configDefault.fields.system.name }}", system.env: "{{ configDefault.fields.system.env }}" }
+
+logging.level: {{ config.logging.level|default(configDefault.logging.level) }}
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+  #reload.period: 10s
+
+setup.template.settings:
+  index.number_of_shards: 3
+
+xpack.monitoring.enabled: false
+
+filebeat.inputs:
+{%- set configRippledLog = configDefault.inputs|selectattr("category", "equalto", "rippled")|selectattr("type", "equalto", "log")|first -%}
+{% for input in config.inputs|selectattr("category", "equalto", "rippled")|selectattr("type", "equalto", "log") %}
+- type: log
+  enabled: true
+  encoding: plain
+  fields_under_root: true
+  fields: { service.type: "rippled", service.name: "{{ input.source }}" }
+  
+  paths:
+    - {{ ansible_env.HOME }}/ripple/nodes/{{ input.source }}/logs/rippled.log
+  
+  {% set includeLines = configRippledLog.include_lines|default([])|union(input.include_lines|default([])) -%}
+  {% set excludeLines = configRippledLog.exclude_lines|default([])|union(input.exclude_lines|default([])) -%}  
+  include_lines: ['{{ includeLines|join("\', \'") }}']
+  exclude_lines: ['{{ excludeLines|join("\', \'") }}']
+{% endfor %}
+{% for input in config.inputs|selectattr("category", "equalto", "haproxy")|selectattr("type", "equalto", "log") %}
+- type: log
+  enabled: true
+  encoding: plain
+  fields_under_root: true
+  fields: { service.type: "haproxy" }
+
+  paths:
+    - {{ input.path }}
+{% endfor %}
+
+output.console:
+  enabled: false
+  pretty: true
+
+{% set configLogstash = configDefault.outputs|selectattr("type", "equalto", "logstash")|first %}
+output.logstash:
+  enabled: true
+  
+  hosts: ['{{ configLogstash.hosts|default([])|join("\', \'") }}']

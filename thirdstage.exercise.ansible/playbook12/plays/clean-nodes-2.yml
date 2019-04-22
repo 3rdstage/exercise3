@@ -1,0 +1,131 @@
+- hosts: all
+  vars:
+    timestamp: "{{ lookup('pipe', \"date +%Y%m%d'T'%H%M%Z -u\") }}"
+  tasks:
+  
+  - name: Make sure Ripple artifacts trash direcotry exists
+    file:
+      path: "{{ ansible_env.HOME }}/ripple/trash"
+      state: directory
+      mode: 0774
+    when: true
+    become: false
+    
+  - name: Clean Ripple configurations
+    block:
+      - name: Create directory to backup Ripple configurations
+        file:
+          path: "{{ ansible_env.HOME }}/ripple/trash/{{ item.name }}_{{ timestamp }}/"
+          state: directory
+        when: common.ripple.flags.backups.config
+        with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"  
+      
+      - name: Backup 'rippled.cfg' and 'validators.txt'
+        copy:
+          src: "{{ ansible_env.HOME }}/ripple/nodes/{{ item[0].name }}/{{ item[1] }}"
+          remote_src: true
+          dest: "{{ ansible_env.HOME }}/ripple/trash/{{ item[0].name }}_{{ timestamp }}/"
+        when: common.ripple.flags.backups.config
+        with_nested: 
+          - "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+          - ['rippled.cfg', 'validators.txt']
+     
+      - name: Backup 'validator-keys.json' only for validators
+        copy:
+          src: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/validator-keys.json"
+          remote_src: true
+          dest: "{{ ansible_env.HOME }}/ripple/trash/{{ item.name }}_{{ timestamp }}/"
+        when: common.ripple.flags.backups.config
+        with_items: "{{ ripple|default({})|json_query('validators')|select|flatten }}"
+        
+      - name: Delete 'rippled.cfg' and 'validators.txt'
+        file:
+          path: "{{ ansible_env.HOME }}/ripple/nodes/{{ item[0].name }}/{{ item[1] }}"
+          state: absent
+        with_nested: 
+          - "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+          - ['rippled.cfg', 'validators.txt']
+          
+      - name: Delete 'validator-keys.json' only for validators
+        file:
+          path: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/validator-keys.json"
+          state: absent
+        with_items: "{{ ripple|default({})|json_query('validators')|select|flatten }}"
+    when: not common.identity.isProduction|default(true) and common.ripple.flags.cleans.config|default(false)
+    become: false
+    tags: ['cleanRippleConfigs', 'cleanRippleNodes']
+    
+  - name: Clean Ripple data
+    block:
+      # @NOTE Ansible 'copy' module DOES NOT support recursive copy of directory in remote mode
+      - name: Backup Ripple data
+        shell: |
+          if [ -d "ripple/nodes/{{ item.name }}/db/" ]; then
+            mkdir -p "ripple/trash/{{ item.name }}_{{ timestamp }}/"
+            cp -Rf "ripple/nodes/{{ item.name }}/db/" "ripple/trash/{{ item.name }}_{{ timestamp }}/"
+            echo "Succefully backuped Ripple data to '~/ripple/trash/{{ item.name }}_{{ timestamp }}/db/'."
+          fi
+        args:
+          executable: /bin/bash
+          chdir: "{{ ansible_env.HOME }}"
+        when: common.ripple.flags.backups.data
+        with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+
+      - name: Delete Ripple data
+        file:
+          path: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/db/"
+          state: absent
+        when: true
+        with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"  
+    when: not common.identity.isProduction|default(true) and common.ripple.flags.cleans.data|default(false)
+    become: false
+    tags: ['cleanRippleData', 'cleanRippleNodes']
+    
+  - name: Clean Ripple logs
+    block:
+      - name: Backup Ripple logs
+        shell: |
+          if [ -d "ripple/nodes/{{ item.name }}/logs/" ]; then
+            mkdir -p "ripple/trash/{{ item.name }}_{{ timestamp }}/"
+            cp -Rf "ripple/nodes/{{ item.name }}/logs/" "ripple/trash/{{ item.name }}_{{ timestamp }}/"
+            echo "Succefully backuped Ripple logs to '~/ripple/trash/{{ item.name }}_{{ timestamp }}/logs/'."
+          fi
+        args:
+          executable: /bin/bash
+          chdir: "{{ ansible_env.HOME }}"
+        when: common.ripple.flags.backups.log
+        with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+    
+      - name: Delete Ripple logs
+        file:
+          path: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/logs/"
+          state: absent
+        with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"  
+    when: not common.identity.isProduction|default(true) and common.ripple.flags.cleans.log|default(false)
+    become: false
+    tags: ['cleanRippleLogs', 'cleanRippleNodes']    
+
+  - name: Make sure HAProxy artifacts trash direcotry exists
+    file:
+      path: "{{ ansible_env.HOME }}/haproxy/trash"
+      state: directory
+      mode: 0774
+    when: true
+    become: false
+  
+  - name: Clean HAProxy artifacts
+    # Ansible 'copy' module doesn't support recursive copy of directory in remote mode
+    shell: |
+      mkdir -p haproxy/trash
+      if [ -d "haproxy/instances/{{ item.name }}/" ]; then
+        mv "haproxy/instances/{{ item.name }}/" "haproxy/trash/{{ item.name }}_{{ timestamp }}/"
+        echo "Succefully backuped artifacts to '~/haproxy/trash/{{ item.name }}_{{ timestamp }}/'."
+      fi
+    args:
+      executable: /bin/bash
+      chdir: "{{ ansible_env.HOME }}"
+    when: not common.identity.isProduction|default(true) and common.haproxy.flags.cleans|default(false)  
+    with_items: "{{ haproxy|default({})|json_query('[rippleProxies, trackerLoadBalancers]')|select|flatten }}"
+    tags: ['cleanHAProxyNodes']  
+  
+  

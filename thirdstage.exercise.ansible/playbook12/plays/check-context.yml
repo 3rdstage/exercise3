@@ -1,0 +1,16 @@
+- hosts: controller
+  tasks:
+  
+  - name: Install 'pexpect' Python packages
+    pip:
+      name: pexpect
+      state: present
+    when: true
+    become: true
+  
+  - block:
+    - name: Confirm that selected inventory is for production system
+      pause: 
+        prompt: "The selected inventory is for PRODUCTION environment. Do you want proceed? (y/n)"
+      register: confirmProduction
+    

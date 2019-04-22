@@ -1,0 +1,25 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: True, keep_trailing_newline: True
+#! /bin/bash
+
+set +v
+
+declare addr=$1
+declare port=$2
+
+info=`curl -ksS --interface lo --connect-timeout 3 \
+  --data '{"method":"server_info", "params": [{}]}' http://$addr:$port \
+  | jq '.result.info | {build_ver: .build_version, complete_ledgers: .complete_ledgers, 
+    io_latency_ms: .io_latency_ms, peers: .peers, disconnects: .peer_disconnects | tonumber, 
+    server_state: .server_state, uptime: .uptime, validated_ledger_index: .validated_ledger.seq}'`
+
+logging=`curl -ksS --interface lo --connect-timeout 3 \
+  --data '{"method":"log_level", "params": [{}]}' http://$addr:$port \
+  | jq '{base_log_level: .result.levels.base}'`
+
+validators=`curl -ksS --interface lo --connect-timeout 3 \
+  --data '{"method":"validators", "params": [{}]}' http://$addr:$port \
+  | jq '{trusted_validators: .result.trusted_validator_keys | length, 
+    validation_quorum: .result.validation_quorum}'`
+
+echo "{\"info\": $info, \"logging\": $logging, \"validators\": $validators}" \
+  | jq '.info + .logging + .validators'

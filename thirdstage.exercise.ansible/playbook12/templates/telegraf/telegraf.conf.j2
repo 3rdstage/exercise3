@@ -1,0 +1,127 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+
+{#- References
+
+  https://github.com/influxdata/telegraf/blob/master/etc/telegraf.conf
+  https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md
+-#}
+
+{#- Conventions
+  tags for host(machine, virtual-machine) : system, env, host
+  tags for service : system, env, host, service_type, service
+-#}
+
+{#- @TODO
+  Upgrade Telegraf version
+  Add procstat_looup with 'systemd_unit' ~= rippled@* | haproxy@* | filebeat
+#}
+
+{%- set configDefault = common.telegraf.configDefault -%}
+{%- set inputsDefault = common.telegraf.configDefault.inputs -%}
+[global_tags]
+  zmon_account_id = "{{ configDefault.global_tags.zmon_account_id }}"
+  system = "{{ common.identity.system|d('orion')|lower|replace(" ", "") }}"
+  env = "{{ common.identity.env }}"
+
+[agent]
+  interval = "{{ configDefault.agent.interval|d('10s') }}"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = ""
+  logfile = "{{ configDefault.agent.logfile }}"
+  debug = {{ configDefault.agent.debug|d(false)|lower }}
+  quiet = {{ configDefault.agent.quiet|d(false)|lower }}
+  hostname = ""
+  omit_hostname = false
+
+# [[outputs.influxdb]]
+
+
+[[outputs.kafka]]
+  brokers = ["{{ configDefault.outputs.kafka.brokers|join('\",\"') }}"]
+  topic = "telegraf"
+  routing_tag = "{{ configDefault.outputs.kafka.routing_tag }}"
+  compression_codec = 0
+  required_acks = -1
+  max_retry = 3
+  data_format = "influx"
+
+  [outputs.kafka.topic_suffix]
+    method = "tags"
+    keys = ["{{ configDefault.outputs.kafka.topic_suffix['keys']|join('\",\"') }}"]
+    separator = "__"
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/cpu -#}
+[[inputs.cpu]]
+  percpu = {{ inputsDefault.cpu.percpu|d(false)|lower }}
+  totalcpu = true
+  collect_cpu_time = {{ inputsDefault.cpu.collect_cpu_time|d(false)|lower }}
+  report_active = false
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/disk -#}
+[[inputs.disk]]
+  {% if inputsDefault.disk.ignore_fs is defined %}ignore_fs = {{ inputsDefault.disk.ignore_fs|to_json }}{% endif %}
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/diskio -#}
+[[inputs.diskio]]
+  {% if inputsDefault.diskio.devices is defined %}devices = {{ inputsDefault.diskio.devices|to_json }}{% endif %}
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/kernel -#}
+[[inputs.kernel]]
+  {% if inputsDefault.kernel.fieldpass is defined %}fieldpass = {{ inputsDefault.kernel.fieldpass|to_json }}{% endif %}
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/mem -#}
+[[inputs.mem]]
+  {% if inputsDefault.mem.fieldpass is defined %}fieldpass = {{ inputsDefault.mem.fieldpass|to_json }}{% endif %}
+
+{# https://github.com/influxdata/telegraf/blob/master/plugins/inputs/net/NET_README.md -#}
+[[inputs.net]]
+  ignore_protocol_stats = {{ inputsDefault.net.ignore_protocol_stats|d(true)|lower }}
+  {% if inputsDefault.net.interfaces is defined %}interfaces = {{ inputsDefault.net.interfaces|to_json }}{% endif %}
+  {% if inputsDefault.net.fieldpass is defined %}fieldpass = {{ inputsDefault.net.fieldpass|to_json }}{% endif %}
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/processes -#}
+# [[inputs.processes]]
+
+{# @TODO Remove unnecessary fields. 'cause 'procstat' has lots of fields -#}
+{#- https://github.com/influxdata/telegraf/tree/master/plugins/inputs/procstat -#}
+{#- http://man7.org/linux/man-pages/man5/proc.5.html -#}
+[[inputs.procstat]]
+  pattern = "{{ inputsDefault.procstat.pattern|d('ripple') }}"
+  pid_tag = true
+  pid_finder = "pgrep"
+  {% if inputsDefault.procstat.fieldpass is defined %}fieldpass = {{ inputsDefault.procstat.fieldpass|to_json }}{% endif %}
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/swap -#}
+# [[inputs.swap]]
+
+{# https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system -#}
+[[inputs.system]]
+  {% if inputsDefault.system.fieldpass is defined %}fieldpass = {{ inputsDefault.system.fieldpass|to_json }}{% endif %}
+
+[[inputs.exec]]
+  name_override = "openfiles"
+  commands = ["awk '{print $1}' /proc/sys/fs/file-nr"]
+  timeout = "5s"
+  data_format = "value"
+  data_type = "integer"
+
+{% for node in ripple|d({})|json_query('[validators, trackers][]') -%}
+  {#- @TODO Add 'node_type' field -#}
+  {%- set rpcPort = node|json_query('config.ports[?name==`port_rpc`][]')|first -%}
+[[inputs.exec]]
+  name_override = "rippled"
+  commands = ["bash /etc/telegraf/telegraf_exec_cmd_rippled.sh {{ rpcPort.ip }} {{ rpcPort.port }}"]
+  interval = "10s"
+  timeout = "5s"
+  data_format = "json"
+  json_string_fields = ["build_ver", "complete_ledgers", "server_state", "base_log_level"]
+  [inputs.exec.tags]
+    service_type="ripple"
+    service = "{{ node.name }}"
+
+{% endfor -%}

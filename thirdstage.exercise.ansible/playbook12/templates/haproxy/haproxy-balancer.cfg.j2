@@ -1,0 +1,72 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+{# 
+References 
+  http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#3
+  http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#4
+  https://scriptthe.net/2015/02/08/pass-through-ssl-with-haproxy/
+  
+TODOs
+  @TODO Logging
+  @TODO Statistics
+  @TODO Rate Limmit  
+#}
+# Configuration for trackers' load balancer
+
+{% set configDefault = common.haproxy.configDefault -%}
+global
+
+  ssl-default-bind-options ssl-min-ver TLSv1.0
+
+defaults
+  retries 3
+  timeout connect {{ configDefault.defaults.timeout.connect }}
+  timeout client {{ configDefault.defaults.timeout.client }}
+  timeout server {{ configDefault.defaults.timeout.server }}
+  timeout tunnel {{ configDefault.defaults.timeout.tunnel }}
+  timeout server-fin {{ configDefault.defaults.timeout.server_fin }}
+  timeout client-fin {{ configDefault.defaults.timeout.client_fin }}
+  timeout http-request {{ configDefault.defaults.timeout.http_request }}
+  timeout http-keep-alive {{ configDefault.defaults.timeout.http_keep_alive }}
+
+{% for fe in item.frontends -%}
+frontend {{ fe.name }}
+  mode tcp
+  bind {{ fe.address }}:{{ fe.port }}
+
+  {% if fe.protocol in ['https', 'wss'] -%}
+  tcp-request inspect-delay 5s
+  tcp-request content accept if { req.ssl_hello_type 1 }
+  {%- endif %}
+
+  default_backend {{ fe.backend }}
+
+{% endfor %}  
+
+{% for be in item.backends -%}
+backend {{ be.name }}
+  mode tcp
+  balance roundrobin
+  stick-table type binary len 32 size 30k expire 30m
+  
+  {% if be.protocol in ['https', 'wss'] -%}
+  acl clientHello req.ssl_hello_type 1
+  acl serverHello res.ssl_hello_type 2
+  
+  tcp-request inspect-delay 5s
+  tcp-request content accept if clientHello
+  tcp-response content accept if serverHello
+  stick on payload_lv(43,1) if clientHello
+  stick store-response payload_lv(43,1) if serverHello
+  {%- endif %}
+
+  {% for host in ansible_play_hosts -%}
+    {%- for tp in (hostvars[host]|json_query('haproxy.rippleProxies[?type==`trackerProxy`]')|select|flatten) -%}
+      {%- set tpfe = tp|json_query('frontends[?protocol==`' ~ be.protocol ~ '`]')|first -%}
+      {%- if tp.name not in be.excludes|d([]) and tpfe is defined %} 
+  server {{ tp.name }} {{ tpfe.address }}:{{ tpfe.port }} check
+  
+      {%- endif %}
+    {%- endfor %}
+  {%- endfor %}
+
+{% endfor %}

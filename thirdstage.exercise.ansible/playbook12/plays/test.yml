@@ -1,0 +1,264 @@
+
+- hosts: controller
+  vars:
+    hostname_list: ''
+
+  tasks:
+  - name: Test variable aggregation
+    debug:
+      msg:
+        - "{{ ['ripple']|map('extract', common, ['rpm', 'repoName'])|list|first }}"
+        - "{{ ['ripple']|map('extract', common, ['tls', 'dn', 'c'])|list|first }}"
+        - "{{ ['ripple']|map('extract', common, ['tls', 'dn', 'c'])|list|first|default('KO') }}"
+        - "{{ common|json_query('ripple.tls.baseName.countryName') }}"
+        - "{{ common|json_query('ripple.tls.baseName.commonName')|default('me', true) }}"
+
+  - name: Test useful filters
+    debug:
+      msg:
+        - "'{{ common.filebeat.download.url }}'|basename : '{{ common.filebeat.download.url|basename }}'"
+    when: true
+    become : false
+    tags: ['filter']
+
+  - name: Test Regex Search
+    block:
+      - name: Substring using regex
+        debug:
+          msg: 'Telegraf file : {{ common.telegraf.download.url|regex_search("[^/]*\.deb$") }}'
+    become: false
+    tags: ['regex']
+
+  - name: Test Telegraf configuration generation
+    template:
+      src: "{{ playbook_dir }}/../templates/telegraf/telegraf.conf.j2"
+      dest: "{{ ansible_env.HOME }}/temp/telegraf.conf"
+      newline_sequence: '\n'
+      force: true
+      mode: 0600
+      # validate: # Use 'validate' parameter if possible
+    when: true
+    become: false
+    tags: ['telegrafConf']
+
+  - name: Test data cleaning valve
+    debug:
+      msg: Data cleaning will proceed.
+    when: not common.identity.isProduction|default(true) and common.ripple.flags.cleans|default(false)
+    become: false
+    tags: ['dataCleaningValve']
+
+  - name: Test 'json_query'
+    vars:
+    debug:
+      msg:
+        - "{{ hostvars|json_query('*.ripple.trackers') }}"
+        - "{{ hostvars|json_query('*.ripple.trackers[]') }}"
+        - "{{ hostvars|json_query('*.ripple.trackers[?name!=`t1`][]')|sort(attribute='name') }}"
+        #- "{{ hostvars|json_query('*.ripple.trackers[][?name!=`t1`]')|sort(attribute='name') }}"
+        - "{{ hostvars|json_query('*.ripple.trackers[?name!=`t2`][]')|sort(attribute='name')|json_query('[*].config.ports[?name==`port_peer`][]') }}"
+    when: true
+    become: false
+    tags: ['hostvars']
+
+  - name: Test 'copy'
+    block:
+      - stat:
+          path: "{{ ansible_env.HOME }}/temp/none/none.txt"
+        when: true
+        become: false
+        register: fileStat
+      - copy:
+          src: "{{ ansible_env.HOME }}/temp/none/none.txt"
+          dest: "{{ ansible_env.HOME }}/temp/none.txt"
+          remote_src: true
+          backup: false
+        when: fileStat.stat.exists
+        become: false
+    tags: ['copy']
+
+  - name: Test vault
+    block:
+      - name: Test encryption/decryption string
+        vars:
+          secret: !vault |
+            $ANSIBLE_VAULT;1.2;AES256;volatile
+            63336163666334663261666132303239316133343336323035643835393537343535306364346266
+            3366633435363463386330303631363331633764623264380a366466356534666363643032346466
+            37333638656539656633326436626131383463346237333366616138336535363430346535326563
+            6462393835623438330a333963373238626330316532363132313566643565383566653064363532
+            3765
+        assert: { that: secret == 'abcd' }
+        success_msg: "The vault encrypted string is successfully decrypted."
+        when: true
+        become: false
+    tags: ['vault']
+
+  - name: Test inventory file
+    debug: msg="{{ test }}"
+    when: false
+    become: false
+    tags: ['inventoryFile']
+
+  - name: Test Loop
+    debug:
+      msg: "{{ item[0] }} - {{ item[1] }}"
+    with_items:
+      - [ ['A', 'a'], ['B', 'b'] ]
+    tags: ['loop']
+
+  - name: Test dictionary merge
+    vars:
+      default:
+        peers_max: 20
+        sntp_servers:
+          - 0.ubuntu.pool.ntp.org
+          - 1.ubuntu.pool.ntp.org
+          - 2.ubuntu.pool.ntp.org
+          - 3.ubuntu.pool.ntp.org
+          - time.apple.com
+        node_size: huge
+        ledger_history: 150000
+        fetch_depth: full
+        ssl_verify: 1
+        node_db:
+          type: RocksDB
+          open_files: 512
+          filter_bits: 12
+          cache_mb: 256
+          file_size_mb: 64
+          file_size_mult: 2
+          online_delete: 210000
+          advisory_delete: 0
+        debugLogEnabled: false
+      custom:
+        ports:
+          - name: port_rpc
+            ip: '127.0.0.1'
+            port: 5505
+            protocol: http
+            admin: '127.0.0.1'
+          - name: port_peer
+            ip: "{{ ansible_host }}"
+            port: 51735
+            protocol: peer
+        rpc_startup:
+          - command: server_info
+          - command: log_level
+            severity: info
+        sntp_servers:
+          - 10.178.121.152
+          - 10.178.121.154
+    debug:
+      msg: "{{ default|combine(custom, recursive=True) }}"
+    when: true
+    become: false
+    tags: ['dictMerge']
+
+  - name: Test dictionary merge 2
+    vars:
+      env:
+        http_proxy: 192.168.1.100
+        https_proxy: 192.168.1.101
+    debug:
+      msg: "{{ env|d({})|combine({'RUNLEVEL': 1}) }}"
+    when: true
+    become: false
+    tags: ['dictMerge']
+
+  - name: Test Jinja2 expression
+    debug:
+      msg: "{{ (common.ripple.logrotate|d({})).cycle|d('weekly') }}"
+    when: true
+    become: false
+    tags: ['jinjaExpr']
+
+  - name: Print out 'iptables' config
+    debug:
+      msg: "{{ common.iptables.configDefault }}"
+    when: true
+    become: false
+    tags: ['iptables']
+
+
+- hosts: all
+  tasks:
+  - name: Test sequence join
+    debug:
+      msg: "{{ item }}"
+    when: ripple|default({})|json_query('validators || trackers')
+    with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+
+  # Not working, outer loop item can'be
+  - name: Test corelated nested loop
+    debug:
+      msg: "{{ item.1 }}"
+    when: ripple|default({})|json_query('validators || trackers')
+    with_subelements:
+      - "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+      - config.ports
+
+  - name: Test file creation with static contents
+    copy:
+      dest: "{{ ansible_env.HOME }}/ansible-test.txt"
+      content: '[validators]'
+      force: true
+      mode: 0600
+    when: true
+    become: false
+
+  - name: Test setting enviroment variables for a task
+    block:
+      - name: Test setting enviroment variables for a task
+        debug:
+          msg:
+            - "LC_ALL: {{ lookup('env', 'LC_ALL') }}"
+        environment:
+          LANG: 'ko_KR.UTF-8'
+          LC_CTYPE: 'ko_KR.UTF-8'
+          LC_ALL: 'ko_KR.UTF-8'
+    when: true
+    become: false
+
+  - name: Test JSON query with predicate
+    debug:
+      msg: The RPC port for "{{ item.name }}" is "{{ item|json_query('config.ports[?name==`port_rpc`]|[0].port') }}"
+    when: ripple|default({})|json_query('validators || trackers')
+    become: false
+    with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+    tags: ['jsonQuery']
+
+  - name: Print 'ansible_user'
+    debug:
+      msg: ansible_user = "{{ ansible_user }}"
+    become: false
+    tags: ['builtinVars']
+
+  - name: Conditional variable
+    vars:
+      rippledDir: >-2
+        {%- if common.ripple.moca.uses -%}"{{ common.ripple.moca.download.destDir }}"{%- else -%}'/opt/ripple/bin'{%- endif -%}
+    debug:
+      msg: Ripple executable directory = "{{ rippledDir }}"
+    become: false
+    tags: ['conditionalVar']
+
+  - name: "'limit' option and 'hostvars'"
+    debug:
+      msg: "{{ hostvars|json_query('*.ripple.[validators, trackers][][].name') }}"
+    tags: ['limit']
+
+  # You can use 'item' (iteration variable) in task's variable definition ('vars')
+  # Task variables are assigned per loop iteration, not per host
+  - name: Test JSON query with predicate
+    vars:
+      itemName: "{{ item.name }}"
+    debug:
+      msg: "{{ itemName }}"
+    when: ripple|default({})|json_query('validators || trackers')
+    become: false
+    with_items: "{{ ripple|default({})|json_query('[validators, trackers]')|select|flatten }}"
+    tags: ['taskVars']
+
+
+

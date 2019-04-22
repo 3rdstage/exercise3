@@ -1,0 +1,141 @@
+
+- hosts: all
+  tasks:
+
+  # TODO
+  #   (Done) Check the availability of TCP ports
+  #   Check whether or not tracker has started successfully.
+  #   Check whether or not validator has started successfully.
+  - block:
+      - name: Check the availability of TCP ports for Ripple node
+        shell: |2
+          {% for port in item|json_query('config.ports')|d([]) %}
+          echo "Checking the port availability : {{ ansible_host }}/{{ port.port }} ({{ item.type }}/{{ item.name }}/{{ port.name }})"
+          if [ `lsof -i -P -n | grep LISTEN | grep {{ port.port }} | wc -l` -gt 0 ]; then
+            echo "The port {{ port.port }} ({{ ansible_host }}/{{ item.type }}/{{ item.name }}/{{ port.name }}) is already in use by another process."
+            exit 101
+          fi
+          {% endfor %}
+        args:
+          executable: /bin/bash
+          # chdir:
+        when: ripple|d({})|json_query('validators || trackers')
+        become: false
+        with_items: "{{ ripple|d({})|json_query('[validators, trackers][][]') }}"
+        changed_when: false
+        tags: ['checkRipplePorts']
+
+      - name: Start Ripple tracker
+        systemd:
+          name: "rippled@{{ item.name }}.service"
+          state: started  # will not run commands unless necessary
+          #daemon_reload: true
+          no_block: false
+          enabled: true
+        when: true
+        become: true
+        with_items: "{{ ripple|d({})|json_query('trackers')|select|flatten }}"
+        register: start_tracker
+        #failed_when: start_tracker.status.ActiveState != 'active' # not working as expected
+        #ignore_errors: false # @TODO How to make failed task ignored but counted
+        tags: ['startTrackers']
+
+      - name: Start Ripple validator
+        systemd:
+          name: "rippled@{{ item.name }}.service"
+          state: started  # will not run commands unless necessary
+          no_block: false
+          enabled: true
+        when: true
+        become: true
+        with_items: "{{ ripple|d({})|json_query('validators')|select|flatten }}"
+        register: start_validator
+        #failed_when: start_validator.status.ActiveState != 'active'
+        #ignore_errors: false  # @TODO How to make failed task ignored but counted
+        tags: ['startValidators']
+
+      # @TODO Enable rippled log rolling scheduler
+    tags: ['startRippleNodes']
+
+
+  - block: # Start Ripple node proxies
+      - name: Check the availability of TCP ports for Ripple proxy
+        shell: |2
+          # echo {{ item.frontends }}
+          {% for fe in item.frontends %}
+            echo "Checking the port availability : {{ fe.address }}/{{ fe.port }} ({{ item.name }}/{{ fe.name }})"
+            if [ `lsof -i -P -n | grep LISTEN | grep {{ fe.port }} | wc -l` -gt 0 ]; then
+              echo "The port {{ fe.port }} ({{ fe.address }}/{{ item.name }}/{{ fe.name }}) is already in use by another process."
+              exit 101
+            fi
+          {% endfor %}
+        args:
+          executable: /bin/bash
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('rippleProxies')|select|flatten }}"
+        changed_when: false
+        tags: ['checkRippleProxyPorts']
+
+      - name: Start Ripple proxy
+        systemd:
+          name: "haproxy@{{ item.name }}.service"
+          state: started  # will not run commands unless necessary
+          no_block: false
+          enabled: true
+        when: true
+        become: true
+        with_items: "{{ haproxy|d({})|json_query('rippleProxies')|select|flatten }}"
+        register: start_ripple_proxy
+    when: haproxy|d({})|json_query('rippleProxies')
+    tags: ['startRippleProxies']
+
+
+  - block: # Start trackers' load balancer
+      - name: Check the availability of TCP ports for load balancers of Ripple trakers
+        shell: |2
+          # echo {{ item.frontends }}
+          {% for fe in item.frontends %}
+            echo "Checking the port availability : {{ fe.address }}/{{ fe.port }} ({{ item.name }}/{{ fe.name }})"
+            if [ `lsof -i -P -n | grep LISTEN | grep {{ fe.port }} | wc -l` -gt 0 ]; then
+              echo "The port {{ fe.port }} ({{ fe.address }}/{{ item.name }}/{{ fe.name }}) is already in use by another process."
+              exit 101
+            fi
+          {% endfor %}
+        args:
+          executable: /bin/bash
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('trackerLoadBalancers')|select|flatten }}"
+        changed_when: false
+        tags: ['checkTrackerBalancerPorts']
+
+      - name: Start load balancers of Ripple trakcers
+        shell: |
+          haproxy -f '{{ item.name }}/haproxy.cfg' -D -p '{{ item.name }}/haproxy.pid' -sf $(cat '{{ item.name }}/haproxy.pid')
+        args:
+          executable: /bin/bash
+          chdir: "{{ ansible_env.HOME }}/haproxy/instances/"
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('trackerLoadBalancers')|select|flatten }}"
+    when: haproxy|d({})|json_query('trackerLoadBalancers')
+    tags: ['startTrackerBalancers']
+
+  - block:
+      - name: Start MariaDB
+        systemd:
+          name: "mariadb@_{{ item.name }}.service"
+          state: started  # will not run commands unless necessary
+          no_block: false
+          # enabled: true
+          # daemon_reload: true
+        when: true
+        become: true
+        with_items: "{{ mariadb|json_query('[*]')|select|flatten }}"
+        register: start_mariadb
+        # failed_when: start_mariadb.status.ActiveState != 'active'
+        #ignore_errors: false  # @TODO How to make failed task ignored but counted
+    when: mariadb is defined
+    tags: ['startMariaDB']
+

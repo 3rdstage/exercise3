@@ -1,0 +1,174 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: True, keep_trailing_newline: True
+{# References
+
+  https://github.com/ripple/rippled/blob/1.0.1/cfg/rippled-example.cfg
+  http://jinja.pocoo.org/docs/2.10/api/#high-level-api
+#}
+# Configuration for Ripple {{ item.type }} node named {{ item.name }}
+
+{%- if item.type == 'tracker' -%}
+  {%- set config = common.ripple.tracker.configDefault|combine(item.config, recursive=True) -%}
+{%- else -%}
+  {%- set config = common.ripple.validator.configDefault|combine(item.config, recursive=True) -%}
+{%- endif %}
+
+{# 1. Server #}
+[server]
+{% for port in config.ports -%}
+  {{ port.name }}
+{% endfor -%}
+
+{%- for port in config.ports %}
+[{{ port.name }}]
+ip = {{ port.ip }}
+port = {{ port.port }}
+  {% if port.admin is defined %}{{ 'admin = ' ~ port.admin }}{% endif %}
+protocol = {{ port.protocol }}
+limit = {{ port.limit|default('0') }}
+  {% if port.ssl_key is defined %}{{ 'ssl_key = ' ~ port.ssl_key }}{% endif %}
+  {% if port.ssl_cert is defined %}{{ 'ssl_cert = ' ~ port.ssl_cert }}{% endif %}
+{%- endfor -%}
+
+{%- if config.rpc_startup is defined %}
+[rpc_startup]
+  {% for cmd in config.rpc_startup -%}
+    {{ cmd|to_json }}
+  {% endfor %}
+{%- endif %}
+
+{# [websocket_ping_frequency] #}
+
+{#- 2. Peer Protocol -#}
+{#- Don't use [ips] but use [ips_fixed] only. -#}
+{#- Don't have any reason, so need more consideration -#}
+{#- [ips] -#}
+
+[peer_private]
+1
+
+[peers_max]
+{{ config.peers_max }}
+
+{# This is used for clustering #}
+{#- [node_seed] -#}
+
+{#- [cluster_nodes] -#}
+
+[sntp_servers]
+{% for server in config.sntp_servers|default([]) -%}
+  {{ server }}
+{% endfor %}
+
+{# [overlay] #}
+
+{#- [transaction_queue] EXPERIMENTAL -#}
+
+{#- 3. Ripple Protocol -#}
+[node_size]
+{{ config.node_size }}
+
+# To serve clients, servers need historical ledger data. Servers that don't
+# need to serve clients can set this to "none".  Servers that want complete
+# history can set this to "full".
+[ledger_history]
+{{ config.ledger_history }}
+
+{# same with [ledger_history] -#}
+[fetch_depth]
+{{ config.fetch_depth }}
+
+{# [validation_seed] #}
+
+{% if token -%}
+[validator_token]
+{{ token }}
+{% endif %}
+
+{# TODO Need to check exact 1 token is defined or not #}
+{#- [validator_key_revocation] -#}
+
+# Unless an absolute path is specified, it will be considered relative to
+# the folder in which the rippled.cfg file is located.
+[validators_file]
+validators.txt
+
+# List all nodes (both validators and trackers) of this private network.
+[ips_fixed]
+{%- for node in hostvars|json_query('*.ripple.validators[]')|sort(attribute='name')|union(hostvars|json_query('*.ripple.trackers[]')|sort(attribute='name')) -%}
+  {%- if node.name in item.peers -%}
+    {% for port in node|json_query('config.ports[?name==`port_peer`]')|flatten|list %}
+# {{ node.name }}
+{{ port.ip }} {{ port.port }}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endfor %}
+
+{# [path_search] #}
+
+{#- [path_search_fast] -#}
+
+{#- [path_search_max] -#}
+
+{#- [path_search_old] -#}
+
+{#- [fee_default] -#}
+
+{#- [workers] -#}
+
+{#- 4. HTTPS Client -#}
+
+[ssl_verify]
+{{ config.ssl_verify }}
+
+{# [ssl_verify_file] #}
+
+{#- [ssl_verify_dir] -#}
+
+{#- 5. Database -#}
+
+# https://wiki.ripple.com/NodeBackEnd
+[node_db]
+type={{ config.node_db.type }}
+path={{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/db/{{ config.node_db.type|lower }}
+earliest_seq=1
+{% for key in config.node_db if key != 'type' -%}
+  {{ key ~ '=' ~ config.node_db[key] }}
+{% endfor %}
+
+{# [import_db] #}
+
+[database_path]
+{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/db
+
+{# [shard_db] #}
+
+{#- 6. Diagnostics -#}
+
+# This needs to be an absolute directory reference, not a relative one.
+[debug_logfile]
+{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/logs/rippled.log
+
+{# [insight] #}
+
+{#- [perf] -#}
+
+{#- 7. Voting -#}
+
+{#- [voting] -#}
+
+# https://developers.ripple.com/amendments.html
+# https://developers.ripple.com/known-amendments.html
+[veto_amendments]
+{%- for feature in common.ripple.amendments|default([]) %}
+  {%- if not feature.enabled|default(true) %}
+{{ feature.id }} {{ feature.name }}
+  {%- endif -%}
+{% endfor %}
+
+[amendments]
+{%- for feature in common.ripple.amendments|default([]) %}
+  {%- if feature.enabled|default(true) %}
+{{ feature.id }} {{ feature.name }}
+  {%- endif -%}
+{%- endfor -%}
+

@@ -1,0 +1,108 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+
+{# 
+References
+
+    https://mariadb.com/kb/en/library/server-system-variables/
+    https://mariadb.com/kb/en/library/configuring-mariadb-with-mycnf/
+#}
+
+{%- set config = item.config -%}
+
+[client]
+port = {{ config.port }}
+socket = {{ config.socket }}
+
+[mysqld_safe]
+socket = {{ config.socket }}
+nice = 0
+
+[mysqld]
+character_set_server = {{ config.character_set_server }} 
+collation_server = {{ config.collation_server }}
+user = mysql
+pid-file = {{ config.pid_file }}
+socket = {{ config.socket }}
+port = {{ config.port }}
+basedir = {{ config.basedir }}
+datadir = {{ config.datadir }}
+tmpdir = {{ config.tmpdir }}
+lc_messages_dir = {{ config.lc_messages_dir }}
+lc_messages = {{ config.lc_messages }}
+skip-external-locking
+bind-address = {{ config.bind_address }}
+
+# Fine Tuning
+max_connections = {{ config.max_connection }}
+connect_timeout = {{ config.connect_timeout }}
+wait_timeout = {{ config.wait_timeout }}
+max_allowed_packet = {{ config.max_allowed_packet }}
+thread_cache_size = {{ config.thread_cache_size }}
+sort_buffer_size = {{ config.sort_buffer_size }}
+bulk_insert_buffer_size = {{ config.bulk_insert_buffer_size }}
+tmp_table_size = {{ config.tmp_table_size }}
+max_heap_table_size = {{ config.max_heap_table_size }}
+
+# Query Cache Configuration
+# https://mariadb.com/kb/en/library/query-cache/
+query_cache_type = {{ config.query_cache_type }}
+query_cache_size = {{ config.query_cache_size }}
+query_cache_limit = {{ config.query_cache_limit }}
+
+# Logging and Replication
+# https://mariadb.com/kb/en/library/general-query-log/
+# https://mariadb.com/kb/en/library/error-log/
+# https://mariadb.com/kb/en/library/slow-query-log/
+general_log = {{ config.general_log }}
+general_log_file = {{ config.general_log_file }}
+log_warnings = {{ config.log_warnings }}
+slow_query_log = {{ config.slow_query_log }}
+slow_query_log_file = {{ config.slow_query_log_file }}
+long_query_time = {{ config.long_query_time }}
+log_slow_rate_limit = {{ config.log_slow_rate_limit }}
+log_slow_verbosity = {{ config.log_slow_verbosity }}
+
+# The following can be used as easy to replay backup logs or for replication.
+# note: if you are setting up a replication slave, see README.Debian about
+#       other settings you may need to change.
+#server-id    = 1
+#report_host    = master1
+#auto_increment_increment = 2
+#auto_increment_offset  = 1
+#log_bin     = /var/log/mysql/mariadb-bin
+#log_bin_index   = /var/log/mysql/mariadb-bin.index
+# not fab for performance, but safer
+#sync_binlog    = 1
+#expire_logs_days  = 10
+max_binlog_size         = 100M
+# slaves
+#relay_log    = /var/log/mysql/relay-bin
+#relay_log_index  = /var/log/mysql/relay-bin.index
+#relay_log_info_file  = /var/log/mysql/relay-bin.info
+#log_slave_updates
+#read_only
+#
+# If applications support it, this stricter sql_mode prevents some
+# mistakes like inserting invalid dates etc.
+#sql_mode   = NO_ENGINE_SUBSTITUTION,TRADITIONAL
+
+# InnoDB
+default_storage_engine = {{ config.default_storage_engine }}
+innodb_log_file_size = {{ config.innodb_log_file_size }}
+innodb_buffer_pool_size = {{ config.innodb_buffer_pool_size }}
+innodb_log_buffer_size = {{ config.innodb_log_buffer_size }}
+innodb_file_per_table = {{ config.innodb_file_per_table }}
+innodb_open_files = {{ config.innodb_open_files }}
+innodb_io_capacity = {{ config.innodb_io_capacity }}
+innodb_flush_method = {{ config.innodb_flush_method }}
+
+# https://mariadb.com/kb/en/library/mysqldump/
+# https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html
+# mysqldump — A Database Backup Program
+# [mysqldump]
+
+# https://mariadb.com/kb/en/library/mysql-command-line-client/
+# https://dev.mysql.com/doc/refman/8.0/en/mysql.html
+# mysql — The MySQL Command-Line Tool
+# https://dev.mysql.com/doc/refman/8.0/en/mysql-command-options.html
+# [mysql]

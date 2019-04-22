@@ -1,0 +1,182 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+{#
+References
+  http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#3
+  http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#4
+  https://kvz.io/blog/2010/08/11/haproxy-logging/
+  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers HTTP Headers
+  https://en.wikipedia.org/wiki/List_of_HTTP_header_fields List of HTTP header fields
+
+TODOs
+  @TODO(Done) Redirect or forward TLS handshake error into HTTP error page
+  @TODO Return error page instead of connection refuse
+        with HTTP request on HTTPS frontend or WS request on WSS frontend
+#}
+# Configuration for HAProxy instance named '{{ item.name }}'
+
+{% set configDefault = common.haproxy.configDefault -%}
+global
+  daemon
+  log /var/lib/haproxy/dev/log local0 info
+  log /var/lib/haproxy/dev/log local1 notice
+
+  ca-base {{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/ssl/trusted
+  crt-base {{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/ssl
+
+  maxconn {{ configDefault.global.maxconn }}
+  tune.ssl.default-dh-param {{ configDefault.global.tune.ssl.default_dh_param }}
+
+  #https://disablessl3.com/
+  ssl-default-bind-options no-sslv3
+
+defaults
+  mode http
+  log global
+  monitor-uri /liveness
+
+  # Add 'X-Forwared-For' header automatically
+  option forwardfor
+
+  option httplog
+  option dontlognull
+  option log-health-checks
+  # http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#8.2.4
+  log-format %ci\ %ft\ %b\ %si\ %Tq/%Tw/%Tc/%Tr/%Tt\ %ST\ %B\ %ts\ %sq/%bq\ %hr\ %{+Q}r
+
+  {# option http-server-close  {# @TODO Is this necessary or safe ? #}
+  timeout connect {{ configDefault.defaults.timeout.connect }}
+  timeout client {{ configDefault.defaults.timeout.client }}
+  timeout server {{ configDefault.defaults.timeout.server }}
+  timeout tunnel {{ configDefault.defaults.timeout.tunnel }}
+  timeout server-fin {{ configDefault.defaults.timeout.server_fin }}
+  timeout client-fin {{ configDefault.defaults.timeout.client_fin }}
+  timeout http-request {{ configDefault.defaults.timeout.http_request }}
+  timeout http-keep-alive {{ configDefault.defaults.timeout.http_keep_alive }}
+
+  errorfile 400 /etc/haproxy/errors/400.http
+  errorfile 403 /etc/haproxy/errors/403.http
+  errorfile 408 /etc/haproxy/errors/408.http
+  errorfile 500 /etc/haproxy/errors/500.http
+  errorfile 502 /etc/haproxy/errors/502.http
+  errorfile 503 /etc/haproxy/errors/503.http
+  errorfile 504 /etc/haproxy/errors/504.http
+
+{% if (item.stats|default({})).enabled|default(false) %}
+listen stats
+  bind {{ item.stats.address }}:{{ item.stats.port }}
+
+  stats enable
+  stats admin if FALSE
+  stats auth chainz:skcc%^&*
+  stats hide-version
+  stats realm HAProxy\ Statistics
+  stats uri /stats
+{% endif %}
+
+{% for fe in item.frontends -%}
+{% if fe.protocol == 'http' %}
+frontend {{ fe.name }}
+  bind {{ fe.address }}:{{ fe.port }}
+
+  capture request header Host len 25
+
+  http-request set-header X-Haproxy-Current-Date %T
+  http-request set-header X-Forwarded-Host %[req.hdr(Host)]
+  http-request set-header X-Forwarded-Proto http
+  default_backend {{ fe.backend }}
+
+{% elif fe.protocol == 'https' %}
+frontend {{ fe.name }}
+  {# http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#5.1-verify -#}
+  bind {{ fe.address }}:{{ fe.port }} ssl crt {{ item.ssl.crt }} ca-file {{ item.ssl['ca-file'] }} verify {{ item.ssl.verify|d('none') }}
+
+  {# @TODO Refine SSL failure cases and match each case with proper code and JSON reponse #}
+  {% if item.ssl.verify|d('none') != 'none' -%}
+  http-request deny deny_status 400 unless { ssl_fc }
+  http-request deny deny_status 400 unless { ssl_c_used }
+  http-request deny deny_status 400 unless { ssl_c_verify 0 }
+  {% endif -%}
+
+  capture request header Host len 25
+
+  # setup request header for logging or backend usage
+  # https://www.haproxy.com/blog/ssl-client-certificate-information-in-http-headers-and-logs/
+  # https://cbonte.github.io/haproxy-dconv/1.8/configuration.html#4.2-http-request
+  http-request set-header X-Haproxy-Current-Date %T
+  http-request set-header X-Forwarded-Host %[req.hdr(Host)]
+  http-request set-header X-Forwarded-Proto https
+
+  http-request set-header X-SSL                  %[ssl_fc]
+  http-request set-header X-SSL-Session_ID       %[ssl_fc_session_id,hex]
+  http-request set-header X-SSL-Client-Verify    %[ssl_c_verify]
+  http-request set-header X-SSL-Client-DN        %{+Q}[ssl_c_s_dn]
+  http-request set-header X-SSL-Client-CN        %{+Q}[ssl_c_s_dn(cn)]
+  http-request set-header X-SSL-Issuer           %{+Q}[ssl_c_i_dn]
+  http-request set-header X-SSL-Client-NotBefore %{+Q}[ssl_c_notbefore]
+  http-request set-header X-SSL-Client-NotAfter  %{+Q}[ssl_c_notafter]
+
+  default_backend {{ fe.backend }}
+
+{% elif fe.protocol == 'ws' %}
+frontend {{ fe.name }}
+  bind {{ fe.address }}:{{ fe.port }}
+
+  acl is_connection_upgrade hdr(Connection) -i upgrade
+  acl is_upgrade_websocket hdr(Upgrade) -i websocket
+  acl has_websocket_key hdr_cnt(Sec-WebSocket-Key) eq 1
+  acl has_websocket_ver hdr_cnt(Sec-WebSocket-Version) eq 1
+
+  http-request deny unless is_connection_upgrade is_upgrade_websocket has_websocket_key has_websocket_ver
+
+  capture request header Host len 25
+  http-request set-header X-Haproxy-Current-Date %T
+  http-request set-header X-Forwarded-Host %[req.hdr(Host)]
+  #http-request set-header X-Forwarded-Proto ws
+  default_backend {{ fe.backend }}
+
+{% elif fe.protocol == 'wss' %}
+frontend {{ fe.name }}
+  bind {{ fe.address }}:{{ fe.port }} ssl crt {{ item.ssl.crt }} ca-file {{ item.ssl['ca-file'] }} verify {{ item.ssl.verify|d('none') }}
+
+  {% if item.ssl.verify|d('none') != 'none' -%}
+  http-request deny deny_status 400 unless { ssl_fc }
+  http-request deny deny_status 400 unless { ssl_c_used }
+  http-request deny deny_status 400 unless { ssl_c_verify 0 }
+  {% endif -%}
+
+  acl is_connection_upgrade hdr(Connection) -i upgrade
+  acl is_upgrade_websocket hdr(Upgrade) -i websocket
+  acl has_websocket_key hdr_cnt(Sec-WebSocket-Key) eq 1
+  acl has_websocket_ver hdr_cnt(Sec-WebSocket-Version) eq 1
+
+  http-request deny unless is_connection_upgrade is_upgrade_websocket has_websocket_key has_websocket_ver
+
+  capture request header Host len 25
+  http-request set-header X-Haproxy-Current-Date %T
+  http-request set-header X-Forwarded-Host %[req.hdr(Host)]
+  #http-request set-header X-Forwarded-Proto wss
+  default_backend {{ fe.backend }}
+
+{%- endif %}
+{%- endfor %}
+
+{% for be in item.backends -%}
+backend {{ be.name }}
+  {% for server in be.servers -%}
+
+  capture request header Host len 20
+  capture request header Origin len 20
+  capture request header Connection len 10
+  capture request header X-Forwarded-For len 20
+  capture request header X-Forwarded-Host len 20
+  capture request header X-Forwarded-Proto len 5
+
+  # https://serverfault.com/questions/622567/haproxy-error-some-configuration-options-require-full-privileges-so-global-uid
+  #source 0.0.0.0 usesrc clientip
+  option http-keep-alive
+  option httpchk POST / HTTP/1.1\r\nHost:\ {{ ansible_host }}\r\nContent-Type:\ application/json\r\nContent-Length:\ 25\r\n\r\n{\"id\":99,\"method\":\"ping\"}
+  server {{ server.name }} {{ server.address }}:{{ server.port }} check
+
+  {%- endfor %}
+
+{% endfor %}

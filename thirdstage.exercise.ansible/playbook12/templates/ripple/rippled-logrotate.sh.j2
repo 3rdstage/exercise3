@@ -1,0 +1,29 @@
+#jinja2:line_statement_prefix: '%', trim_blocks: False, lstrip_blocks: False, keep_trailing_newline: True
+#! /bin/bash
+#
+# cron job for rippled log rolling
+
+set -e
+
+{%- set rippleds = ripple|d({})|json_query('[validators, trackers][]')|d([]) %}
+{% for rippled in rippleds %}
+  {%- set port = rippled|json_query('config.ports[?name==`port_rpc`]|[0]') %}
+  {% if port %}
+# log rolling(rotate) for {{ rippled.name }}
+if [ `sudo lsof -nP -i TCP@0.0.0.0:{{ port.port }} -i TCP@{{ port.ip }}:{{ port.port }} | wc -l` -gt 0 ]; then
+  curl -kSs --interface 127.0.0.1 \
+  -X POST {{ port.protocol }}://{{ port.ip }}:{{ port.port }}/ \
+  -H 'Connection: close' \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache' \
+  -d '{"method": "logrotate", "params": [{}]}'
+  if [ $? -ne 0 ]; then
+    echo "[ERROR] Failed to lotate log for '{{ rippled.name }}' rippled."
+  else
+    echo "[INFO] Succefully lotated log for '{{ rippled.name }}' rippled."
+  fi
+else
+  echo "[WARN] Target rippled '{{ rippled.name }}' is not running. So, log rolling has not been tried."
+fi
+  {% endif %}
+{% endfor %}

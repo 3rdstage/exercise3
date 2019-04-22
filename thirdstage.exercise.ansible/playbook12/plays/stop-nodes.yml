@@ -1,0 +1,75 @@
+- hosts: all
+  tasks:
+
+  - name: Shutdown the Ripple network
+    block:
+      - name: Stop Ripple trackers
+        systemd:
+          name: "rippled@{{ item.name }}.service"
+          state: stopped  # will not run commands unless necessary
+          no_block: false
+        when: true
+        become: true
+        with_items: "{{ ripple|d({})|json_query('trackers')|select|flatten }}"
+        register: stop_tracker
+        #failed_when: stop_tracker.status.ActiveState != 'inactive'
+        #ignore_errors: true # @TODO How to make failed task ignored but counted
+        tags: ['stopTrackers']
+
+
+      # @TODO Check whether or not tracker has stopped successfully.
+
+      - name: Stop Ripple validators
+        systemd:
+          name: "rippled@{{ item.name }}.service"
+          state: stopped  # will not run commands unless necessary
+          no_block: false
+        when: true
+        become: true
+        with_items: "{{ ripple|d({})|json_query('validators')|select|flatten }}"
+        register: stop_validator
+        #failed_when: stop_validator.status.ActiveState != 'inactive'
+        #ignore_errors: true # @TODO How to make failed task ignored but counted
+        tags: ['stopValidators']
+
+
+      # @TODO Check whether or not validator has stopped successfully.
+    tags: ['stopRippleNodes']
+
+
+  - block:
+      - name: Stop Ripple proxies
+        systemd:
+          name: "haproxy@{{ item.name }}.service"
+          state: stopped
+          no_block: false
+        when: true
+        become: true
+        with_items: "{{ haproxy|d({})|json_query('rippleProxies')|select|flatten }}"
+        register: stop_ripple_proxy
+        ignore_errors: true
+    when: haproxy|d({})|json_query('rippleProxies')
+    tags: ['stopRippleProxies']
+
+
+  - block:
+      - name: Stop trackers' load balancers
+        shell: |
+          kill -TERM $(cat '{{ item.name }}/haproxy.pid')
+
+          if [ $? -ne 0 ]; then
+            echo "Fail to stop proxy '{{ item.name }}' at '{{ ansible_host }}'."
+            exit 101
+          fi;
+
+          rm -f '{{ item.name }}/haproxy.pid'
+        args:
+          executable: /bin/bash
+          chdir: "{{ ansible_env.HOME }}/haproxy/instances/"
+        when:
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('trackerLoadBalancers')|select|flatten }}"
+        ignore_errors: true
+    when: haproxy|d({})|json_query('trackerLoadBalancers')
+    tags: ['stopTrackerBalancers']
+

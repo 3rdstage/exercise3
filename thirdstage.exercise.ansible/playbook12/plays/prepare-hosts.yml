@@ -1,0 +1,1288 @@
+
+- hosts: controller
+  tasks:
+
+  # Code convention
+  #   variable key : lower camel case - 'fooBar', 'barBaz'
+  #   registered variable key : lower snake case reflecting the task name - 'check_foo', 'stop_bar', 'generate_baz'
+
+  # @TODO(Done) Add checking syntax of playbook to use via 'ansible-playbook --syntax-check
+  #             Should be executed outside and before playbook execution. Check 'validate-playbooks.sh'
+  # @TODO Add or update '.vimrc' file to handle yaml file effecitvely using the following line
+  #       "autocmd FileType yaml setlocal ai ts=2 sw=2 et"
+
+  # Verification scripts after all tasks done
+  #   $ /opt/ripple/bin/rippled --version
+  #   $ /opt/moca/bin/mocad --version
+  #   $ systemctl list-unit-files | grep -E 'rippled|haproxy|telegraf'
+
+  - name: Install 'websocat'
+    vars:
+      filename: '{{ common.prerequisites.websocat.download.url|regex_search("[^/]*$") }}'
+      destDir: "/opt/websocat-{{ common.prerequisites.websocat.version }}/bin"
+    block:
+      - name: Create directory to download 'websocat' executable
+        file:
+          dest: "{{ destDir }}"
+          state: directory
+          mode: 0755
+        when: true
+        become: true
+
+      - name: Download 'websocat'
+        uri:
+          url: "{{ common.prerequisites.websocat.download.url }}"
+          follow_redirects: all
+          dest: "{{ destDir }}/{{ filename }}"
+          creates: "{{ destDir }}/{{ filename }}"
+        when: true
+        become: true
+
+      - name: Change mode of the 'websocat' executable
+        file:
+          dest: "{{ destDir }}/{{ filename }}"
+          mode: 0755
+        when: true
+        become: true
+
+      - name: Create a symbolic link 'websocat' into '/usr/local/bin'
+        file:
+          dest: /usr/local/bin/websocat
+          src: "{{ destDir }}/{{ filename }}"
+          state: link
+          mode: 0755
+        when: true
+        become: true
+    tags: ['installWebsocat']
+
+- hosts: all
+  tasks:
+  # @Note Tags Top Level Tasks
+  #   - setupSystemBaseline
+  #   - installRipple
+  #   - installMoca
+  #   - setupRippleNode
+  #   - installHAProxy
+  #   - setupRippleProxy
+  #   - setupTrackerBalancer
+  #   - prepareTelegraf
+  #   - prepareFilebeat
+  #   - prepareMariaDB
+
+  # @TODO
+  #   Check O/S is Ubuntu 16.04 or not
+  #   (Done) Disable Ubuntu automatic updates
+  #     - https://www.garron.me/en/linux/turn-off-stop-ubuntu-automatic-update.html
+  #     - https://help.ubuntu.com/lts/serverguide/automatic-updates.html.en
+  #   Update '/etc/apt/apt.conf.d/10periodic' or '/etc/apt/apt.conf.d/20auto-upgrades
+  #     - APT::Periodic::Update-Package-Lists
+  #     - APT::Periodic::Download-Upgradable-Packages
+  #     - APT::Periodic::Unattended-Upgrade
+  #     - APT::Periodic::AutocleanInterval
+  #     - https://help.ubuntu.com/lts/serverguide/automatic-updates.html.en
+  #     - https://www.garron.me/en/linux/turn-off-stop-ubuntu-automatic-update.html
+  #     - http://ask.xmodulo.com/disable-automatic-updates-ubuntu.html
+  #   (Done) Change system default locale to 'en_US.UTF-8'
+  #     - '/etc/environment', 'LC_ALL'
+  #   Check unused disk space is sufficent or not
+  #   Check ulimit is sufficient or not
+  #   Remove 6010 port listening
+  #   Disable IPv6
+  #     - https://www.linuxbabe.com/ubuntu/disable-ipv6-on-ubuntu
+  #   (Done) Use 'common.prerequisites' instead of 'common.ripple.prerequisites'
+  #   (Done) Check NTP
+  #   (Done) Disable IPv6 for NTP server
+  #     - NTPD_OPTS='-4 -g' for '/etc/default/ntp'
+  #   (Done) Check whether the generated rippled config file has trailing spaces or not
+  #   Check port availability for reverse proxies
+  #   (Done) Install telegraf
+  #   Harden sudo
+  #      - Password prompt timeout : https://askubuntu.com/questions/401522/how-to-set-the-timeout-for-sudo-asking-for-password
+  #   (Done) Harden SSHD : Strict Session Timeout
+  #      - ClientAliveInterval 60
+  #      - ClientAliveCountMax 3
+  #      - TCPKeepAlive yes
+  #        - https://www.thegeekdiary.com/centos-rhel-how-to-setup-session-idle-timeout-inactivity-timeout-for-ssh-auto-logout/
+  #      - ChallengeResponseAuthentication no
+  #   (Done) Test SSHD configuration using '-t' or '-T' option
+  #      - https://man.openbsd.org/sshd#T
+  #   (Done) Harden /etc/login.defs
+  #      - LOGIN_RETRIES 5
+  #      - LOGIN_TIMEOUT 60
+  #      - ENCRYPT_METHOD SHA512
+  #      - SULOG_FILE /var/log/sulog
+  #      - PASS_MAX_DAYS 70
+  #      - PASS_MIN_DAYS 7
+  #   Harden PAM
+  #      - /etc/pam.d/common-auth, auth required pam_tally.so onerr=fail deny=5 no_magic_root
+  #      - /etc/pam.d/common-auth, auth required pam_tally2.so onerr=fail audit deny=5 unlock_time=3600 even_deny_root root_unlock_time=1800
+  #   Harden auth log (/var/log/auth.log) retention
+  #      - /etc/logrotate.d/rsysslog
+  #   Harden PAM configuration
+  #      - /etc/pam.d/passwd > minlen
+  #      - /etc/pam.d/common-auth > unlock_time
+  #   Harden syslog configuration
+  #      - /etc/rsyslog.conf
+  #          . $FileOwner syslog
+  #          . $FileGroup adm
+  #          . $FileCreationMode 0640
+  #      - /etc/rsyslog.d/50-default.conf
+  #   Reduce the permissions of some important files
+  #      - /etc/shadow
+  #
+  # @Notes After the 'setupSystemBaseline' tasks, check the host using following commands
+  #   $ cat /etc/apt/apt.conf.d/50unattended-upgrades
+  #   $ cat /etc/environment
+  #   $ locale
+  #   $ timedatectl
+  #   $ systemctl status ntp sshd haproxy telegraf
+  #   $ cat /etc/ssh/sshd_config | grep -E '^[^#]+'
+  #   $ cat /etc/login.defs | grep -E '^[^#]+'
+  #   $ dpkg -l | grep -E '(ntp|python-pip)'
+  #   $ sudo netstat -anotup | grep -E '(^Proto|LISTEN|^udp)'
+  - name: Setup baseline including prerequisites for system
+    block:
+      - name: Turn off automatic updates of Ubuntu
+        template:
+          src: "{{ playbook_dir }}/../templates/ubuntu/50unattended-upgrades.j2"
+          dest: /etc/apt/apt.conf.d/50unattended-upgrades
+          newline_sequence: '\n'
+          force: true
+          mode: 0644
+        when: true
+        tags: ['hardenATP']
+
+      # https://help.ubuntu.com/community/EnvironmentVariables
+      - name: Set system default locale to 'en_US.UTF-8'
+        lineinfile:
+          path: /etc/environment
+          regexp: "^LC_ALL=.*"
+          line: "LC_ALL=en_US.UTF-8"
+          insertafter: EOF
+        when: true
+        register: update_system_locale
+        tags: ['setupSystemLocale']
+
+      # Check system timezone using 'timedatectl' before and after
+      - name: Set system/hardware timezone to UTC
+        timezone:
+          name: 'Etc/UTC'
+        when: true
+        tags: ['setupSystemTimezone']
+
+      # @TODO Make state aware
+      - name: Stop 'timesyncd'
+        shell: |
+          flag=`timedatectl status | grep 'Network time on' | sed  's/.*\(yes\|no\).*/\1/'`
+          if [ $flag != 'no' ]; then
+            timedatectl set-ntp no
+          else
+            echo 'unchanged'
+          fi
+        args:
+          executable: /bin/bash
+        when: true
+        register: stop_timesyncd
+        changed_when: stop_timesyncd.stdout != 'unchanged'
+        tags: ['setupTimesyncd']
+
+      - name: Install 'NTP'
+        apt:
+          name: ntp  # verify NTP using 'sudo ntpq -p'
+          state: present
+          force_apt_get: true
+          update_cache: true
+          cache_valid_time: "{{ common.apt.cacheValidTime }}"
+        environment: "{{ env|d({}) }}"
+        when: true
+        tags: ['installNTP']
+
+      # References
+      #   https://docs.fedoraproject.org/en-US/fedora/f29/system-administrators-guide/servers/Configuring_NTP_Using_ntpd/#s1-Understanding_the_ntpd_Configuration_File
+      #   https://www.eecis.udel.edu/~mills/ntp/html/accopt.html
+      #   https://linux.die.net/man/5/ntp.conf
+      - name: Harden NTP server
+        lineinfile:
+          path: /etc/ntp.conf
+          regexp: "{{ item[0] }}"
+          line: "{{ item[1] }}"
+          insertbefore: "{{ item[2] }}"
+        with_items:
+          - [
+              ['^(#)?\s*restrict -6 default\s.*', 'restrict -6 default ignore', '^(#)?\s*restrict\s.*'],
+              ['^(#)?\s*restrict -4 default\s.*', 'restrict -4 default ignore', '^restrict -6 default.*'],
+              ['^(#)?\s*discard\s.*', 'discard average 3 minimum 1 monitor 1000', '^restrict -4 default.*']
+            ]
+        when: true
+        register: update_ntp_config
+        tags: ['hardenNTPServer']
+
+      - name: Disable IPv6 for NTP
+        lineinfile:
+          path: /etc/default/ntp
+          regexp: "^NTPD_OPTS.*"
+          line: "NTPD_OPTS='-g -4'"
+        when: true
+        register: update_ntp_default
+        tags: ['hardenNTPServer']
+
+      - name: Restart NTP server, if config updated
+        systemd:
+          name: ntp
+          state: restarted
+        when: update_ntp_config.changed or update_ntp_default.changed
+        tags: ['hardenNTPServer']
+
+      # References
+      #   https://www.freebsd.org/cgi/man.cgi?query=sshd_config&sektion=5
+      #   https://www.ssh.com/ssh/sshd_config/
+      #   https://linux-audit.com/audit-and-harden-your-ssh-configuration/
+      - name: Harden SSH server
+        vars:
+          configDefault: "{{ (common.sshd|d({})).configDefault|d({}) }}"
+        lineinfile:
+          path: /etc/ssh/sshd_config
+          regexp: "{{ item[0] }}"
+          line: "{{ item[1] }}"
+          insertbefore: '^(#\s*)?Match.*'
+          firstmatch: true
+        with_items:
+          - [
+              ['^(#\s*)?ListenAddress\s.*', 'ListenAddress 0.0.0.0'],
+              ['^(#\s*)?LogLevel\s.*', 'LogLevel VERBOSE'],
+              ['^(#\s*)?PermitRootLogin\s.*', 'PermitRootLogin {{ configDefault.PermitRootLogin|d("yes") }}'],
+              ['^(#\s*)?PermitEmptyPasswords\s.*', 'PermitEmptyPasswords no'],
+              ['^(#\s*)?HostbasedAuthentication\s.*', 'HostbasedAuthentication no'],
+              ['^(#\s*)?IgnoreRhosts\s.*', 'IgnoreRhosts yes'],
+              ['^(#\s*)?ChallengeResponseAuthentication\s.*', 'ChallengeResponseAuthentication no'],
+              ['^(#\s*)?MaxAuthTries\s.*', 'MaxAuthTries 5'],
+              ['^(#\s*)?ClientAliveInterval\s.*', 'ClientAliveInterval 60'],
+              ['^(#\s*)?ClientAliveCountMax\s.*', 'ClientAliveCountMax 3'],
+              ['^(#\s*)?TCPKeepAlive\s.*', 'TCPKeepAlive yes'],
+              ['^(#\s*)?AllowTcpForwarding\s.*', 'AllowTcpForwarding no'],
+              ['^(#\s*)?AllowStreamLocalForwarding\s.*', 'AllowStreamLocalForwarding no'],
+              ['^(#\s*)?GatewayPorts\s.*', 'GatewayPorts no'],
+              ['^(#\s*)?PermitTunnel\s.*', 'PermitTunnel no'],
+              ['^(#\s*)?X11Forwarding\s.*', 'X11Forwarding no'],
+              ['^(#\s*)?AllowAgentForwarding\s.*', 'AllowAgentForwarding no']
+            ]
+        when: true
+        register: update_sshd_config
+        tags: ['hardenSSHServer']
+
+      - name: Test SSH server configuration
+        command: sshd -t -f /etc/ssh/sshd_config
+        when: update_sshd_config.changed
+        register: test_sshd_config
+        failed_when: test_sshd_config.rc != 0
+        changed_when: false
+        tags: ['hardenSSHServer']
+
+      - name: Restart SSH server, if config updated
+        systemd:
+          name: sshd
+          state: restarted  # TODO check reload is possible or not
+        when: update_sshd_config.changed and (test_sshd_config.rc == 0)
+        tags: ['hardenSSHServer']
+
+      - name: Harden '/etc/login.defs' file
+        lineinfile:
+          path: /etc/login.defs
+          regexp: "{{ item[0] }}"
+          line: "{{ item[1] }}"
+          firstmatch: true
+        with_items:
+          - [
+              ['^(#\s*)?PASS_MAX_DAYS\s.*', 'PASS_MAX_DAYS 365'],
+              ['^(#\s*)?PASS_MIN_DAYS\s.*', 'PASS_MIN_DAYS 0'],
+              ['^(#\s*)?LOGIN_RETRIES\s.*', 'LOGIN_RETRIES 5'],
+              ['^(#\s*)?LOGIN_TIMEOUT\s.*', 'LOGIN_TIMEOUT 60'],
+              ['^(#\s*)?ENCRYPT_METHOD\s.*', 'ENCRYPT_METHOD SHA512'],
+              ['^(#\s*)?SULOG_FILE\s.*', 'SULOG_FILE /var/log/sulog']
+            ]
+        when: true
+        register: update_login_defs
+        tags: ['hardenLoginDefs']
+
+      - name: Install required APT packages
+        apt:
+          name: "{{ item.name }}"
+          state: present
+          force_apt_get: true
+          update_cache: true
+          cache_valid_time: "{{ common.apt.cacheValidTime }}"
+        environment: "{{ env|d({}) }}"
+        when: true
+        with_items: "{{ common.prerequisites.aptPackages }}"
+
+      - name: Upgrade pip
+        pip:
+          name: pip
+          state: latest # latest | present | ...
+        environment: "{{ env|d({}) }}"
+        when: true
+
+      - name: Install required Python packages
+        pip:
+          name: "{{ item.name }}"
+          state: present
+        environment: "{{ env|d({}) }}"
+        # when: ((ripple|d({})).validators|d([]) or (ripple|d({})).trackers|d([]))
+        when: true
+        with_items: "{{ common.prerequisites.pipPackages }}"
+    when: true
+    become: true
+    tags: ['setupSystemBaseline']
+
+  - name: Check whether the target 'rippled' is already installed or not
+    shell: dpkg -l | grep rippled | grep "{{ common.ripple.version }}" | wc -l
+    args:
+      executable: /bin/bash
+    when: true
+    become: false
+    register: check_ripple_installed
+    changed_when: false
+    tags: ['installRipple']
+
+  # References
+  #   - https://developers.ripple.com/install-rippled.html
+  #   - https://ripple.com/build/rippled-setup/#installing-rippled
+  - name: Install 'rippled' with prerequisites and configure them
+    block:
+      - name: Install 'alien'
+        apt:
+          name: [yum-utils, alien]
+          force_apt_get: true
+          update_cache: true
+          cache_valid_time: "{{ common.apt.cacheValidTime }}"
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: true
+
+      # equivalent to `rpm -Uvh ...`
+      - name: Install the YUM configuration file for Ripple RPM repositories (into /etc/yum.repos.d/ripple.repo)
+        yum:
+          name: "{{ common.ripple.rpm.yumConfigFile }}"
+          state: present
+          update_only: true # added in Ansible 2.5
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: true
+
+      # @NOTE Rollbacked to the previous task after using `environment` parameter
+      - name: Install the YUM configuration file for Ripple RPM repositories (into /etc/yum.repos.d/ripple.repo)
+        shell: |
+          rpm -Uvh {{ common.ripple.rpm.yumConfigFile }}
+        args:
+          executable: /bin/bash
+          #creates: /etc/yum.repos.d/ripple.repo
+        environment: "{{ env|d({}) }}"
+        when: false   # rollbacked to the previous task
+        become: true
+
+      - name: Create 'Downloads' directory under user's home directory
+        file:
+          dest: "{{ ansible_env.HOME }}/Downloads"
+          state: directory
+          remote_src: true
+        when: true
+        become: false
+
+      # TODO Check if the RPM package to download is downloaded before or noten
+      - name: Download Ripple RPM package
+        vars:
+          repo: "{{ common.ripple.rpm.repoName }}"
+          releasever: "{{ common.ripple.rpm.releaseVer }}"
+          pkg: "{{ common.ripple.rpm.packageFullName }}"
+        command: yumdownloader --enablerepo="{{ repo }}" --releasever="{{ releasever }}" "{{ pkg }}"
+        args:
+          chdir: "{{ ansible_env.HOME }}/Downloads"
+          creates: "{{ ansible_env.HOME }}/Downloads/{{ pkg }}.rpm"
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: false
+
+      - name: Add GPG key for Ripple RPM database
+        rpm_key:
+          key: "{{ common.ripple.rpm.gpgKey }}"
+          state: present
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: true
+
+      # Try 'rpm_key' module (https://docs.ansible.com/ansible/latest/modules/rpm_key_module.html#rpm-key-module)
+      - name: Verify Ripple RPM package
+        command: rpm -K "{{ common.ripple.rpm.packageFullName }}".rpm
+        args:
+          chdir: "{{ ansible_env.HOME }}/Downloads"
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: true
+        changed_when: false
+
+      - name: Convert Ripple RPM package into Debian package
+        command: alien -d --scripts "{{ common.ripple.rpm.packageFullName }}".rpm
+        args:
+          chdir: "{{ ansible_env.HOME }}/Downloads"
+          creates: "{{ common.ripple.rpm.debPackageName }}.deb"
+        when: true
+        become: true
+
+      - name: Install Ripple Debian package
+        apt:
+          deb: "{{ ansible_env.HOME }}/Downloads/{{ common.ripple.rpm.debPackageName }}.deb"
+        when: true
+        become: true
+    when: (check_ripple_installed.stdout == '0') and ripple|d({})|json_query('validators || trackers')
+    tags: ['installRipple']
+
+  - name: Check whether the target 'mocad' is already installed or not
+    shell: |
+      if [ -f "{{ common.ripple.moca.dir }}mocad" ]; then
+        "{{ common.ripple.moca.dir }}mocad" --version | grep '{{ common.ripple.moca.version }}' | wc -l
+      else
+        echo 0
+      fi
+    args:
+      executable: /bin/bash
+    when: true
+    become: false
+    register: check_moca_installed
+    changed_when: false
+    tags: ['installMoca']
+
+  - name: Install Moca
+    block:
+      - name: Make directory to install 'mocad'
+        file:
+          path: "{{ common.ripple.moca.dir }}"
+          state: directory
+          mode: 0750
+          owner: "{{ ansible_user }}"
+        become: true
+
+      - name: Download Moca binary
+        get_url:
+          url: "{{ common.ripple.moca.download.url }}"
+          dest: "{{ ansible_env.HOME }}/Downloads/{{ common.ripple.moca.download.url|basename }}"
+          checksum: "{{ common.ripple.moca.download.checksum }}"
+          force: false
+          use_proxy : true
+          tmp_dest: /var/tmp/
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: false
+
+      # @TODO Check if the current mocad is running more than one processes
+
+      # @TODO(Done) Compare version numbers between target file to install
+      #             and existing file to be replaced
+      #             -> 'unarchive' works in smart way, so version comparison
+      #                is not necessary
+
+      # @Note 'unarchive' doesn't change the target file when the
+      #       existing files are same with those in the source arhive.
+      - name: Unpack and copy the 'mocad'
+        unarchive:
+          src: "{{ ansible_env.HOME }}/Downloads/{{ common.ripple.moca.download.url|basename }}"
+          dest: "{{ common.ripple.moca.dir }}"
+          remote_src: true
+        when: true
+        become: false
+    when: common.ripple.moca.uses and (check_moca_installed.stdout == '0') and ripple|d({})|json_query('validators || trackers')
+    tags: ['installMoca']
+
+  # References
+  #   - https://developers.ripple.com/run-rippled-as-a-validator.html
+  #
+  # @TODO
+  #   Add WebSocket performance related configuration of rippled.cfg
+  #     - https://github.com/ripple/rippled/blob/1.0.0/cfg/rippled-example.cfg#L283
+  #
+  # @Notes After the 'setupRippleNode' tasks, check the host using following commands
+  #   $ cat -e ~/ripple/nodes/*/rippled.cfg | less
+  #   $ cat -e ~/ripple/nodes/*/validators.txt
+  #   $ cat /usr/lib/systemd/system/rippled@.service
+  - name: Setup 'rippled'
+    block:
+      - name: Create base directory for 'rippled'
+        file:
+          path: "{{ ansible_env.HOME }}/ripple/nodes/{{ item[0].name }}/{{ item[1] }}"
+          state: directory
+          mode: 0750
+        when: true
+        become: false
+        with_nested:
+          - "{{ ripple|d({})|json_query('[validators, trackers]')|select|flatten }}"
+          - ['logs']
+        tags: ['layoutRippleBaseDir']
+
+      - name: Generate a validator key pair if not exists
+        command: /opt/ripple/bin/validator-keys --keyfile validator-keys.json create_keys
+        args:
+          chdir: "{{ ansible_env.HOME}}/ripple/nodes/{{ item.name }}/"
+          creates: validator-keys.json
+        when: true
+        become: false
+        with_items: "{{ ripple|d({})|json_query('validators')|select|list }}" # for only validators
+
+      - name: Change the mode of validator key pair file
+        file:
+          path: "{{ ansible_env.HOME}}/ripple/nodes/{{ item.name }}/validator-keys.json"
+          mode: 0600
+          state: file
+        when: true
+        become: false
+        with_items: "{{ ripple|d({})|json_query('validators')|select|list }}" # for only validators
+
+      # TODO Make changed when the token is generated
+      - name: Extract or generate validator token from existing configuration
+        shell: |
+          declare token=
+          declare type=
+          if [ -f rippled.cfg ]; then
+            # extract token
+            token=`cat rippled.cfg | sed -n '/^\[validator_token\]/{n;p}'`
+          fi
+
+          if [ -z $token ]; then
+            # generate token
+            output=`/opt/ripple/bin/validator-keys create_token --keyfile validator-keys.json`
+            if [ $? -ne 0 ]; then
+              echo "Fail to generator a validator token from '$PWD/validator-keys.json'"
+              exit 1
+            fi
+            token=`echo $output | sed -e 's/.*\[validator_token] \(.*\)/\1/; s/\s//g'`
+            type='generated'
+          fi
+
+          echo "{{ item.name }}"
+          echo $token
+          echo ${type:-extracted}
+        args:
+          chdir: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}"
+          executable: /bin/bash
+        when: true
+        become: false
+        with_items: "{{ ripple|d({})|json_query('validators')|select|list }}" # for only validators
+        register: prepare_validator_token
+        changed_when: false
+
+      - name: Debug print to confirm the extracted or generated validator tokens
+        vars:
+          lines: "{{ hostvars|json_query('*.prepare_validator_token.results[].stdout_lines[]') }}"
+        debug:
+          msg: "{{ lines }}"
+        when: true
+        become: false
+        run_once: true
+
+      # https://github.com/ripple/rippled/blob/1.0.0/cfg/rippled-example.cfg
+      - name: Generate rippled configuration(rippled.cfg) from template
+        vars:
+          token: >-2
+            {%- for result in (prepare_validator_token|d({})).results|d([]) -%}
+                {%- if result.stdout_lines[0] == item.name -%}{{ result.stdout_lines[1] }}{%- endif -%}
+            {%- endfor -%}
+        template:
+          src: "{{ playbook_dir }}/../templates/ripple/rippled.cfg.j2"
+          dest: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/rippled.cfg"
+          newline_sequence: '\n'
+          force: true
+          mode: 0600
+          # validate: # Use 'validate' parameter if possible
+        when: true
+        become: flase
+        with_items: "{{ ripple|d({})|json_query('[validators, trackers]')|select|flatten }}"
+        tags: ['generateRippleConfig']
+
+      - name: Check the format of generated rippled configuration
+        shell: |
+          # Check whether the config includes trailing spaces or not
+          tailed=`cat rippled.cfg | grep -E '^.*\s$' | wc -l`
+
+          if [ $tailed -ne 0 ]; then
+            echo 'The rippled configuration for {{ item.name }} includes trailing spaces which could cause mal-fuction of rippled.'
+            exit 101
+          fi
+        args:
+          chdir: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}"
+          executable: /bin/bash
+        when: true
+        become: flase
+        with_items: "{{ ripple|d({})|json_query('[validators, trackers]')|select|flatten }}"
+        register: check_rippled_config
+        changed_when: false
+        failed_when: check_rippled_config.rc != 0
+        tags: ['generateRippleConfig']
+
+      - name: Extract validator public key
+        shell: |
+          token=`grep '"public_key"' validator-keys.json | sed -e 's/.*"public_key" : "\(\w*\)".*/\1/'`
+          echo '{{ item.name }}'
+          echo ${token}
+        args:
+          chdir: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}"
+          executable: /bin/bash
+        when: true
+        become: false
+        with_items: "{{ ripple|d({})|json_query('validators')|select|flatten }}"
+        changed_when: false
+        register: extract_validator_public_key
+        tags: ['generateRippleValidatorsFile']
+
+      # @TODO(Done) Format the file
+      - name: Log public keys into the file on controller machine
+        copy:
+          dest: "{{ inventory_dir }}/generated/public-keys.txt"
+          content: "{{ hostvars|json_query('*.extract_validator_public_key.results[].stdout_lines')|sort(attribute='0')|to_nice_yaml(indent=2) }}"
+          force: true
+        when: extract_validator_public_key
+        become: false
+        run_once: true
+        delegate_to: controller
+        tags: ['generateRippleValidatorsFile']
+
+      - name: Generate validators file ('validators.txt')
+        vars:
+          validatorPubKeys: "{{ hostvars|json_query('*.extract_validator_public_key.results[].stdout_lines')|sort(attribute='0') }}"
+        # debug: msg="{{ validatorPubKeys }}"
+        template:
+          src: "{{ playbook_dir }}/../templates/ripple/validators.txt.j2"
+          dest: "{{ ansible_env.HOME }}/ripple/nodes/{{ item.name }}/validators.txt"
+          newline_sequence: '\n'
+          force: true
+          mode: 0600
+        when: true
+        become: false
+        with_items: "{{ ripple|d({})|json_query('[validators, trackers]')|select|flatten }}"
+        tags: ['generateRippleValidatorsFile']
+
+      # @TODO Consider moving the location of this task into install block above
+      - name: Generate 'systemd' template unit file for 'rippled'
+        template:
+          src: "{{ playbook_dir }}/../templates/ripple/rippled@.service.j2"
+          dest: "/usr/lib/systemd/system/rippled@.service"
+          newline_sequence: '\n'
+          force: true
+          mode: 0644
+        when: true
+        become: true
+        register: generate_rippled_systemd_unit
+        tags: ['generateRippleSystemdUnitFile']
+
+      - name: Force 'systemd' read 'rippled@.service'
+        systemd:
+          daemon_reload: true
+        when: generate_rippled_systemd_unit.changed
+        become: true
+
+      # @TODO Add cron job into '/etc/cron.d/' directory
+      - name: Add 'cron' job to rolling 'rippled' log periodically
+        template:
+          src: "{{ playbook_dir }}/../templates/ripple/rippled-logrotate.sh.j2"
+          dest: "/etc/cron.{{ (common.ripple.logrotate|d({})).period|d('weekly') }}/rippled"
+          newline_sequence: '\n'
+          mode: 0755
+        when: true
+        become: true
+        tags: ['addRippledCronJob']
+    when: ripple|d({})|json_query('validators || trackers')
+    tags: ['setupRippleNode']
+
+  # https://blog.sleeplessbeastie.eu/2017/12/30/how-to-install-haproxy-1-8-on-ubuntu-16/
+  - name: Install HAProxy
+    block:
+      - name: Add APT repository for the HAproxy
+        apt_repository:
+          repo: "{{ common.haproxy.install.apt.repos }}"
+          state: present
+          update_cache: true
+        environment: "{{ env|d({}) }}"
+        when: common.haproxy|json_query('install.apt.repos')
+
+      - name: Install HAProxy
+        apt:
+          name: haproxy
+          state: latest
+          force_apt_get: true
+          update_cache: true
+          cache_valid_time: "{{ common.apt.cacheValidTime }}"
+          allow_unauthenticated: true   # @TODO Can be removed by adding APT key ?
+        environment: "{{ env|d({})|combine({'RUNLEVEL': 1}) }}"
+        when: true
+
+      - name: Disable default HAProxy service using '/etc/haproxy/haproxy.cfg'
+        systemd:
+          name: haproxy
+          enabled: false
+        when: true
+
+      # @TODO : '/usr/lib/systemd/system' or '/lib/systemd/system'
+      - name: Generate 'systemd' template unit file for HAProxy
+        template:
+          src: "{{ playbook_dir }}/../templates/haproxy/haproxy@.service.j2"
+          dest: "/usr/lib/systemd/system/haproxy@.service"
+          newline_sequence: '\n'
+          force: true
+          mode: 0644
+        when: true
+
+      - name: Force 'systemd' read 'haproxy@.service'
+        systemd:
+          daemon_reload: true
+        when: true
+
+      - name: Restart 'rsyslog' to reflect '/etc/rsyslog.d/49-haproxy.conf'
+        systemd:
+          name: rsyslog
+          state: restarted  # will not run commands unless necessary
+          no_block: false
+        when: true
+    when: haproxy|d({})
+    become: true
+    tags: ['installHAProxy']
+
+    # @TODO
+    #   Stop and disable the haproxy.service registered into systemd via /etc/init.d/haproxy
+    #   Check also preset of haproxy.service
+    #   Solve the following warning at /var/log/syslog
+    #     [/usr/sbin/haproxy.main()] FD limit (4096) too low for maxconn=2048/maxsock=4111. Please raise 'ulimit-n' to 4111 or more to avoid any trouble.[WARNING] 045/081205 (988) : [/usr/sbin/haproxy.main()] FD limit (4096) too low for maxconn=2048/maxsock=4111. Please raise 'ulimit-n' to 4111 or more to avoid any trouble.
+    #   Secure HAProxy' stats service using http basic authentication or others
+  - name: Setup rippled (reverse) proxy
+    block:
+      - name: Create top level directories for rippled proxy
+        file:
+          path: "{{ ansible_env.HOME }}/haproxy/{{ item }}"
+          state: directory
+          mode: 0750
+        when: true
+        become: false
+        with_items: ['instances', 'test', 'trash']
+
+      - name: Create base directory for rippled proxy instance
+        file:
+          path: "{{ ansible_env.HOME }}/haproxy/instances/{{ item[0].name }}/{{ item[1] }}"
+          state: directory
+          mode: 0750
+        when: true
+        become: false
+        with_nested:
+          - "{{ haproxy|d({})|json_query('rippleProxies')|select|flatten }}"
+          - ['ssl/trusted', 'log']
+
+      - name: Generate TLS key and certificate for rippled proxy
+        vars:
+          subj: "{{ common.tls.subjectBase }}"
+        shell: |
+          declare -r subj='/C={{ subj.C }}/ST={{ subj.ST }}/L={{ subj.L }}/O={{ subj.O }}/OU={{ subj.OU }}/CN={{ item.ssl.cn|d(item.name) }}'
+          declare filename={{ item.ssl.crt }}
+          filename=${filename%.pem}
+          declare url_base='{{ common.tls.simpleGenerator.baseUrl }}'
+
+          curl -sSL "${url_base}/get-tls-key-cert.sh" | bash -s -- -u "${url_base}" -s "${subj}" -f "${filename}"
+
+          if [ $? -ne 0 ]; then
+            exit 101
+          fi
+
+          if [[ -f "${filename}.crt" && -f "${filename}.key" ]]; then
+            cat "${filename}.crt" "${filename}.key" > "${filename}.pem"
+          fi
+          cp "{{ item.ssl['ca-file'] }}" trusted/
+        args:
+          chdir: "{{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/ssl"
+          creates: "{{ item.ssl.crt }}"
+          # creates: "trusted/{{ item.ssl['ca-file'] }}"  # TODO can't have multiple 'creates'
+          executable: /bin/bash
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('rippleProxies')|select|flatten }}"
+
+      - name: Generate rippled proxies' configurations(haproxy.cfg) from template
+        template:
+          src: "{{ playbook_dir }}/../templates/haproxy/haproxy.cfg.j2"
+          dest: "{{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/haproxy.cfg"
+          newline_sequence: '\n'
+          force: true
+          mode: 0600
+          # validate: # Use 'validate' parameter if possible
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('rippleProxies')|select|flatten }}"
+
+      - name: Validate generated rippled proxies' configurations
+        shell: |
+          haproxy -c -V -f '{{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/haproxy.cfg'
+
+          if [ $? -ne 0 ]; then
+            echo "Invalid HAProxy configuration at '{{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/haproxy.cfg'"
+            echo "Run 'haproxy -c -V -f ...haproxy.cfg' to check what are invalid."
+            echo ""
+            exit 1
+           fi
+        args:
+          chdir: "{{ ansible_env.HOME }}/haproxy/instances/"
+          executable: /bin/bash
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('rippleProxies')|select|flatten }}"
+        changed_when: false
+    when: haproxy|d({})|json_query('rippleProxies')
+    become: false
+    tags: ['setupRippleProxy']
+
+
+  - name: Setup load balancer for Ripple tracker
+    block:
+      - name: Create top level directories for load balancers
+        file:
+          path: "{{ ansible_env.HOME }}/haproxy/{{ item }}"
+          state: directory
+          mode: 0750
+        when: true
+        become: false
+        with_items: ['instances', 'test', 'trash']
+
+      - name: Create base directory each for load balancer instance
+        file:
+          path: "{{ ansible_env.HOME }}/haproxy/instances/{{ item[0].name }}/{{ item[1] }}"
+          state: directory
+          mode: 0750
+        when: true
+        become: false
+        with_nested:
+          - "{{ haproxy|d({})|json_query('trackerLoadBalancers')|select|flatten }}"
+          - ['log']
+
+      - name: Generate load balancer configuration(haproxy.cfg) from template
+        template:
+          src: "{{ playbook_dir }}/../templates/haproxy/haproxy-balancer.cfg.j2"
+          dest: "{{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/haproxy.cfg"
+          newline_sequence: '\n'
+          force: true
+          mode: 0600
+          # validate: # Use 'validate' parameter if possible
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('trackerLoadBalancers')|select|flatten }}"
+
+      - name: Validate generated load balancer configuration
+        shell: |
+          haproxy -c -V -f '{{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/haproxy.cfg'
+
+          if [ $? -ne 0 ]; then
+            echo "Invalid HAProxy configuration at '{{ ansible_env.HOME }}/haproxy/instances/{{ item.name }}/haproxy.cfg'"
+            echo "Run 'haproxy -c -V -f ...haproxy.cfg' to check what are invalid."
+            echo ""
+            exit 1
+           fi
+        args:
+          chdir: "{{ ansible_env.HOME }}/haproxy/instances/"
+          executable: /bin/bash
+        when: true
+        become: false
+        with_items: "{{ haproxy|d({})|json_query('trackerLoadBalancers')|select|flatten }}"
+        changed_when: false
+    when: haproxy|d({})|json_query('trackerLoadBalancers')
+    become: false
+    tags: ['setupTrackerBalancer']
+
+
+  # https://portal.influxdata.com/downloads
+  # https://docs.influxdata.com/telegraf/v1.8/introduction/installation/ # a little bit different from above link
+  - name: Install and run Telegraf
+    block:
+      - name: Create directory to download Telegraf install package
+        file:
+          dest: "{{ ansible_env.HOME }}/Downloads"
+          state: directory
+          remote_src: true
+        when: true
+        become: false
+        tags: ['installTelegraf']
+
+      # @TODO Install prerequisites for Telegraf
+
+      - name: Download Telegraf
+        get_url:
+          url: "{{ common.telegraf.download.url }}"
+          dest: "{{ ansible_env.HOME }}/Downloads/{{ common.telegraf.download.url|basename }}"
+          checksum: "{{ common.telegraf.download.checksum }}"
+          force: false
+          use_proxy : true
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: false
+        tags: ['installTelegraf']
+
+      - name: Install Telegraf
+        apt:
+          # common.telegraf.download.url|regex_search("[^/]*\.deb$") == common.telegraf.download.url|basename
+          deb: '{{ ansible_env.HOME }}/Downloads/{{ common.telegraf.download.url|basename }}'
+        when: true
+        become: true
+        tags: ['installTelegraf']
+
+      - name: Stop and disable Telegraf service before setup
+        systemd:
+          name: telegraf.service
+          state: stopped
+          enabled: false
+        when: true
+        become: true
+        tags: ['installTelegraf']
+
+      - name: Create directory to store Telegraf log files
+        file:
+          dest: "{{ common.telegraf.configDefault.agent.logfile|d('/var/log/telegraf/')|regex_search(\".*/\") }}"
+          state: directory
+          remote_src: true
+          owner: telegraf
+          group: telegraf
+        when: true
+        become: true
+        tags: ['setupTelegraf']
+
+      - name: Generate script file for Telegraf's custom metrics for Ripple
+        template:
+          src: "{{ playbook_dir }}/../templates/telegraf/telegraf_exec_cmd_rippled.sh.j2"
+          dest: "/etc/telegraf/telegraf_exec_cmd_rippled.sh"
+          newline_sequence: '\n'
+          backup: false
+          force: true # replace the remote file when contents are different than the source, which is opposite to intuitive exepectation
+          mode: 0754
+        when: true
+        become: true
+        register: generate_telegraf_ripple_script
+        tags: ['setupTelegraf']
+
+      - name: Generate Telegraf configuration(telegraf.conf) from template
+        template:
+          src: "{{ playbook_dir }}/../templates/telegraf/telegraf.conf.j2"
+          dest: "/etc/telegraf/telegraf.conf"
+          newline_sequence: '\n'
+          backup: true
+          force: true # replace the remote file when contents are different than the source, which is opposite to intuitive exepectation
+          mode: 0644
+          # validate: # Use 'validate' parameter if possible
+        when: true
+        become: true
+        register: generate_telegraf_conf
+        tags: ['setupTelegraf']
+
+      - name: Validate generated Telegraf configuration
+        shell: |
+          telegraf --config /etc/telegraf/telegraf.conf --config-directory /etc/telegraf/telegraf.d/ --test
+        args:
+          executable: /bin/bash
+        when: true or generate_telegraf_conf.changed
+        become: true
+        changed_when: false
+        tags: ['setupTelegraf', 'validateTelegrafConf']
+
+      # TODO Change the ownership of Telegraf log file at '/var/log/telegraf/telegraf.log'
+      - name: Set the ownership of Telegarf log files
+        file:
+          path: '/var/log/telegraf/'
+          owner: telegraf
+          group: telegraf
+          recurse: true
+        when: true
+        become: true
+        tags: ['setupTelegraf']
+
+      - name: Restart the Telegraf if configuration changed
+        systemd:
+          name: telegraf.service
+          state: restarted  # TODO check reload is possible or not
+          enabled: true
+        when: generate_telegraf_conf.changed
+        become: true
+        tags: ['runTelegraf']
+
+      - name: Check Telegraf is running
+        shell: |
+          systemctl -q is-active telegraf.service
+
+          if [ $? -ne 0 ]; then
+            echo ""
+            echo "Telegraf is not running(active) as an systemd service which is not expected."
+            echo ""
+            exit 101
+          fi
+        when: true
+        become: false
+        changed_when: false
+        tags: ['runTelegraf']
+    when: telegraf is defined
+    tags: ['prepareTelegraf']
+
+  # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation.html
+  # https://www.elastic.co/downloads/beats/filebeat
+  - name: Install and run Filebeat
+    block:
+      - name: Create directory to download Filebeat install package
+        file:
+          dest: "{{ ansible_env.HOME }}/Downloads"
+          state: directory
+          remote_src: true
+        when: true
+        become: false
+        tags: ['installFilebeat']
+
+      - name: Download Filebeat
+        get_url:
+          url: "{{ common.filebeat.download.url }}"
+          dest: "{{ ansible_env.HOME }}/Downloads/{{ common.filebeat.download.url|basename }}"
+          checksum: "{{ common.filebeat.download.checksum }}"
+          force: false
+        environment: "{{ env|d({}) }}"
+        when: true
+        become: false
+        tags: ['installFilebeat']
+
+      # Installed files includes
+      #   - /etc/filebeat/fields.yml
+      #   - /etc/filebeat/filebeat.reference.yml
+      #   - /etc/filebeat/filebeat.yml
+      #   - /etc/filebeat/modules.d/*
+      #   - /etc/init.d/filebeat
+      - name: Install Filebeat
+        apt:
+          deb: '{{ ansible_env.HOME }}/Downloads/{{ common.filebeat.download.url|basename }}'
+          # Try to 'basename' filter (https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#id8)
+        when: true
+        become: true
+        tags: ['installFilebeat']
+
+      - name: Stop and disable Filebeat service before setup
+        systemd:
+          name: filebeat.service
+          state: stopped
+          enabled: false
+        when: true
+        become: true
+        tags: ['installFilebeat']
+
+      # At first start or run '/var/lib/filebeat/' and '/var/log/filebeat/'
+      # would be created.
+      - name: Generate Filebeat configuration(filebeat.yml) from template
+        template:
+          src: "{{ playbook_dir }}/../templates/filebeat/filebeat.yml.j2"
+          dest: /etc/filebeat/filebeat.yml
+          newline_sequence: '\n'
+          backup: true
+          force: true #  replace the remote file when contents are different than the source, which is opposite to intuitive exepectation
+          mode: 0644
+          # validate: # Use 'validate' parameter if possible
+        when: true
+        become: true
+        register: generate_filebeat_conf
+        tags: ['setupFilebeat']
+
+      - name: Validate generated Filebeat configuration
+        shell: |
+          filebeat test config -c /etc/filebeat/filebeat.yml
+          filebeat test output -c /etc/filebeat/filebeat.yml
+        args:
+          executable: /bin/bash
+        when: generate_filebeat_conf.changed
+        become: true
+        tags: ['setupFilebeat']
+
+      - name: Start or restart the Filebeat if configuration changed
+        systemd:
+          name: filebeat.service
+          state: restarted  # TODO check reload is possible or not
+          enabled: true
+        when: generate_filebeat_conf.changed
+        become: true
+        tags: ['runFilebeat']
+
+    when: filebeat is defined
+    tags: ['prepareFilebeat']
+
+  # TODO Setup iptables
+
+  # https://mariadb.com/kb/en/library/installing-mariadb-deb-files/
+  # https://mariadb.com/resources/blog/devops-with-mariadb-and-ansible-part-2/
+  - name: Prepare 'MariaDB'
+    block:
+      - name: Debug
+        debug:
+          msg: "{{ ansible_env.PATH }}"
+        when: true
+        become: true
+        tag: ['prepareMariaDB.debug']
+      - name: Install Python packages for Ansible MySQL modules
+        pip:
+          name: "{{ item }}"
+        when: true
+        become: true
+        with_items: ['PyMySQL']
+      - name: Install prerequisites for MariaDB
+        apt:
+          name: "{{ item.name }}"
+        when: true
+        become: true
+        with_items: "{{ common.mariadb.install.ubuntu.prerequisites.aptPackages }}"
+        tags: ['installMariaDB']
+      - name: Add APT key for the MariaDB
+        apt_key:
+          keyserver: "{{ common.mariadb.install.ubuntu.apt.key.server }}"
+          id: "{{ common.mariadb.install.ubuntu.apt.key.id }}"
+        when: true
+        become: true
+        tags: ['installMariaDB']
+      - name: Add APT repository for the MariaDB
+        apt_repository:
+          repo: "{{ common.mariadb.install.ubuntu.apt.repos }}"
+          state: present
+        when: true
+        become: true
+        tags: ['installMariaDB']
+      - name: Install MariaDB using APT
+        apt:
+          name: "{{ common.mariadb.install.ubuntu.apt.package }}"
+          state: present
+          force_apt_get: true
+          update_cache: true
+          cache_valid_time: "{{ common.apt.cacheValidTime }}"
+        when: true
+        become: true
+        register: install_mariadb
+        tags: ['installMariaDB']
+      - name: Stop and disable automatically started MariaDB instance
+        systemd:
+          name: mariadb
+          enabled: false
+          state: stopped
+        when: install_mariadb.changed
+        become: true
+        tags: ['installMariaDB']
+      # @TODO Make MariaDB not started right after APT package installed or stop it ASAP.
+      - name: Make sure of the directory for MariaDB config
+        file:
+          path: /etc/mysql/conf.d
+          owner: root
+          group: root
+          mode: 0755
+          state: directory
+        when: true
+        become: true
+        tags: ['generateMariaDBConfig']
+      - name: Make sure of directories for MariaDB artifacts
+        file:
+          path: "{{ item }}"
+          owner: mysql
+          group: mysql
+          mode: 0755
+          state: directory
+        when: true
+        become: true
+        with_items: "{{ mariadb|json_query('[*].config.[datadir, tmpdir]')|select|flatten }}"
+        tags: ['generateMariaDBConfig']
+      - name: Generate MariaDB configuration (my.cnf) from template
+        template:
+          src: "{{ playbook_dir }}/../templates/mariadb/my.cnf.j2"
+          dest: "/etc/mysql/conf.d/my_{{ item.name }}.cnf"
+          newline_sequence: '\n'
+          backup: true
+          force: true #  replace the remote file when contents are different than the source, which is opposite to intuitive exepectation
+          owner: root
+          group: root
+          mode: 0644
+          validate: mysqld --defaults-file='%s' --help
+        when: true
+        become: true
+        with_items: "{{ mariadb|json_query('[*]')|select|flatten }}"
+        tags: ['generateMariaDBConfig']
+      # https://mariadb.com/kb/en/library/installing-system-tables-mysql_install_db/
+      - name: Create system tables for MariaDB
+        command: mysql_install_db --skip-auth-anonymous-user --defaults-file="/etc/mysql/conf.d/my_{{ item.name }}.cnf"
+        args:
+          #chdir:
+          #executable: /bin/bash
+          creates: "{{ item.config.datadir }}/mysql/"
+        when: true
+        become: true
+        with_items: "{{ mariadb|json_query('[*]')|select|flatten }}"
+        tags: ['initMariaDB']
+      # https://mariadb.com/kb/en/library/mysql_secure_installation/
+      - name: Make MariaDB more secure using 'mysql_secure_installation'
+        expect:
+          command: mysql_secure_installation --defaults-file="/etc/mysql/conf.d/my_{{ item.name }}.cnf"
+          responses:
+            'Enter current password for root \(enter for none\): ': "\n"
+            'Set root password\? \[Y/n\]': 'Y'
+            'New password:': "{{ item.accounts.admin.pass }}"
+            'Re-enter new password:': "{{ item.accounts.admin.pass }}"
+            'Remove anonymous users\? \[Y/n\]': 'Y'
+            'Disallow root login remotely\? \[Y/n\]': 'n'
+            'Remove test database and access to it\? \[Y/n\]': 'Y'
+            'Reload privilege tables now\? \[Y/n\]': 'Y'
+          timeout: 20
+        no_log: false
+        when: false
+        become: true
+        with_items: "{{ mariadb|json_query('[*]')|select|flatten }}"
+        tags: ['initMariaDB']
+      - name: Make MariaDB admin from remote have grant priviledge
+        expect:
+          command: >
+            mysql -p -S {{ item.config.socket }}
+            -u {{ item.accounts.admin.id }}
+            -e "grant grant option on *.* to 'root'"
+            --connect-timeout=10
+          responses:
+            'Enter password: ': "{{ item.accounts.admin.pass }}"
+          timeout: 10
+        no_log: false
+        when: true
+        become: true
+        with_items: "{{ mariadb|json_query('[*]')|select|flatten }}"
+        tags: ['initMariaDB']
+      - name: Create pre-defined databases into MariaDB
+        mysql_db:
+          name: "{{ item.1.name }}"
+          encoding: utf8
+          collation: utf8_general_ci
+          login_host: "{{ item.0.config.bind_address }}"
+          login_port: "{{ item.0.config.port }}"
+          login_user: "{{ item.0.accounts.admin.id }}"
+          login_password: "{{ item.0.accounts.admin.pass }}"
+          connect_timeout: 10
+          state: present
+        when: true
+        become: false
+        delegate_to: controller
+        with_subelements:
+          - "{{ mariadb|json_query('[*]')|select|flatten }}"
+          - databases
+        tags: ['initMariaDB']
+      - name: Create pre-defined users of MariaDB
+        mysql_user:
+          name: "{{ item.1.id }}"
+          password: "{{ item.1.pass }}"
+          priv: "{{ item.1.priv }}"
+          append_privs: false
+          encrypted: false
+          update_password: always
+          login_host: "{{ item.0.config.bind_address }}"
+          login_port: "{{ item.0.config.port }}"
+          login_user: "{{ item.0.accounts.admin.id }}"
+          login_password: "{{ item.0.accounts.admin.pass }}"
+          connect_timeout: 10
+          state: present
+        when: true
+        become: false
+        delegate_to: controller
+        with_subelements:
+          - "{{ mariadb|json_query('[*]')|select|flatten }}"
+          - accounts.users
+        tags: ['initMariaDB']
+    when: mariadb is defined
+    tags: ['prepareMariaDB']
+
