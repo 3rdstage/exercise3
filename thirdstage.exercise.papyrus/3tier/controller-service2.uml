@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_cUiz0HU0EemThY914PK87g" name="controller-service2">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_cgXpUHU0EemThY914PK87g">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_dYzGIHU0EemThY914PK87g" name="BlockHeader"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_jE0pAHXdEemThY914PK87g" name="BlockController">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_QqzvUHXeEemThY914PK87g" name="findRecentBlocks" isQuery="true">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_QqzvUXXeEemThY914PK87g" name="size">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_p03HgHXfEemThY914PK87g" type="_dYzGIHU0EemThY914PK87g" direction="return">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_uP1eAHXfEemThY914PK87g"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_uQEHgHXfEemThY914PK87g" value="*"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_9KlbgHXeEemThY914PK87g" name="findInitialBlocks">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_9KlbgXXeEemThY914PK87g" name="size">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_WmywIHXfEemThY914PK87g" name="findBlocksWithinInterval" isQuery="true">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_WmywIXXfEemThY914PK87g" name="from">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_WmywInXfEemThY914PK87g" name="to">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_WmywI3XfEemThY914PK87g" name="pageNo">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_WmywJHXfEemThY914PK87g" name="pageSize">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_YhRqYHXgEemThY914PK87g" name="findBlocksBefore" isQuery="true">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_YhRqYXXgEemThY914PK87g" name="when">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_YhRqYnXgEemThY914PK87g" name="pageNo">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_YhRqY3XgEemThY914PK87g" name="pageSize">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_iKzwcHXgEemThY914PK87g" name="findBlocksAfter" isQuery="true">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_iKzwcXXgEemThY914PK87g" name="when">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_iKzwcnXgEemThY914PK87g" name="pageNo">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_iKzwc3XgEemThY914PK87g" name="pageSize">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_lQnq0HXgEemThY914PK87g" name="findTodayBlocks" isQuery="true"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_q9a1kHXgEemThY914PK87g" name="findDailyBlocks">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_q9a1kXXgEemThY914PK87g" name="date">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_varrEHXgEemThY914PK87g" name="findMonthlyBlocks">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_varrEXXgEemThY914PK87g" name="month">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+    </ownedOperation>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_mzGRkHXdEemThY914PK87g" name="BlockServiceImpl"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_r11LoHXdEemThY914PK87g" name="BlockService">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_IBVQsHXhEemThY914PK87g" name="findBlocksWithinInterval">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_IBVQsXXhEemThY914PK87g" name="from">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_IBVQsnXhEemThY914PK87g" name="to">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_IBVQs3XhEemThY914PK87g" name="pageNo">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="_IBVQtHXhEemThY914PK87g" name="pageSize">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+      </ownedParameter>
+    </ownedOperation>
+  </packagedElement>
+</uml:Model>
