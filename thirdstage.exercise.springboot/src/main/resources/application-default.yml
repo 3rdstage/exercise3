@@ -1,0 +1,11 @@
+
+ethereum:
+  networks:
+    local:
+      netVersion: 37
+      address: '127.0.0.1'
+      port: 8555
+
+redis:
+  host: '127.0.0.1'
+  port: 6379

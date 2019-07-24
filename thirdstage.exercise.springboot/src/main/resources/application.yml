@@ -1,0 +1,28 @@
+# https://docs.spring.io/spring-boot/docs/2.1.x/reference/html/common-application-properties.html
+
+foo:
+  bar: "FOO.BAR"
+
+credit:
+  - Sangmoon Oh
+
+debug: false
+trace: false
+
+logging.level:
+  org.springframework.boot.autoconfigure: ERROR
+
+server:
+  address: '127.0.0.1'
+  port: 8090
+
+spring.security:
+  user:
+    name: boot
+    password: boot
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
