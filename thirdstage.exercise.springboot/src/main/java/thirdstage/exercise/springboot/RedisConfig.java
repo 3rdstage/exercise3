@@ -20,7 +20,7 @@ public class RedisConfig{
    * @see https://docs.spring.io/spring-data/redis/docs/2.1.9.RELEASE/api/index.html?org/springframework/data/redis/connection/lettuce/LettuceConnectionFactory.html
    */
   @Bean
-  LettuceConnectionFactory connectionFactory(
+  LettuceConnectionFactory redisConnectionFactory(
       @Value("${redis.host}") String host,
       @Value("${redis.port}") int port) {
 
