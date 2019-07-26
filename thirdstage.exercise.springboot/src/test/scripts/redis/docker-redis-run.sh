@@ -8,7 +8,7 @@ readonly container_name=local_redis
 
 echo $script_dir
 cd $script_dir
-
+ 
 docker run -id --rm --name ${container_name} \
   -p 6379:6379 \
   redis bash

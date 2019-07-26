@@ -40,7 +40,8 @@
     <slf4j.version>1.7.26</slf4j.version>
     <logback.version>1.2.3</logback.version>
     <junit.version>4.12</junit.version>
-    <testng.version>6.9.10</testng.version>
+    <junit5.version>5.5.1</junit5.version> <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+    <testng.version>6.14.3</testng.version> <!-- https://mvnrepository.com/artifact/org.testng/testng -->
     <mockito.version>2.6.9</mockito.version>
     <commons.lang3.version>3.9</commons.lang3.version>
     <typesafe-config.version>1.3.1</typesafe-config.version>
@@ -257,9 +258,9 @@
                   <swaggerDirectory>${project.build.directory}/generated/swagger</swaggerDirectory>
                   <swaggerFileName>api</swaggerFileName>
                   <outputFormats>json,yaml</outputFormats>
-<!--                   <templatePath>${basedir}/src/templates/swagger/strapdown.html.hbs</templatePath> -->
-<!--                   <outputPath>${project.build.directory}/generated/swagger/api.html</outputPath> -->
-<!--                   <attachSwaggerArtifact>true</attachSwaggerArtifact> -->
+                  <!-- <templatePath>${basedir}/src/templates/swagger/strapdown.html.hbs</templatePath> -->
+                  <!-- <outputPath>${project.build.directory}/generated/swagger/api.html</outputPath> -->
+                  <!-- <attachSwaggerArtifact>true</attachSwaggerArtifact> -->
                   <modelConverters>io.swagger.validator.BeanValidator</modelConverters>
                 </apiSource>
               </apiSources>
@@ -621,6 +622,18 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit5.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -1,21 +1,24 @@
 package thirdstage.exercise.springboot.redis;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-public class RedisBasicTest{
+public class RedisBasicTest2{
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -29,15 +32,12 @@ public class RedisBasicTest{
   @Test
   public void testListOps1() {
 
-    listOps.leftPush("title", "Matrix");
-    listOps.leftPush("state", "Closed");
+    listOps.leftPush("fruits", "Orange");
+    listOps.leftPush("fruits", "Water Melon");
 
-    String title = listOps.leftPop("title");
+    String fruit = listOps.leftPop("fruits");
 
-    Assert.assertEquals(title, "Matrix");
+    Assert.assertEquals(fruit, "Water Melon");
   }
-
-
-
 
 }
