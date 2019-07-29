@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_eOMqQLHTEemwbrbt4VPQvg" name="cofios2">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_eYrb8LHTEemwbrbt4VPQvg">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_EZT6cLHUEemwbrbt4VPQvg" name="Asset">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_mHjWsLHUEemwbrbt4VPQvg" name="name">
+      <ownedComment xmi:type="uml:Comment" xmi:id="_mHjWsbHUEemwbrbt4VPQvg" annotatedElement="_mHjWsLHUEemwbrbt4VPQvg"/>
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_TluIULHWEemwbrbt4VPQvg" name="description">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_YIxcwLHWEemwbrbt4VPQvg" name="tokenSymbol">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_ddkXMLHWEemwbrbt4VPQvg" name="coverPicture"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_iEoB4LHWEemwbrbt4VPQvg" name="isERC1400Token">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_NJNTsLHdEemwbrbt4VPQvg" name="status"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_hRAIYLHdEemwbrbt4VPQvg" type="_U1fC4LHdEemwbrbt4VPQvg" aggregation="composite" association="_hQ9FELHdEemwbrbt4VPQvg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hRBWgLHdEemwbrbt4VPQvg"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hRBWgbHdEemwbrbt4VPQvg" value="1"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_U1fC4LHdEemwbrbt4VPQvg" name="ComplianceRequirementForIndividual">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_rr29sLHdEemwbrbt4VPQvg" name="ipAddress">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_LcI4cLHeEemwbrbt4VPQvg" name="investedAmount">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_N44nsLHeEemwbrbt4VPQvg" name="countryOfResidence">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Q7v7wLHeEemwbrbt4VPQvg" name="nationality">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_X-OgALHeEemwbrbt4VPQvg" name="firstName">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Z988ELHeEemwbrbt4VPQvg" name="lastName"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_c_urALHeEemwbrbt4VPQvg" name="streetNumber"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_fFdocLHeEemwbrbt4VPQvg" name="streetName"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_iJYscLHeEemwbrbt4VPQvg" name="city"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_jQ2q0LHeEemwbrbt4VPQvg" name="zipCode"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_qEeTsLHeEemwbrbt4VPQvg" name="phoneNumber"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_sqFEALHeEemwbrbt4VPQvg" name="email"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_vlaMsLHeEemwbrbt4VPQvg" name="copyOfIdentificationDocument"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_-z368LHeEemwbrbt4VPQvg" name="selfie"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_M6qPcLHfEemwbrbt4VPQvg" name="ocuppationStatement"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_PHLxYLHfEemwbrbt4VPQvg" name="incomeStatement"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_RLCfgLHfEemwbrbt4VPQvg" name="proofOfResidence"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_hQ9FELHdEemwbrbt4VPQvg" memberEnd="_hRAIYLHdEemwbrbt4VPQvg _hRB9kLHdEemwbrbt4VPQvg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_hQ-6QLHdEemwbrbt4VPQvg" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_hQ-6QbHdEemwbrbt4VPQvg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_hRB9kLHdEemwbrbt4VPQvg" name="asset" type="_EZT6cLHUEemwbrbt4VPQvg" association="_hQ9FELHdEemwbrbt4VPQvg"/>
+  </packagedElement>
+</uml:Model>
