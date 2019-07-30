@@ -40,23 +40,82 @@
     <ownedAttribute xmi:type="uml:Property" xmi:id="_X-OgALHeEemwbrbt4VPQvg" name="firstName">
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
     </ownedAttribute>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_Z988ELHeEemwbrbt4VPQvg" name="lastName"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_c_urALHeEemwbrbt4VPQvg" name="streetNumber"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_fFdocLHeEemwbrbt4VPQvg" name="streetName"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_iJYscLHeEemwbrbt4VPQvg" name="city"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_jQ2q0LHeEemwbrbt4VPQvg" name="zipCode"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_qEeTsLHeEemwbrbt4VPQvg" name="phoneNumber"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_sqFEALHeEemwbrbt4VPQvg" name="email"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_vlaMsLHeEemwbrbt4VPQvg" name="copyOfIdentificationDocument"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_-z368LHeEemwbrbt4VPQvg" name="selfie"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_M6qPcLHfEemwbrbt4VPQvg" name="ocuppationStatement"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_PHLxYLHfEemwbrbt4VPQvg" name="incomeStatement"/>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_RLCfgLHfEemwbrbt4VPQvg" name="proofOfResidence"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Z988ELHeEemwbrbt4VPQvg" name="lastName">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_c_urALHeEemwbrbt4VPQvg" name="streetNumber">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_fFdocLHeEemwbrbt4VPQvg" name="streetName">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_iJYscLHeEemwbrbt4VPQvg" name="city">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_jQ2q0LHeEemwbrbt4VPQvg" name="zipCode">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_qEeTsLHeEemwbrbt4VPQvg" name="phoneNumber">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_sqFEALHeEemwbrbt4VPQvg" name="email">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_vlaMsLHeEemwbrbt4VPQvg" name="copyOfIdentificationDocument">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_-z368LHeEemwbrbt4VPQvg" name="selfie">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_M6qPcLHfEemwbrbt4VPQvg" name="ocuppationStatement">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_PHLxYLHfEemwbrbt4VPQvg" name="incomeStatement">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_RLCfgLHfEemwbrbt4VPQvg" name="proofOfResidence">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
   </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_hQ9FELHdEemwbrbt4VPQvg" memberEnd="_hRAIYLHdEemwbrbt4VPQvg _hRB9kLHdEemwbrbt4VPQvg">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_hQ-6QLHdEemwbrbt4VPQvg" source="org.eclipse.papyrus">
       <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_hQ-6QbHdEemwbrbt4VPQvg" key="nature" value="UML_Nature"/>
     </eAnnotations>
     <ownedEnd xmi:type="uml:Property" xmi:id="_hRB9kLHdEemwbrbt4VPQvg" name="asset" type="_EZT6cLHUEemwbrbt4VPQvg" association="_hQ9FELHdEemwbrbt4VPQvg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_K5vrILHgEemwbrbt4VPQvg" name="ComplianceRequirementForCorporation">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_VGRJgLHgEemwbrbt4VPQvg" name="investedAmount">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_bl6tgLHgEemwbrbt4VPQvg" name="contryOfIncorporation">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_idozQLHgEemwbrbt4VPQvg" name="typeOfEntity">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_DTB78LHhEemwbrbt4VPQvg" name="nameOfEntity">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Kw738LHhEemwbrbt4VPQvg" name="incorporationCertificate">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_PEDS8LHhEemwbrbt4VPQvg" name="proofOfLicensing">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_e2nMwLHhEemwbrbt4VPQvg" name="leagalFormOfTheEntity">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_obJeELHhEemwbrbt4VPQvg" name="streetNumberHeadquarter">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_t5hyULHhEemwbrbt4VPQvg" name="streetNameHeadquarter">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_9lulcLHhEemwbrbt4VPQvg" name="cityHeadquarter">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_DoziMLHiEemwbrbt4VPQvg" name="zipHeadquarter">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
   </packagedElement>
 </uml:Model>
