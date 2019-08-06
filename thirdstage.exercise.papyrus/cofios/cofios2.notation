@@ -75,7 +75,7 @@
     <styles xmi:type="notation:CanonicalStyle" xmi:id="_8n5XILHUEemwbrbt4VPQvg"/>
     <styles xmi:type="notation:BooleanValueStyle" xmi:id="_9i0HQLHUEemwbrbt4VPQvg" name="shapeVisibility" booleanValue="true"/>
     <element xmi:type="uml:Class" href="cofios2.uml#_EZT6cLHUEemwbrbt4VPQvg"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EZgHsbHUEemwbrbt4VPQvg" x="720" y="40"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EZgHsbHUEemwbrbt4VPQvg" x="920" y="20"/>
   </children>
   <children xmi:type="notation:Shape" xmi:id="_U1j7YLHdEemwbrbt4VPQvg" type="Class_Shape">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_tYxygbHdEemwbrbt4VPQvg" source="PapyrusCSSForceValue">
@@ -228,7 +228,7 @@
     <styles xmi:type="notation:CanonicalStyle" xmi:id="_tYxygLHdEemwbrbt4VPQvg"/>
     <styles xmi:type="notation:BooleanValueStyle" xmi:id="_tmoBQLHdEemwbrbt4VPQvg" name="shapeVisibility" booleanValue="true"/>
     <element xmi:type="uml:Class" href="cofios2.uml#_U1fC4LHdEemwbrbt4VPQvg"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_U1j7YbHdEemwbrbt4VPQvg" x="100" y="100"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_U1j7YbHdEemwbrbt4VPQvg" x="80" y="40"/>
   </children>
   <children xmi:type="notation:Shape" xmi:id="_K5zVgLHgEemwbrbt4VPQvg" type="Class_Shape">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_QajBQLHgEemwbrbt4VPQvg" source="PapyrusCSSForceValue">
@@ -339,7 +339,7 @@
     <styles xmi:type="notation:CanonicalStyle" xmi:id="_QaiaMLHgEemwbrbt4VPQvg"/>
     <styles xmi:type="notation:BooleanValueStyle" xmi:id="_QhunULHgEemwbrbt4VPQvg" name="shapeVisibility" booleanValue="true"/>
     <element xmi:type="uml:Class" href="cofios2.uml#_K5vrILHgEemwbrbt4VPQvg"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_K5zVgbHgEemwbrbt4VPQvg" x="520" y="420"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_K5zVgbHgEemwbrbt4VPQvg" x="580" y="400"/>
   </children>
   <styles xmi:type="notation:StringValueStyle" xmi:id="_rOGPMbHTEemwbrbt4VPQvg" name="diagram_compatibility_version" stringValue="1.4.0"/>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_rOGPMrHTEemwbrbt4VPQvg"/>
