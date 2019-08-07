@@ -10,9 +10,6 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public enum IndexType{
-
-  ENUM,
-  DATE
+public interface IntegerFieldIndex extends RangeScanableIndex<Integer>{
 
 }

@@ -12,4 +12,5 @@ logs/
 test-output/
 reports/
 .apt_generated/
+exported/
 *.log

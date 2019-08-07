@@ -10,13 +10,14 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class IndexFacadeImpl implements IndexFacade{
 
   @Override
-  public void addSimpleIndex(@NotBlank String dataName, @NotBlank String indexName, IndexType type){
+  public void addSimpleIndex(@NotBlank String dataName, @NotBlank String indexName, FieldType type){
     // TODO Auto-generated method stub
 
   }
@@ -28,28 +29,24 @@ public class IndexFacadeImpl implements IndexFacade{
   }
 
   @Override
-  public <K> String[] findSimpleIndexEntries(@NotBlank String dataName, @NotBlank String indexName, K indexKey){
+  public <K> Pair<K, String>[] findSimpleIndexEntries(@NotBlank String dataName, @NotBlank String indexName, K indexKey){
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public String[] findSimpleDateIndexEntries(@NotBlank String dataName, @NotBlank String indexName, LocalDateTime from, LocalDateTime to){
+  public <K> Pair<K, String>[] findSimpleIndexEntries(@NotBlank String dataName, @NotBlank String indexName, K from, K to){
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public String[] findSimpleDateIndexEntries(@NotBlank String dataName, @NotBlank String indexName, String from, String to){
+  public <K> Pair<K, String>[] findSimpleIndexEntires(@NotBlank String dataName, @NotBlank String indexName, K from, boolean includesFrom, K to,
+      boolean includesTo){
     // TODO Auto-generated method stub
     return null;
   }
 
-  @Override
-  public String[] findSimpleDateIndexEntries(@NotBlank String dataName, @NotBlank String indexName, long from, long to){
-    // TODO Auto-generated method stub
-    return null;
-  }
 
 
 }

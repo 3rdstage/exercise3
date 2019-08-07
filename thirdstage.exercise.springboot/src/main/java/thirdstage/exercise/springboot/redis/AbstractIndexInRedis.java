@@ -15,13 +15,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
-public class AbstractIndexOnRedis<K> extends AbstractIndex<K>{
+public abstract class AbstractIndexInRedis<K> extends AbstractIndex<K>{
 
 
-  private RedisTemplate<String, String> redisTemplate;
+  protected RedisTemplate<String, String> redisTemplate;
 
 
-  public AbstractIndexOnRedis(@NotBlank String dataName, @NotBlank String indexName, @Autowired RedisTemplate<String, String> template) {
+  public AbstractIndexInRedis(@NotBlank String dataName, @NotBlank String indexName, @Autowired RedisTemplate<String, String> template) {
     super(dataName, indexName);
     this.redisTemplate = template;
   }

@@ -16,5 +16,10 @@ public interface Index<K>{
 
   public String getName();
 
+  public Index<K> addEntry(@Nonnull K key, @Nonnull String value);
+
+  public String[] findValues(@Nonnull K key);
+
+
 
 }

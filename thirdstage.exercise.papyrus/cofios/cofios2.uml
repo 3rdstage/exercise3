@@ -3,7 +3,7 @@
   <packageImport xmi:type="uml:PackageImport" xmi:id="_eYrb8LHTEemwbrbt4VPQvg">
     <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
   </packageImport>
-  <packagedElement xmi:type="uml:Class" xmi:id="_EZT6cLHUEemwbrbt4VPQvg" name="Asset">
+  <packagedElement xmi:type="uml:Class" xmi:id="_EZT6cLHUEemwbrbt4VPQvg" name="SecurityToken">
     <ownedAttribute xmi:type="uml:Property" xmi:id="_mHjWsLHUEemwbrbt4VPQvg" name="name">
       <ownedComment xmi:type="uml:Comment" xmi:id="_mHjWsbHUEemwbrbt4VPQvg" annotatedElement="_mHjWsLHUEemwbrbt4VPQvg"/>
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
@@ -22,6 +22,16 @@
     <ownedAttribute xmi:type="uml:Property" xmi:id="_hRAIYLHdEemwbrbt4VPQvg" type="_U1fC4LHdEemwbrbt4VPQvg" aggregation="composite" association="_hQ9FELHdEemwbrbt4VPQvg">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hRBWgLHdEemwbrbt4VPQvg"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hRBWgbHdEemwbrbt4VPQvg" value="1"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_D4Xb4LirEemqw-R92lEG_A" name="compliancerequirementforcorporation" type="_K5vrILHgEemwbrbt4VPQvg" aggregation="composite" association="_D4GWILirEemqw-R92lEG_A">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_D4afMLirEemqw-R92lEG_A"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_D4bGQLirEemqw-R92lEG_A" value="1"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_SsMPALjLEemqw-R92lEG_A" name="amount">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_mCL2gLjPEemqw-R92lEG_A" name="createdAt">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
     </ownedAttribute>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_U1fC4LHdEemwbrbt4VPQvg" name="ComplianceRequirementForIndividual">
@@ -117,5 +127,121 @@
     <ownedAttribute xmi:type="uml:Property" xmi:id="_DoziMLHiEemwbrbt4VPQvg" name="zipHeadquarter">
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
     </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_D4GWILirEemqw-R92lEG_A" memberEnd="_D4Xb4LirEemqw-R92lEG_A _D4bGQbirEemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_D4VmsLirEemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_D4WNwLirEemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_D4bGQbirEemqw-R92lEG_A" name="asset" type="_EZT6cLHUEemwbrbt4VPQvg" association="_D4GWILirEemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_TqEzkLjLEemqw-R92lEG_A" name="Invitation">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_99OQILjLEemqw-R92lEG_A" name="email">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_G8M9ULjMEemqw-R92lEG_A" name="offeredAmount">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_aRXbMLjMEemqw-R92lEG_A" name="price">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_cGE6ELjMEemqw-R92lEG_A" name="currency">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_i57McLjMEemqw-R92lEG_A" name="invitedAt">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_oWlCYLjMEemqw-R92lEG_A" name="address">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_ls9fULjNEemqw-R92lEG_A" name="status">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EEnumerator"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_oJvOULjOEemqw-R92lEG_A" name="isValid" isDerived="true">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_fSzxQLjLEemqw-R92lEG_A" memberEnd="_fS0_YrjLEemqw-R92lEG_A _fS1mcLjLEemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_fS0_YLjLEemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_fS0_YbjLEemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_fS0_YrjLEemqw-R92lEG_A" name="invitation" type="_TqEzkLjLEemqw-R92lEG_A" association="_fSzxQLjLEemqw-R92lEG_A">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_zSUzsLjLEemqw-R92lEG_A"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_zSjdMLjLEemqw-R92lEG_A" value="*"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_fS1mcLjLEemqw-R92lEG_A" name="asset" type="_EZT6cLHUEemwbrbt4VPQvg" association="_fSzxQLjLEemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_BDiZcLjPEemqw-R92lEG_A" name="Share">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_a73IsLjXEemqw-R92lEG_A" name="status">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EEnumerator"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_y4PRALjREemqw-R92lEG_A" memberEnd="_y4P4ErjREemqw-R92lEG_A _y4QfILjREemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_y4P4ELjREemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_y4P4EbjREemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_y4P4ErjREemqw-R92lEG_A" name="share" type="_BDiZcLjPEemqw-R92lEG_A" association="_y4PRALjREemqw-R92lEG_A">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_1qxqELjREemqw-R92lEG_A"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_y4QfILjREemqw-R92lEG_A" name="invitation" type="_TqEzkLjLEemqw-R92lEG_A" association="_y4PRALjREemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_5_sb4LjREemqw-R92lEG_A" memberEnd="_5_tC8bjREemqw-R92lEG_A _5_tC8rjREemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_5_sb4bjREemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_5_tC8LjREemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_5_tC8bjREemqw-R92lEG_A" name="share" type="_BDiZcLjPEemqw-R92lEG_A" association="_5_sb4LjREemqw-R92lEG_A">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_9pLrELjREemqw-R92lEG_A"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_9pOHULjREemqw-R92lEG_A" value="*"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_5_tC8rjREemqw-R92lEG_A" name="securitytoken" type="_EZT6cLHUEemwbrbt4VPQvg" association="_5_sb4LjREemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_AF3v8LjSEemqw-R92lEG_A" name="KYC">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_PnC-0LjSEemqw-R92lEG_A" name="individualOrCorporate">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_6J2oALjSEemqw-R92lEG_A" name="submittedAt">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_O6F_8LjXEemqw-R92lEG_A" name="isValid">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+      <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_O6F_8bjXEemqw-R92lEG_A"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Sj4xILjXEemqw-R92lEG_A" name="validatedAt">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_pJp2YLjSEemqw-R92lEG_A" memberEnd="_pJqdcrjSEemqw-R92lEG_A _pJrEgLjSEemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_pJqdcLjSEemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_pJqdcbjSEemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_pJqdcrjSEemqw-R92lEG_A" name="kyc" type="_AF3v8LjSEemqw-R92lEG_A" association="_pJp2YLjSEemqw-R92lEG_A"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_pJrEgLjSEemqw-R92lEG_A" name="share" type="_BDiZcLjPEemqw-R92lEG_A" association="_pJp2YLjSEemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_rbFtgLjSEemqw-R92lEG_A" name="IndividualKYC">
+    <generalization xmi:type="uml:Generalization" xmi:id="_xUaRULjSEemqw-R92lEG_A" general="_AF3v8LjSEemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_r59a0LjSEemqw-R92lEG_A" name="CorporateKYC">
+    <generalization xmi:type="uml:Generalization" xmi:id="_x3kowLjSEemqw-R92lEG_A" general="_AF3v8LjSEemqw-R92lEG_A"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_M0BBELjTEemqw-R92lEG_A" name="countryOfIncorporation">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_EWIcgLjYEemqw-R92lEG_A" name="countryOfIncorporationStatus">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EEnumerator"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_aXnwALjTEemqw-R92lEG_A" name="typeOfEntity">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_NMgK0LjZEemqw-R92lEG_A" name="typeOfEntityStatus"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_gaJ6MLjTEemqw-R92lEG_A" name="nameOfEntity">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_PTN_sLjZEemqw-R92lEG_A" name="nameOfEntityStatus"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_oyy4wLjWEemqw-R92lEG_A" name="incorporationCertificate">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EByteArray"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_XmF00LjZEemqw-R92lEG_A" name="incorporationCertificateStatus"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_61u5wLjWEemqw-R92lEG_A" name="proofOfLicensing">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EByteArray"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Z_fVILjZEemqw-R92lEG_A" name="proofOfLicensingStatus"/>
   </packagedElement>
 </uml:Model>

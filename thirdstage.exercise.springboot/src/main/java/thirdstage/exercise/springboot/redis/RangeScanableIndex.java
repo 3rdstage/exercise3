@@ -7,11 +7,16 @@ import java.util.HashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
-import javax.validation.constraints.NotBlank;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface EnumFieldIndex extends Index<String>{
+public interface RangeScanableIndex<K> extends Index<K>{
+
+
+  public Pair<K, String>[] findEntries(@Nonnull K from, @Nonnull K to);
+
+  public Pair<K, String>[] findEntires(@Nonnull K from, boolean includesForm, @Nonnull K to, boolean includesTo);
 
 
 

@@ -11,11 +11,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Sangmoon Oh
+ *
+ * Data = Record+
+ * Record = Record ID, Field+
+ * Field = Field Name, Field Value
+ *
+ * Index = Index Entry+
+ * Index Entry = Key, Value
+ *
+ * Index Key = Field Value
+ * Index Value = Record ID
  *
  * @see https://en.wikipedia.org/wiki/Database_index
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/indexes-and-index-organized-tables.html
@@ -28,24 +39,27 @@ import org.slf4j.LoggerFactory;
 public interface IndexFacade{
 
   public void addSimpleIndex(
-      @NotBlank String dataName, @NotBlank String indexName, IndexType type);
+      @NotBlank String dataName, @NotBlank String indexName, FieldType type);
 
+  /**
+   * @param <K> String, Integer, LocalDate
+   * @param dataName
+   * @param indexName
+   * @param indexKey
+   * @param indexValue
+   */
   public <K> void addSimpleIndexEntry(
       @NotBlank String dataName, @NotBlank String indexName, K indexKey, String indexValue);
 
-  public <K> String[] findSimpleIndexEntries(
+  public <K> Pair<K, String>[] findSimpleIndexEntries(
       @NotBlank String dataName, @NotBlank String indexName, K indexKey);
 
-  public String[] findSimpleDateIndexEntries(
-      @NotBlank String dataName, @NotBlank String indexName, LocalDateTime from, LocalDateTime to);
 
-  public String[] findSimpleDateIndexEntries(
-      @NotBlank String dataName, @NotBlank String indexName, String from, String to);
-
-  public String[] findSimpleDateIndexEntries(
-      @NotBlank String dataName, @NotBlank String indexName, long from, long to);
+  public <K> Pair<K, String>[] findSimpleIndexEntries(
+      @NotBlank String dataName, @NotBlank String indexName, K from, K to);
 
 
-
+  public <K> Pair<K, String>[] findSimpleIndexEntires(
+      @NotBlank String dataName, @NotBlank String indexName, K from, boolean includesFrom, K to, boolean includesTo);
 
 }

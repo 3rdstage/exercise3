@@ -7,11 +7,19 @@ import java.util.HashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
-import javax.validation.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface EnumFieldIndex extends Index<String>{
+public enum FieldType{
+
+  INTERGER, //
+  NUMBER,   // rational number in floating or fixed point
+  STRING,
+  DATETIME,
+  ENUM,
+  ENUM_STRING,
+  ENUM_INTEGER
+
 
 
 
