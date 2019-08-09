@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_gAOugLmoEemqw-R92lEG_A" name="ethereum-block">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_gGRsILmoEemqw-R92lEG_A">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="_hw6B8LmoEemqw-R92lEG_A" name="block" classifier="_uL9_ALmpEemqw-R92lEG_A">
+    <slot xmi:type="uml:Slot" xmi:id="_aBiGALmpEemqw-R92lEG_A" definingFeature="_4-2SwLmpEemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralString" xmi:id="_VH4aALmqEemqw-R92lEG_A" name="hash" value="0x8e38b4dbf6b11fcc3b9dee84fb7986e29ca0a02cecd8977c161ff7333329681e"/>
+    </slot>
+    <slot xmi:type="uml:Slot" xmi:id="_agVFYLmqEemqw-R92lEG_A" definingFeature="_60SKYLmpEemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralInteger" xmi:id="_diVd0LmqEemqw-R92lEG_A" name="number" value="1000000"/>
+    </slot>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_uL9_ALmpEemqw-R92lEG_A" name="Block">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_4-2SwLmpEemqw-R92lEG_A" name="id">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_60SKYLmpEemqw-R92lEG_A" name="number">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_mo4rQrmtEemqw-R92lEG_A" name="transactions" type="_u6rpsLmqEemqw-R92lEG_A" association="_mo4EMLmtEemqw-R92lEG_A">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_mo5SULmtEemqw-R92lEG_A"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_mo5SUbmtEemqw-R92lEG_A" value="*"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_u6rpsLmqEemqw-R92lEG_A" name="Transaction">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_8IDp8LmqEemqw-R92lEG_A" name="id">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_D2Z1sLmrEemqw-R92lEG_A" name="msgType">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_D472Mrm0Eemqw-R92lEG_A" name="from" type="_ca7awLmzEemqw-R92lEG_A" association="_D47PILm0Eemqw-R92lEG_A"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_Hy-C0rm0Eemqw-R92lEG_A" name="to" type="_ca7awLmzEemqw-R92lEG_A" association="_Hy9bwLm0Eemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="_PLZYALmrEemqw-R92lEG_A" name="tx1" classifier="_u6rpsLmqEemqw-R92lEG_A">
+    <slot xmi:type="uml:Slot" xmi:id="_TDS2oLmrEemqw-R92lEG_A" definingFeature="_8IDp8LmqEemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralString" xmi:id="_YZffQLmrEemqw-R92lEG_A" name="id" value="0xe9e91f1ee4b56c0df2e9f06c2b8c27c6076195a88a7b8537ba8313d80e6f124e"/>
+    </slot>
+    <slot xmi:type="uml:Slot" xmi:id="_asutMLmrEemqw-R92lEG_A" definingFeature="_D2Z1sLmrEemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralString" xmi:id="_c6pWQLmrEemqw-R92lEG_A" name="msgType" value="ValueTx"/>
+    </slot>
+  </packagedElement>
+  <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="_sOALkLmrEemqw-R92lEG_A" name="tx2" classifier="_u6rpsLmqEemqw-R92lEG_A">
+    <slot xmi:type="uml:Slot" xmi:id="_0wwPwLmrEemqw-R92lEG_A" definingFeature="_8IDp8LmqEemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralString" xmi:id="_DnOUwLmsEemqw-R92lEG_A" name="id" value="0xea1093d492a1dcb1bef708f771a99a96ff05dcab81ca76c31940300177fcf49f"/>
+    </slot>
+    <slot xmi:type="uml:Slot" xmi:id="_1JlmgLmrEemqw-R92lEG_A" definingFeature="_D2Z1sLmrEemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_mo4EMLmtEemqw-R92lEG_A" memberEnd="_mo4rQrmtEemqw-R92lEG_A _mo5SUrmtEemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_mo4rQLmtEemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_mo4rQbmtEemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_mo5SUrmtEemqw-R92lEG_A" name="block" type="_uL9_ALmpEemqw-R92lEG_A" association="_mo4EMLmtEemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_I95zoLmuEemqw-R92lEG_A" client="_hw6B8LmoEemqw-R92lEG_A" supplier="_fbk6kLmuEemqw-R92lEG_A"/>
+  <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="_fbk6kLmuEemqw-R92lEG_A" name="transactions">
+    <classifier xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EEList"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_dXTgQLmvEemqw-R92lEG_A" client="_fbk6kLmuEemqw-R92lEG_A" supplier="_gAOugLmoEemqw-R92lEG_A"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="__Xg2QLmvEemqw-R92lEG_A" client="_fbk6kLmuEemqw-R92lEG_A" supplier="_sOALkLmrEemqw-R92lEG_A"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_0viqoLmyEemqw-R92lEG_A" client="_fbk6kLmuEemqw-R92lEG_A" supplier="_PLZYALmrEemqw-R92lEG_A"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_ca7awLmzEemqw-R92lEG_A" name="Account">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_147fILmzEemqw-R92lEG_A" name="id">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_4ON7gLmzEemqw-R92lEG_A" name="balance">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBigInteger"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_AE0rYLm0Eemqw-R92lEG_A" name="nonce">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_D47PILm0Eemqw-R92lEG_A" memberEnd="_D472Mrm0Eemqw-R92lEG_A _D472Nbm0Eemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_D472MLm0Eemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_D472Mbm0Eemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_D472Nbm0Eemqw-R92lEG_A" name="transactions" type="_u6rpsLmqEemqw-R92lEG_A" association="_D47PILm0Eemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_Hy9bwLm0Eemqw-R92lEG_A" memberEnd="_Hy-C0rm0Eemqw-R92lEG_A _Hy-p4bm0Eemqw-R92lEG_A">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Hy-C0Lm0Eemqw-R92lEG_A" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_Hy-C0bm0Eemqw-R92lEG_A" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_Hy-p4bm0Eemqw-R92lEG_A" name="transactions" type="_u6rpsLmqEemqw-R92lEG_A" association="_Hy9bwLm0Eemqw-R92lEG_A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="_T0SfoLm0Eemqw-R92lEG_A" name="from1" classifier="_ca7awLmzEemqw-R92lEG_A">
+    <slot xmi:type="uml:Slot" xmi:id="_dQX_kLm0Eemqw-R92lEG_A" definingFeature="_147fILmzEemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralString" xmi:id="_2nf_4Lm0Eemqw-R92lEG_A" name="from" value="0x39fa8c5f2793459d6622857e7d9fbb4bd91766d3"/>
+    </slot>
+    <slot xmi:type="uml:Slot" xmi:id="_dmlgILm0Eemqw-R92lEG_A" definingFeature="_4ON7gLmzEemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralString" xmi:id="_7n5iMLm1Eemqw-R92lEG_A" name="balance" value="91235126604085417"/>
+    </slot>
+    <slot xmi:type="uml:Slot" xmi:id="_d_E4oLm0Eemqw-R92lEG_A" definingFeature="_AE0rYLm0Eemqw-R92lEG_A">
+      <value xmi:type="uml:LiteralInteger" xmi:id="_v-HboLm1Eemqw-R92lEG_A" name="nonce" value="43"/>
+    </slot>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_Cni04Lm2Eemqw-R92lEG_A" client="_PLZYALmrEemqw-R92lEG_A" supplier="_T0SfoLm0Eemqw-R92lEG_A"/>
+</uml:Model>

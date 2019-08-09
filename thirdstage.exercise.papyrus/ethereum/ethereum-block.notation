@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/papyrus/infra/gmfdiag/style" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <notation:Diagram xmi:id="_gAhpcLmoEemqw-R92lEG_A" type="PapyrusUMLClassDiagram" name="Class Diagram" measurementUnit="Pixel">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_wOsEsbmpEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_wOsEsrmpEemqw-R92lEG_A" key="canonical" value="true"/>
+    </eAnnotations>
+    <children xmi:type="notation:Shape" xmi:id="_hw8eMLmoEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <children xmi:type="notation:DecorationNode" xmi:id="_hw8eMrmoEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_hw9FQLmoEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_hw9FQbmoEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_hw9FQrmoEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_yODw4bmoEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_yODw4rmoEemqw-R92lEG_A" key="canonical" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_aBj7MLmpEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_aBiGALmpEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_aBj7MbmpEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_agYvwLmqEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_agVFYLmqEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_agYvwbmqEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_hw9FQ7moEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_hw9FRLmoEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_hw9FRbmoEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:CanonicalStyle" xmi:id="_yODw4LmoEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_hw9FRrmoEemqw-R92lEG_A"/>
+      </children>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_hw6B8LmoEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_hw8eMbmoEemqw-R92lEG_A" x="840" y="360"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_uL_NILmpEemqw-R92lEG_A" type="Class_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xS-zQbmpEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_xS-zQrmpEemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_uL_0MLmpEemqw-R92lEG_A" type="Class_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_uL_0MbmpEemqw-R92lEG_A" type="Class_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_uL_0MrmpEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_uL_0M7mpEemqw-R92lEG_A" type="Class_AttributeCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4_RJgLmpEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4_RJgbmpEemqw-R92lEG_A" key="mutable" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_4-9ngLmpEemqw-R92lEG_A" type="Property_ClassAttributeLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4_RJgrmpEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4_RJg7mpEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Property" href="ethereum-block.uml#_4-2SwLmpEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_4-9ngbmpEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_60XC4LmpEemqw-R92lEG_A" type="Property_ClassAttributeLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_60u2ULmpEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_60u2UbmpEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Property" href="ethereum-block.uml#_60SKYLmpEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_60XC4bmpEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_uL_0NLmpEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_uL_0NbmpEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_uL_0NrmpEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uL_0N7mpEemqw-R92lEG_A"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_uL_0OLmpEemqw-R92lEG_A" type="Class_OperationCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_uL_0ObmpEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_uL_0OrmpEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_uL_0O7mpEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uL_0PLmpEemqw-R92lEG_A"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_uL_0PbmpEemqw-R92lEG_A" type="Class_NestedClassifierCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_uL_0PrmpEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_uL_0P7mpEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_uL_0QLmpEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uL_0QbmpEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_xS-zQLmpEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Class" href="ethereum-block.uml#_uL9_ALmpEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uL_NIbmpEemqw-R92lEG_A" x="80" y="40"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_u6s30LmqEemqw-R92lEG_A" type="Class_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4zlogLmqEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4zlogbmqEemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_u6te4LmqEemqw-R92lEG_A" type="Class_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_u6te4bmqEemqw-R92lEG_A" type="Class_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_u6te4rmqEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_u6te47mqEemqw-R92lEG_A" type="Class_AttributeCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_8InqoLmqEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_8InqobmqEemqw-R92lEG_A" key="mutable" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_8IJwkLmqEemqw-R92lEG_A" type="Property_ClassAttributeLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_8InqormqEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_8Inqo7mqEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Property" href="ethereum-block.uml#_8IDp8LmqEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_8IJwkbmqEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_D2f8ULmrEemqw-R92lEG_A" type="Property_ClassAttributeLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_D3EkELmrEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_D3EkEbmrEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Property" href="ethereum-block.uml#_D2Z1sLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_D2f8UbmrEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_u6te5LmqEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_u6te5bmqEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_u6te5rmqEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u6te57mqEemqw-R92lEG_A"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_u6te6LmqEemqw-R92lEG_A" type="Class_OperationCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_u6te6bmqEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_u6te6rmqEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_u6te67mqEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u6te7LmqEemqw-R92lEG_A"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_u6te7bmqEemqw-R92lEG_A" type="Class_NestedClassifierCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_u6te7rmqEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_u6te77mqEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_u6te8LmqEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u6te8bmqEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_4zlBcLmqEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Class" href="ethereum-block.uml#_u6rpsLmqEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u6s30bmqEemqw-R92lEG_A" x="80" y="280"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_PLbNMLmrEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_rMBF8LmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_rMBF8bmyEemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_PLbNMrmrEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_PLbNM7mrEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_PLbNNLmrEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_PLbNNbmrEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <children xmi:type="notation:Shape" xmi:id="_TDYWMLmrEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_TDS2oLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_TDYWMbmrEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_as0z0LmrEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_asutMLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_as0z0bmrEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_PLbNNrmrEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_PLbNN7mrEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_PLbNOLmrEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PLbNObmrEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_rMAe4LmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_PLZYALmrEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PLbNMbmrEemqw-R92lEG_A" x="1300" y="20"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_sOCn0LmrEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_r2MrYbmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_r2MrYrmyEemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_sOCn0rmrEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_sOCn07mrEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_sOCn1LmrEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_sOCn1bmrEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <children xmi:type="notation:Shape" xmi:id="_0w4LkLmrEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_0wwPwLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_0w4LkbmrEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_1Js7QLmrEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_1JlmgLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_1Js7QbmrEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_sOCn1rmrEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_sOCn17mrEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_sOCn2LmrEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_sOCn2bmrEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_r2MrYLmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_sOALkLmrEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_sOCn0bmrEemqw-R92lEG_A" x="1300" y="160"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_fbmIsLmuEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_LkVtkbmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_LkVtkrmyEemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_fbmvwLmuEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_fbmvwbmuEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_fbmvwrmuEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_fbmvw7muEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_fbmvxLmuEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_fbmvxbmuEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_fbmvxrmuEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fbmvx7muEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_LkVtkLmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_fbk6kLmuEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fbmIsbmuEemqw-R92lEG_A" x="1020" y="60"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_ca_FILmzEemqw-R92lEG_A" type="Class_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ftjpIbmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ftjpIrmzEemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_ca_FIrmzEemqw-R92lEG_A" type="Class_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_ca_FI7mzEemqw-R92lEG_A" type="Class_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_ca_FJLmzEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_ca_FJbmzEemqw-R92lEG_A" type="Class_AttributeCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_15_PELmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_15_2ILmzEemqw-R92lEG_A" key="mutable" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_15KIoLmzEemqw-R92lEG_A" type="Property_ClassAttributeLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_15_2IbmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_15_2IrmzEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Property" href="ethereum-block.uml#_147fILmzEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_15KIobmzEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_4OaIwLmzEemqw-R92lEG_A" type="Property_ClassAttributeLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4PZnQLmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4PZnQbmzEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Property" href="ethereum-block.uml#_4ON7gLmzEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_4OaIwbmzEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_AFFxILm0Eemqw-R92lEG_A" type="Property_ClassAttributeLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AF0J4Lm0Eemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AF0J4bm0Eemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Property" href="ethereum-block.uml#_AE0rYLm0Eemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_AFFxIbm0Eemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_ca_FJrmzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_ca_FJ7mzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_ca_FKLmzEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ca_FKbmzEemqw-R92lEG_A"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_ca_FKrmzEemqw-R92lEG_A" type="Class_OperationCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_ca_FK7mzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_ca_FLLmzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_ca_FLbmzEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ca_FLrmzEemqw-R92lEG_A"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_ca_FL7mzEemqw-R92lEG_A" type="Class_NestedClassifierCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_ca_FMLmzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_ca_FMbmzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_ca_FMrmzEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ca_FM7mzEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_ftjpILmzEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Class" href="ethereum-block.uml#_ca7awLmzEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ca_FIbmzEemqw-R92lEG_A" x="60" y="500"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_T0UU0Lm0Eemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <children xmi:type="notation:DecorationNode" xmi:id="_T0UU0rm0Eemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_T0UU07m0Eemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_T0UU1Lm0Eemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_T0UU1bm0Eemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <children xmi:type="notation:Shape" xmi:id="_dQmpELm0Eemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_dQX_kLm0Eemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_dQmpEbm0Eemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_dm4bELm0Eemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_dmlgILm0Eemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_dm4bEbm0Eemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_d_SUALm0Eemqw-R92lEG_A" type="Slot_SlotLabel">
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_d_E4oLm0Eemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_d_SUAbm0Eemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_T0UU1rm0Eemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_T0UU17m0Eemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_T0UU2Lm0Eemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_T0UU2bm0Eemqw-R92lEG_A"/>
+      </children>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_T0SfoLm0Eemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_T0UU0bm0Eemqw-R92lEG_A" x="2040" y="20"/>
+    </children>
+    <styles xmi:type="notation:StringValueStyle" xmi:id="_gAhpcbmoEemqw-R92lEG_A" name="diagram_compatibility_version" stringValue="1.4.0"/>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_gAhpcrmoEemqw-R92lEG_A"/>
+    <styles xmi:type="style:PapyrusDiagramStyle" xmi:id="_gAhpc7moEemqw-R92lEG_A" diagramKindId="org.eclipse.papyrus.uml.diagram.class">
+      <owner xmi:type="uml:Model" href="ethereum-block.uml#_gAOugLmoEemqw-R92lEG_A"/>
+    </styles>
+    <styles xmi:type="notation:CanonicalStyle" xmi:id="_wOsEsLmpEemqw-R92lEG_A"/>
+    <element xmi:type="uml:Model" href="ethereum-block.uml#_gAOugLmoEemqw-R92lEG_A"/>
+    <edges xmi:type="notation:Connector" xmi:id="_mpDDULmtEemqw-R92lEG_A" type="Association_Edge" source="_uL_NILmpEemqw-R92lEG_A" target="_u6s30LmqEemqw-R92lEG_A">
+      <children xmi:type="notation:DecorationNode" xmi:id="_mpDqYLmtEemqw-R92lEG_A" type="Association_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_oLFWcLmwEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mpDqYbmtEemqw-R92lEG_A" y="-19"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mpDqYrmtEemqw-R92lEG_A" type="Association_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_oLQVkLmwEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mpDqY7mtEemqw-R92lEG_A" x="1" y="17"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mpDqZLmtEemqw-R92lEG_A" type="Association_TargetRoleLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_oLY4cLmwEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mpDqZbmtEemqw-R92lEG_A" x="29" y="-17"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mpDqZrmtEemqw-R92lEG_A" type="Association_SourceRoleLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_oLj3kLmwEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mpDqZ7mtEemqw-R92lEG_A" x="-30" y="17"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mpDqaLmtEemqw-R92lEG_A" type="Association_SourceMultiplicityLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_oLu2sLmwEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mpDqabmtEemqw-R92lEG_A" x="30" y="17"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mpDqarmtEemqw-R92lEG_A" type="Association_TargetMultiplicityLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_oL4nsLmwEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mpDqa7mtEemqw-R92lEG_A" x="-30" y="-19"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_mpDDUbmtEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Association" href="ethereum-block.uml#_mo4EMLmtEemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_mpDDUrmtEemqw-R92lEG_A" points="[340, 164, -643984, -643984]$[140, 320, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_mpgWULmtEemqw-R92lEG_A" id="(0.5747126436781609,1.0)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_mpgWUbmtEemqw-R92lEG_A" id="(0.5714285714285714,0.0)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_I98P4LmuEemqw-R92lEG_A" type="Dependency_Edge" source="_hw8eMLmoEemqw-R92lEG_A" target="_fbmIsLmuEemqw-R92lEG_A" routing="Rectilinear">
+      <children xmi:type="notation:DecorationNode" xmi:id="_I98P47muEemqw-R92lEG_A" type="Dependency_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_TixgkLmuEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_I98P5LmuEemqw-R92lEG_A" x="1" y="38"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_I98P5bmuEemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_Ti41ULmuEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_I98P5rmuEemqw-R92lEG_A" x="1" y="58"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_I98P4bmuEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#_I95zoLmuEemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_I98P4rmuEemqw-R92lEG_A" points="[1120, 360, -643984, -643984]$[1120, 220, -643984, -643984]$[1000, 220, -643984, -643984]$[1000, 120, -643984, -643984]$[1020, 120, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_I-0ZoLmuEemqw-R92lEG_A" id="(0.4628099173553719,0.0)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_I-0ZobmuEemqw-R92lEG_A" id="(0.0,0.6)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="__XircLmvEemqw-R92lEG_A" type="Dependency_Edge" source="_fbmIsLmuEemqw-R92lEG_A" target="_sOCn0LmrEemqw-R92lEG_A" routing="Rectilinear">
+      <children xmi:type="notation:DecorationNode" xmi:id="__Xirc7mvEemqw-R92lEG_A" type="Dependency_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_aPprcLmyEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="__XirdLmvEemqw-R92lEG_A" y="40"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="__XirdbmvEemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_aP0qkLmyEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="__XjSgLmvEemqw-R92lEG_A" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="__XircbmvEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#__Xg2QLmvEemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="__XircrmvEemqw-R92lEG_A" points="[1171, 140, -643984, -643984]$[1239, 140, -643984, -643984]$[1239, 220, -643984, -643984]$[1300, 220, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="__X4psLmvEemqw-R92lEG_A" id="(1.0,0.6)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="__X4psbmvEemqw-R92lEG_A" id="(0.0,0.6)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_0vlG4LmyEemqw-R92lEG_A" type="Dependency_Edge" source="_fbmIsLmuEemqw-R92lEG_A" target="_PLbNMLmrEemqw-R92lEG_A" routing="Rectilinear">
+      <children xmi:type="notation:DecorationNode" xmi:id="_0vlG47myEemqw-R92lEG_A" type="Dependency_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_-g2MoLmyEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0vlG5LmyEemqw-R92lEG_A" y="40"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0vlG5bmyEemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_-hXxELmyEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0vlG5rmyEemqw-R92lEG_A" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_0vlG4bmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#_0viqoLmyEemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0vlG4rmyEemqw-R92lEG_A" points="[1176, 100, -643984, -643984]$[1240, 100, -643984, -643984]$[1240, 60, -643984, -643984]$[1300, 60, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0wBy0LmyEemqw-R92lEG_A" id="(1.0,0.4)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0wBy0bmyEemqw-R92lEG_A" id="(0.0,0.4)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_D5IDcLm0Eemqw-R92lEG_A" type="Association_Edge" source="_u6s30LmqEemqw-R92lEG_A" target="_ca_FILmzEemqw-R92lEG_A">
+      <children xmi:type="notation:DecorationNode" xmi:id="_D5IqgLm0Eemqw-R92lEG_A" type="Association_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_FHzdELm0Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_D5Iqgbm0Eemqw-R92lEG_A" x="1" y="-18"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_D5Iqgrm0Eemqw-R92lEG_A" type="Association_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_FIEi0Lm0Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_D5Iqg7m0Eemqw-R92lEG_A" x="-1" y="18"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_D5IqhLm0Eemqw-R92lEG_A" type="Association_TargetRoleLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_FIUacLm0Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_D5Iqhbm0Eemqw-R92lEG_A" x="19" y="-18"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_D5Iqhrm0Eemqw-R92lEG_A" type="Association_SourceRoleLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_FIic4Lm0Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_D5Iqh7m0Eemqw-R92lEG_A" x="-18" y="18"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_D5IqiLm0Eemqw-R92lEG_A" type="Association_SourceMultiplicityLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_FIxGYLm0Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_D5Iqibm0Eemqw-R92lEG_A" x="18" y="18"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_D5Iqirm0Eemqw-R92lEG_A" type="Association_TargetMultiplicityLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_FJAW8Lm0Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_D5Iqi7m0Eemqw-R92lEG_A" x="-17" y="-18"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_D5IDcbm0Eemqw-R92lEG_A"/>
+      <element xmi:type="uml:Association" href="ethereum-block.uml#_D47PILm0Eemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_D5IDcrm0Eemqw-R92lEG_A" points="[100, 404, -643984, -643984]$[220, 500, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_D5mkkLm0Eemqw-R92lEG_A" id="(0.11428571428571428,1.0)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_D5mkkbm0Eemqw-R92lEG_A" id="(0.34285714285714286,0.0)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_HzMsULm0Eemqw-R92lEG_A" type="Association_Edge" source="_u6s30LmqEemqw-R92lEG_A" target="_ca_FILmzEemqw-R92lEG_A">
+      <children xmi:type="notation:DecorationNode" xmi:id="_HzNTYLm0Eemqw-R92lEG_A" type="Association_StereotypeLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_HzNTYbm0Eemqw-R92lEG_A" y="-20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_HzNTYrm0Eemqw-R92lEG_A" type="Association_NameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_HzNTY7m0Eemqw-R92lEG_A" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_HzNTZLm0Eemqw-R92lEG_A" type="Association_TargetRoleLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_HzNTZbm0Eemqw-R92lEG_A" y="-20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_HzNTZrm0Eemqw-R92lEG_A" type="Association_SourceRoleLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_HzNTZ7m0Eemqw-R92lEG_A" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_HzNTaLm0Eemqw-R92lEG_A" type="Association_SourceMultiplicityLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_HzNTabm0Eemqw-R92lEG_A" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_HzNTarm0Eemqw-R92lEG_A" type="Association_TargetMultiplicityLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_HzNTa7m0Eemqw-R92lEG_A" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_HzMsUbm0Eemqw-R92lEG_A"/>
+      <element xmi:type="uml:Association" href="ethereum-block.uml#_Hy9bwLm0Eemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_HzMsUrm0Eemqw-R92lEG_A" points="[255, 380, -643984, -643984]$[200, 500, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_Hzu30Lm0Eemqw-R92lEG_A" id="(0.8,1.0)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_Hzu30bm0Eemqw-R92lEG_A" id="(0.8,0.0)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_Cnl4MLm2Eemqw-R92lEG_A" type="Dependency_Edge" source="_PLbNMLmrEemqw-R92lEG_A" target="_T0UU0Lm0Eemqw-R92lEG_A">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Cnl4M7m2Eemqw-R92lEG_A" type="Dependency_NameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Cnl4NLm2Eemqw-R92lEG_A" y="40"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Cnl4Nbm2Eemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Cnl4Nrm2Eemqw-R92lEG_A" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Cnl4Mbm2Eemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#_Cni04Lm2Eemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Cnl4Mrm2Eemqw-R92lEG_A" points="[1908, 80, -643984, -643984]$[2160, 20, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CoIDsLm2Eemqw-R92lEG_A" id="(1.0,0.6)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CoIDsbm2Eemqw-R92lEG_A" id="(0.0,0.4)"/>
+    </edges>
+  </notation:Diagram>
+  <notation:Diagram xmi:id="_BxGHULmxEemqw-R92lEG_A" type="PapyrusUMLClassDiagram" name="Object Diagram" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_1yKasLmxEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AhGCkLmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AhGCkbmyEemqw-R92lEG_A" key="canonical" value="true"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_0xGw4LmyEemqw-R92lEG_A" key="mutable" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_1yKasrmxEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_1yKas7mxEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_1yKatLmxEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_1yLBwLmxEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AhiugLmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AhiugbmyEemqw-R92lEG_A" key="mutable" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_AhGpoLmyEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AhjVkLmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AhjVkbmyEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_TDS2oLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_AhGpobmyEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_AhGpormyEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AhjVkrmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AhjVk7myEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_asutMLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_AhGpo7myEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_1yLBwbmxEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_1yLBwrmxEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_1yLBw7mxEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1yLBxLmxEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_AhFbgLmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_PLZYALmrEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_1yKasbmxEemqw-R92lEG_A" x="1180" y="80"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_DSpkMLmyEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ER4zobmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ER4zormyEemqw-R92lEG_A" key="canonical" value="true"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_01p5sLmyEemqw-R92lEG_A" key="mutable" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_DSqLQLmyEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_DSqLQbmyEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_DSqLQrmyEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_DSqLQ7myEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ESU4gLmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ESU4gbmyEemqw-R92lEG_A" key="mutable" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_ER5asLmyEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ESU4grmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ESU4g7myEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_aBiGALmpEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_ER5asbmyEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_ER5asrmyEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_ESU4hLmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ESU4hbmyEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_agVFYLmqEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_ER5as7myEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_DSqLRLmyEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_DSqLRbmyEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_DSqLRrmyEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DSqLR7myEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_ER4zoLmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_hw6B8LmoEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DSpkMbmyEemqw-R92lEG_A" x="120" y="220"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_dEDswLmyEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <children xmi:type="notation:DecorationNode" xmi:id="_dEDswrmyEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_dEET0LmyEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_dEET0bmyEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_dEET0rmyEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_dEET07myEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_dEET1LmyEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_dEET1bmyEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_dEET1rmyEemqw-R92lEG_A"/>
+      </children>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_fbk6kLmuEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_dEDswbmyEemqw-R92lEG_A" x="914" y="138"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_Q_7XELmzEemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_TX57ELmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_TX57EbmzEemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Q_7XErmzEemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Q_7XE7mzEemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Q_7XFLmzEemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_Q_7XFbmzEemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_TYnFsLmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_TYnFsbmzEemqw-R92lEG_A" key="mutable" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_TX6iILmzEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_TYnFsrmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_TYnFs7mzEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_0wwPwLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_TX6iIbmzEemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_TX6iIrmzEemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_TYnFtLmzEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_TYnFtbmzEemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_1JlmgLmrEemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_TX6iI7mzEemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_Q_7XFrmzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_Q_7XF7mzEemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_Q_7XGLmzEemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Q_7XGbmzEemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_TX5UALmzEemqw-R92lEG_A"/>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_sOALkLmrEemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Q_7XEbmzEemqw-R92lEG_A" x="1180" y="220"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_-xizsLm1Eemqw-R92lEG_A" type="InstanceSpecification_Shape">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AZqBALm2Eemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AZqBAbm2Eemqw-R92lEG_A" key="canonical" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_-xizsrm1Eemqw-R92lEG_A" type="InstanceSpecification_NameLabel"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_-xizs7m1Eemqw-R92lEG_A" type="InstanceSpecification_FloatingNameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_-xiztLm1Eemqw-R92lEG_A" y="15"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_-xiztbm1Eemqw-R92lEG_A" type="InstanceSpecification_SlotCompartment">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AaYZwLm2Eemqw-R92lEG_A" source="PapyrusCSSForceValue">
+          <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AaYZwbm2Eemqw-R92lEG_A" key="mutable" value="true"/>
+        </eAnnotations>
+        <children xmi:type="notation:Shape" xmi:id="_AZqoELm2Eemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AaYZwrm2Eemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AaYZw7m2Eemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_dQX_kLm0Eemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_AZqoEbm2Eemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_AZqoErm2Eemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AaYZxLm2Eemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AaZA0Lm2Eemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_dmlgILm0Eemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_AZqoE7m2Eemqw-R92lEG_A"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_AZrPILm2Eemqw-R92lEG_A" type="Slot_SlotLabel">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_AaZA0bm2Eemqw-R92lEG_A" source="PapyrusCSSForceValue">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_AaZA0rm2Eemqw-R92lEG_A" key="mutable" value="true"/>
+          </eAnnotations>
+          <element xmi:type="uml:Slot" href="ethereum-block.uml#_d_E4oLm0Eemqw-R92lEG_A"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_AZrPIbm2Eemqw-R92lEG_A"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_-xiztrm1Eemqw-R92lEG_A"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_-xizt7m1Eemqw-R92lEG_A"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_-xizuLm1Eemqw-R92lEG_A"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-xizubm1Eemqw-R92lEG_A"/>
+      </children>
+      <styles xmi:type="notation:CanonicalStyle" xmi:id="_AZpZ8Lm2Eemqw-R92lEG_A"/>
+      <element xmi:type="uml:InstanceSpecification" href="ethereum-block.uml#_T0SfoLm0Eemqw-R92lEG_A"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-xizsbm1Eemqw-R92lEG_A" x="1880" y="40"/>
+    </children>
+    <styles xmi:type="notation:StringValueStyle" xmi:id="_BxGHUbmxEemqw-R92lEG_A" name="diagram_compatibility_version" stringValue="1.4.0"/>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_BxGHUrmxEemqw-R92lEG_A"/>
+    <styles xmi:type="style:PapyrusDiagramStyle" xmi:id="_BxGHU7mxEemqw-R92lEG_A" diagramKindId="org.eclipse.papyrus.uml.diagram.class">
+      <owner xmi:type="uml:Model" href="ethereum-block.uml#_gAOugLmoEemqw-R92lEG_A"/>
+    </styles>
+    <element xmi:type="uml:Model" href="ethereum-block.uml#_gAOugLmoEemqw-R92lEG_A"/>
+    <edges xmi:type="notation:Connector" xmi:id="_0wP1QLmyEemqw-R92lEG_A" type="Dependency_Edge" source="_dEDswLmyEemqw-R92lEG_A" target="_1yKasLmxEemqw-R92lEG_A">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_0xGw4bmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_0xH_ALmyEemqw-R92lEG_A" key="mutable" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0wP1Q7myEemqw-R92lEG_A" type="Dependency_NameLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0wP1RLmyEemqw-R92lEG_A" y="40"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0wP1RbmyEemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0wP1RrmyEemqw-R92lEG_A" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_0wP1QbmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#_0viqoLmyEemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0wP1QrmyEemqw-R92lEG_A" points="[914, 140, -643984, -643984]$[1180, 80, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0wQcULmyEemqw-R92lEG_A" id="(1.0,0.42)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0wQcUbmyEemqw-R92lEG_A" id="(0.0,0.0)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_0xBRULmyEemqw-R92lEG_A" type="Dependency_Edge" source="_DSpkMLmyEemqw-R92lEG_A" target="_dEDswLmyEemqw-R92lEG_A">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_01p5sbmyEemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_01p5srmyEemqw-R92lEG_A" key="mutable" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0xBRU7myEemqw-R92lEG_A" type="Dependency_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_PwE4wLmzEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0xBRVLmyEemqw-R92lEG_A" y="40"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0xBRVbmyEemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_PwJKMLmzEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0xBRVrmyEemqw-R92lEG_A" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_0xBRUbmyEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#_I95zoLmuEemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0xBRUrmyEemqw-R92lEG_A" points="[725, 220, -643984, -643984]$[914, 140, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0xBRV7myEemqw-R92lEG_A" id="(1.0,0.0)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0xBRWLmyEemqw-R92lEG_A" id="(0.0,0.62)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_Rpt68LmzEemqw-R92lEG_A" type="Dependency_Edge" source="_dEDswLmyEemqw-R92lEG_A" target="_Q_7XELmzEemqw-R92lEG_A">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Rpt687mzEemqw-R92lEG_A" type="Dependency_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_SRJHULmzEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Rpt69LmzEemqw-R92lEG_A" y="39"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Rpt69bmzEemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_SRNYwLmzEemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Rpt69rmzEemqw-R92lEG_A" x="1" y="59"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Rpt68bmzEemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#__Xg2QLmvEemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Rpt68rmzEemqw-R92lEG_A" points="[1070, 220, -643984, -643984]$[1302, 316, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_SRUGcLmzEemqw-R92lEG_A" id="(1.0,0.74)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_SRUtgLmzEemqw-R92lEG_A" id="(0.0,0.27)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_CoXUQLm2Eemqw-R92lEG_A" type="Dependency_Edge" source="_1yKasLmxEemqw-R92lEG_A" target="_-xizsLm1Eemqw-R92lEG_A">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_CpIJQLm2Eemqw-R92lEG_A" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_CpIJQbm2Eemqw-R92lEG_A" key="mutable" value="true"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_CoXUQ7m2Eemqw-R92lEG_A" type="Dependency_NameLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_F_IbwLm2Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_CoXURLm2Eemqw-R92lEG_A" x="-1" y="39"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_CoXURbm2Eemqw-R92lEG_A" type="Dependency_StereotypeLabel">
+        <styles xmi:type="notation:BooleanValueStyle" xmi:id="_F_OiYLm2Eemqw-R92lEG_A" name="IS_UPDATED_POSITION" booleanValue="true"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_CoXURrm2Eemqw-R92lEG_A" x="-1" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_CoXUQbm2Eemqw-R92lEG_A"/>
+      <element xmi:type="uml:Dependency" href="ethereum-block.uml#_Cni04Lm2Eemqw-R92lEG_A"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CoXUQrm2Eemqw-R92lEG_A" points="[1280, 80, -643984, -643984]$[1880, 80, -643984, -643984]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CoXUR7m2Eemqw-R92lEG_A" id="(1.0,0.4)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CoX7ULm2Eemqw-R92lEG_A" id="(0.0,0.4)"/>
+    </edges>
+  </notation:Diagram>
+</xmi:XMI>
