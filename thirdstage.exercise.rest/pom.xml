@@ -1,17 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
-   <!--
-      For more parent POM, refer
-
-      * http://central.maven.org/maven2/org/springframework/boot/spring-boot-starter-parent/1.5.1.RELEASE/spring-boot-starter-parent-1.5.1.RELEASE.pom
-      * http://central.maven.org/maven2/org/springframework/boot/spring-boot-dependencies/1.5.1.RELEASE/spring-boot-dependencies-1.5.1.RELEASE.pom
-   -->
+  <!-- POM for Spring Boot 2.1 : https://docs.spring.io/spring-boot/docs/2.1.x/reference/htmlsingle/#getting-started-maven-installation -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.1.RELEASE</version>
+    <version>2.1.8.RELEASE</version>
   </parent>
   <groupId>thirdstage.exercise</groupId>
   <artifactId>thirdstage-exercise-rest</artifactId>
@@ -24,33 +20,92 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- control build behavior -->
     <skipTests>false</skipTests>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.site.skip>false</maven.site.skip> <!-- consumed by maven-site-plugin -->
+    <maven.site.deploy.skip>true</maven.site.deploy.skip> <!-- consumed by maven-site-plugin -->
+    <generateProjectInfo>false</generateProjectInfo> <!-- consumed by maven-site-plugin -->
+    <generateReports>true</generateReports> <!-- consumed by maven-site-plugin -->
     <maven.javadoc.skip>false</maven.javadoc.skip>
-    <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <findbugs.skip>true</findbugs.skip>
     <checkstyle.skip>true</checkstyle.skip>
-    <java.version>1.7</java.version>
+    <dependencies.release.updatePolicy>never</dependencies.release.updatePolicy>
+    <!-- versions for Java SDK and dependencies -->
+    <java.version>1.9</java.version>
+    <jsr305.version>3.0.2</jsr305.version> <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
+    <validation-api.version>2.0.1.Final</validation-api.version> <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+    <hibernate-validator.version>6.0.16.Final</hibernate-validator.version> <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+    <jaxb.version>2.3.1</jaxb.version>
+    <slf4j.version>1.7.26</slf4j.version> <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <logback.version>1.2.3</logback.version> <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+    <janino.version>3.1.0</janino.version> <!-- https://mvnrepository.com/artifact/org.codehaus.janino/janino -->
+    <junit.version>4.12</junit.version>
+    <junit5.version>5.5.1</junit5.version> <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
     <testng.version>6.9.10</testng.version>
-    <commons.lang3.version>3.5</commons.lang3.version>
-    <mybatis.version>3.4.0</mybatis.version>
-    <springfox.version>2.6.1</springfox.version>
+    <mockito.version>2.6.9</mockito.version>
+    <commons-lang3.version>3.9</commons-lang3.version> <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+    <commons-validator.version>1.6</commons-validator.version> <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
+    <typesafe-config.version>1.3.1</typesafe-config.version>
+    <swagger.version>2.0.8</swagger.version> <!-- https://mvnrepository.com/artifact/io.swagger.core.v3 -->
+    <springfox-swagger2.version>2.9.2</springfox-swagger2.version> <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+    <mybatis.version>3.5.1</mybatis.version> <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+    <jjwt.version>0.10.7</jjwt.version> <!-- https://mvnrepository.com/artifact/io.jsonwebtoken -->
+    <web3j.version>4.2.0</web3j.version> <!-- https://mvnrepository.com/artifact/org.web3j -->
+    <!-- version for Maven plugins -->
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+    <maven-site-plugin.version>3.7.1</maven-site-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
+    <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version> <!-- https://github.com/kongchen/swagger-maven-plugin -->
+    <swagger-codegen-maven-plugin.version>3.0.0-rc1</swagger-codegen-maven-plugin.version> <!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
+    <swagger-codegen-maven-plugin.v3.version>3.0.10</swagger-codegen-maven-plugin.v3.version> <!-- https://mvnrepository.com/artifact/io.swagger.codegen.v3/swagger-codegen-maven-plugin -->
+    <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+    <findbugs-maven-plugin.version>3.0.4</findbugs-maven-plugin.version>
+    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+    <duplicate-finder-maven-plugin.version>1.3.0</duplicate-finder-maven-plugin.version>
+    <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
+    <web3j-maven-plugin.version>4.2.0</web3j-maven-plugin.version>
+    <exec-maven-plugin>1.6.0</exec-maven-plugin>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
   </properties>
 
   <repositories>
+    <!-- For more repositories, refer https://mvnrepository.com/repos -->
     <repository>
+      <id>central1</id>
+      <url>http://repo1.maven.org/maven2/</url>
+      <releases>
+        <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
+      </releases>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-      <id>central2</id>
-      <url>http://repo2.maven.org/maven2/</url>
     </repository>
     <repository>
+      <id>central2</id>
+      <url>http://repo2.maven.org/maven2/</url>
+      <releases>
+        <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>java.net.public</id>
+      <url>https://maven.java.net/content/groups/public/</url>
+      <releases>
+        <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
+      </releases>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-      <id>java.net.public</id>
-      <url>https://maven.java.net/content/groups/public/</url>
+    </repository>
+    <repository>
+      <id>jcenter-snapshots</id>
+      <name>jcenter</name>
+      <url>https://jcenter.bintray.com/</url>
     </repository>
   </repositories>
 
@@ -89,6 +144,10 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
         <groupId>org.basepom.maven</groupId>
         <artifactId>duplicate-finder-maven-plugin</artifactId>
         <executions>
@@ -101,14 +160,17 @@
           </execution>
         </executions>
         <configuration>
-               <!-- For more, refer https://github.com/basepom/duplicate-finder-maven-plugin/wiki -->
+          <!-- For more, refer https://github.com/basepom/duplicate-finder-maven-plugin/wiki -->
           <skip>false</skip>
           <checkCompileClasspath>false</checkCompileClasspath>
           <checkRuntimeClasspath>true</checkRuntimeClasspath>
           <checkTestClasspath>false</checkTestClasspath>
           <ignoredResourcePatterns>
-            <ignoredResourcePattern>about.html</ignoredResourcePattern>
+            <ignoredResourcePattern>about\.html</ignoredResourcePattern>
           </ignoredResourcePatterns>
+          <ignoredClassPatterns>
+            <ignoredClassPattern>META-INF\.versions\.9\.module-info</ignoredClassPattern>
+          </ignoredClassPatterns>
           <ignoredDependencies>
             <dependency>
               <groupId>org.slf4j</groupId>
@@ -118,62 +180,65 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>com.github.kongchen</groupId>
         <artifactId>swagger-maven-plugin</artifactId>
-        <configuration>
-          <!-- For more, refer https://github.com/kongchen/swagger-maven-plugin -->
-          <apiSources>
-            <apiSource>
-              <springmvc>true</springmvc>
-              <locations>
-                <location>thirdstage.exercise.rest.roll.controller</location>
-                <location>thirdstage.exercise.rest.reward.controller</location>
-                <location>thirdstage.exercise.rest.point.controller</location>
-              </locations>
-              <schemes>
-                <schema>https</schema>
-              </schemes>
-              <host>api.skcc.com:8080</host>
-              <basePath>/roll/v1</basePath>
-              <info>
-                <title>User Management Service REST API</title>
-                <version>v1</version>
-              </info>
-              <swaggerDirectory>${project.build.directory}</swaggerDirectory>
-              <outputFormats>json,yaml</outputFormats>
-            </apiSource>
-          </apiSources>
-        </configuration>
         <executions>
           <execution>
-            <id>generate-swagger-api</id>
-            <phase>process-classes</phase>
+            <phase>compile</phase>
             <goals>
               <goal>generate</goal>
             </goals>
+            <configuration>
+              <!-- For more, refer https://github.com/kongchen/swagger-maven-plugin -->
+              <apiSources>
+                <apiSource>
+                  <springmvc>true</springmvc>
+                  <locations>
+                    <location>thirdstage.exercise.rest.roll.controller</location>
+                    <location>thirdstage.exercise.rest.reward.controller</location>
+                    <location>thirdstage.exercise.rest.point.controller</location>
+                  </locations>
+                  <schemes>
+                    <scheme>https</scheme>
+                  </schemes>
+                  <host>localhost:8080</host>
+                  <basePath>/roll/v1</basePath>
+                  <basePath>/angel/</basePath>
+                  <info>
+                    <title>REST APIs for Sample Service</title>
+                    <version>v1</version>
+                    <description>
+                      ...
+                    </description>
+                  </info>
+                  <swaggerDirectory>${project.build.directory}/generated/swagger</swaggerDirectory>
+                  <swaggerFileName>api</swaggerFileName>
+                  <outputFormats>json,yaml</outputFormats>
+                  <!-- <templatePath>${basedir}/src/templates/swagger/strapdown.html.hbs</templatePath> -->
+                  <!-- <outputPath>${project.build.directory}/generated/swagger/api.html</outputPath> -->
+                  <!-- <attachSwaggerArtifact>true</attachSwaggerArtifact> -->
+                  <modelConverters>io.swagger.validator.BeanValidator</modelConverters>
+                </apiSource>
+              </apiSources>
+            </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-        <groupId>io.swagger</groupId>
+        <groupId>io.swagger.codegen.v3</groupId>
         <artifactId>swagger-codegen-maven-plugin</artifactId>
-        <configuration>
-          <inputSpec>${project.build.directory}/swagger.json</inputSpec>
-        </configuration>
         <executions>
           <execution>
-            <id>generate-rest-api-doc</id>
+            <id>generate-rest-api-doc-v3</id>
             <phase>process-classes</phase>
             <goals>
               <goal>generate</goal>
             </goals>
             <configuration>
+              <inputSpec>${project.build.directory}/generated/swagger/api.json</inputSpec>
               <language>html2</language>
-              <output>${project.build.directory}/generated-sources/swagger/html2</output>
+              <output>${project.build.directory}/generated/swagger/html2</output>
+              <generateApis>true</generateApis>
             </configuration>
           </execution>
         </executions>
@@ -181,11 +246,11 @@
     </plugins>
     <pluginManagement>
       <plugins>
-            <!-- core -->
+        <!-- core -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version>
+          <version>${maven-compiler-plugin.version}</version>
           <inherited>true</inherited>
           <configuration>
             <source>${java.version}</source>
@@ -195,33 +260,46 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.0</version>
+          <version>${maven-site-plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
               <artifactId>wagon-ssh</artifactId>
-              <version>2.0</version>
+              <version>2.12</version>
             </dependency>
           </dependencies>
         </plugin>
-            <!-- sources -->
+        <!-- sources -->
         <plugin>
           <groupId>com.github.kongchen</groupId>
           <artifactId>swagger-maven-plugin</artifactId>
-          <version>3.1.4</version>
+          <version>${swagger-maven-plugin.version}</version>
         </plugin>
         <plugin>
+          <!-- For more, refer followings
+            https://github.com/swagger-api/swagger-codegen
+            https://github.com/swagger-api/swagger-codegen/tree/master/modules/swagger-codegen-maven-plugin
+          -->
           <groupId>io.swagger</groupId>
           <artifactId>swagger-codegen-maven-plugin</artifactId>
-          <version>2.2.1</version>
+          <version>${swagger-codegen-maven-plugin.version}</version>
         </plugin>
-            <!-- packaging -->
+        <plugin>
+          <!-- For more, refer followings
+            https://github.com/swagger-api/swagger-codegen/tree/3.0.0
+            https://github.com/swagger-api/swagger-codegen/tree/3.0.0/modules/swagger-codegen-maven-plugin
+          -->
+          <groupId>io.swagger.codegen.v3</groupId>
+          <artifactId>swagger-codegen-maven-plugin</artifactId>
+          <version>${swagger-codegen-maven-plugin.v3.version}</version>
+        </plugin>
+        <!-- packaging -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3.2</version>
+          <version>${maven-jar-plugin.version}</version>
           <configuration>
-                  <!-- For more on Maven archiver, refer http://maven.apache.org/shared/maven-archiver/index.html -->
+            <!-- For more on Maven archiver, refer http://maven.apache.org/shared/maven-archiver/index.html -->
             <archive>
               <addMavenDescriptor>false</addMavenDescriptor>
               <forced>true</forced>
@@ -239,51 +317,76 @@
             </archive>
           </configuration>
         </plugin>
-            <!-- reporting -->
+        <!-- reporting -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.8</version>
+          <version>${maven-javadoc-plugin.version}</version>
           <configuration>
             <additionalJOptions>
-              <additionalJOption>-Xms128m</additionalJOption>
+              <!-- causes error with JDK 8 <additionalJOption>-Xms128m</additionalJOption> -->
             </additionalJOptions>
+            <failOnError>false</failOnError>
             <docencoding>${project.reporting.outputEncoding}</docencoding>
             <encoding>${project.build.sourceEncoding}</encoding>
             <doctitle>${project.name} ${project.version} API</doctitle>
             <windowtitle>${project.name} ${project.version} API</windowtitle>
             <links>
-              <link>http://docs.oracle.com/javase/7/docs/api/</link>
-              <link>http://docs.oracle.com/javaee/6/api/</link>
-              <link>http://www.javadoc.io/doc/com.google.code.findbugs/jsr305/3.0.1</link>
-              <link>http://docs.jboss.org/hibernate/beanvalidation/spec/1.1/api/</link>
-              <link>http://docs.jboss.org/hibernate/validator/5.2/api/</link>
-              <link>http://commons.apache.org/proper/commons-lang/javadocs/api-${commons.lang3.version}/</link>
+              <link>https://docs.oracle.com/javase/9/docs/api/</link>
+              <link>https://docs.oracle.com/javaee/7/api/</link>
+              <link>http://www.javadoc.io/doc/com.google.code.findbugs/jsr305/${jsr305.version}</link>
+              <link>http://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/</link>
+              <link>http://docs.jboss.org/hibernate/validator/6.0/api/</link>
+              <link>https://www.slf4j.org/apidocs/</link>
+              <link>http://junit.org/junit4/javadoc/${junit.version}/</link>
+              <link>http://commons.apache.org/proper/commons-lang/javadocs/api-${commons-lang3.version}/</link>
               <link>http://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
-              <link>http://docs.spring.io/spring/docs/4.0.x/javadoc-api/</link>
+              <link>http://docs.swagger.io/swagger-core/v1.5.X/apidocs/</link>
+              <link>http://springfox.github.io/springfox/javadoc/${springfox-swagger2.version}/</link>
+              <link>https://docs.spring.io/spring/docs/5.1.x/javadoc-api/</link>
+              <link>https://docs.spring.io/spring-boot/docs/2.1.x/api/</link>
             </links>
-            <show>projected</show>
+            <show>protected</show>
             <splitindex>true</splitindex>
+          </configuration>
+        </plugin>
+        <plugin>
+          <!-- For more, refer http://gleclaire.github.io/findbugs-maven-plugin/ -->
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>${findbugs-maven-plugin.version}</version>
+          <configuration>
+            <effort>Max</effort>
+            <threshold>Low</threshold>
+            <!-- findbugs-maven-plugin doesn't provide aggregate goal or mode -->
+            <includeFilterFile>src/config/findbugs/findbugs-exclude.xml</includeFilterFile>
+            <plugins>
+              <plugin>
+                <groupId>com.mebigfatguy.fb-contrib</groupId>
+                <artifactId>fb-contrib</artifactId>
+                <version>6.8.3</version>
+              </plugin>
+            </plugins>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.7</version>
+          <version>${maven-checkstyle-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.basepom.maven</groupId>
           <artifactId>duplicate-finder-maven-plugin</artifactId>
-          <version>1.2.1</version>
+          <version>${duplicate-finder-maven-plugin.version}</version>
         </plugin>
-            <!-- tools supporting -->
+        <!-- tools supporting -->
         <plugin>
-               <!-- http://maven.apache.org/plugins/maven-eclipse-plugin/eclipse-mojo.html -->
+          <!-- http://maven.apache.org/plugins/maven-eclipse-plugin/eclipse-mojo.html -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-eclipse-plugin</artifactId>
-          <version>2.9</version>
+          <version>${maven-eclipse-plugin.version}</version>
           <configuration>
-                  <!-- the next two item doesn't work on m2e. m2e has its own confgiruation in Eclipse preferences -->
+            <!-- the next two item doesn't work on m2e. m2e has its own confgiruation in Eclipse preferences -->
             <downloadJavadocs>true</downloadJavadocs>
             <downloadSources>true</downloadSources>
             <forceRecheck>false</forceRecheck>
@@ -306,7 +409,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -319,7 +422,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -333,7 +436,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -346,7 +449,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -361,7 +464,37 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>io.swagger.core.v3</groupId>
+                    <artifactId>swagger-maven-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>resolve</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore>
+                      <message>swagger-maven-plugin (goal "resolve") is ignored by m2e.</message>
+                    </ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>io.swagger.codegen.v3</groupId>
+                    <artifactId>swagger-codegen-maven-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore>
+                      <message>swagger-codegen-maven-plugin (goal "generate") is ignored by m2e.</message>
+                    </ignore>
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -374,20 +507,9 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-codegen-maven-plugin</artifactId>
-                    <versionRange>[1.0.0,)</versionRange>
-                    <goals>
-                      <goal>generate</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
+                    <ignore>
+                      <message>wagger-maven-plugin (goal "generate") is ignored by m2e.</message>
+                    </ignore>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -398,31 +520,71 @@
     </pluginManagement>
   </build>
 
-
   <dependencies>
     <dependency>
-         <!-- JSR 305: Annotations for Software Defect Detection -->
+      <!-- JSR 305: Annotations for Software Defect Detection (https://jcp.org/en/jsr/detail?id=305) -->
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
-      <version>2.0.3</version>
+      <version>${jsr305.version}</version>
     </dependency>
     <dependency>
-         <!-- JSR 330: Dependency Injection for Java -->
+      <!-- JSR 330: Dependency Injection for Java -->
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>1</version>
     </dependency>
     <dependency>
-         <!-- JSR 349: Bean Validation 1.1 -->
+      <!-- JSR 349: Bean Validation 1.1 (https://jcp.org/en/jsr/detail?id=349) -->
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-      <version>1.1.0.Final</version>
+      <version>${validation-api.version}</version>
     </dependency>
     <dependency>
-         <!-- Hibernate Validator -->
+      <!-- Hibernate Validator -->
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>5.2.4.Final</version>
+      <version>${hibernate-validator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>${jaxb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+    <dependency>
+      <!-- to support conditional processing of Logback config. : https://logback.qos.ch/setup.html#janino -->
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>janino</artifactId>
+      <version>${janino.version}</version>
+    </dependency>
+    <dependency>
+      <!-- https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven -->
+      <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine/5.5.1 -->
+      <!-- 'junit-jupiter-engine' depends on 'junit-jupiter-api' -->
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -431,23 +593,71 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>${commons.lang3.version}</version>
+      <version>${commons-lang3.version}</version>
     </dependency>
+    <dependency>
+      <!-- For more typesafe config, refer https://github.com/typesafehub/config -->
+      <groupId>com.typesafe</groupId>
+      <artifactId>config</artifactId>
+      <version>${typesafe-config.version}</version>
+    </dependency>
+    <!-- Either web or webflux -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <!-- <dependency> -->
+    <!-- <groupId>org.springframework.boot</groupId> -->
+    <!-- <artifactId>spring-boot-starter-webflux</artifactId> -->
+    <!-- </dependency> -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.springframework.boot</groupId> -->
+<!--       <artifactId>spring-boot-starter-security</artifactId> -->
+<!--     </dependency> -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <!-- https://docs.spring.io/spring-boot/docs/2.1.x/reference/htmlsingle/#boot-features-testing -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
-      <version>${springfox.version}</version>
+      <version>${springfox-swagger2.version}</version>
     </dependency>
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger-ui</artifactId>
-      <version>${springfox.version}</version>
+      <version>${springfox-swagger2.version}</version>
+    </dependency>
+    <dependency>
+      <!-- Springfox Support for JSR-303 : https://springfox.github.io/springfox/docs/2.9.2/#springfox-support-for-jsr-303 -->
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-bean-validators</artifactId>
+      <version>${springfox-swagger2.version}</version>
     </dependency>
   </dependencies>
 </project>
