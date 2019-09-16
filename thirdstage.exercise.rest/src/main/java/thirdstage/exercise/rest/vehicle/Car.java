@@ -9,17 +9,28 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+
+@ApiModel(description = "Car", parent = Vehicle.class)
 public class Car extends Vehicle{
-  
+
+  public static final String TYPE = "CAR";
+
   private int price;
-  
+
   private int length;
-  
+
   private int width;
-  
+
   private int height;
 
+  public String getType() {
+    return TYPE;
+  }
+
+  @ApiModelProperty
   public int getPrice(){
     return price;
   }
@@ -28,6 +39,7 @@ public class Car extends Vehicle{
     this.price = price;
   }
 
+  @ApiModelProperty
   public int getLength(){
     return length;
   }
@@ -36,6 +48,7 @@ public class Car extends Vehicle{
     this.length = length;
   }
 
+  @ApiModelProperty
   public int getWidth(){
     return width;
   }
@@ -44,6 +57,7 @@ public class Car extends Vehicle{
     this.width = width;
   }
 
+  @ApiModelProperty
   public int getHeight(){
     return height;
   }
@@ -51,8 +65,8 @@ public class Car extends Vehicle{
   public void setHeight(int height){
     this.height = height;
   }
-  
-  
-  
+
+
+
 
 }

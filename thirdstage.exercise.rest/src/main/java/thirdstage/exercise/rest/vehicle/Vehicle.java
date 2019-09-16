@@ -1,35 +1,36 @@
 package thirdstage.exercise.rest.vehicle;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
-public class Vehicle{
-  
-  private String type;
-  
+@ApiModel(
+    subTypes = {Car.class, Ship.class},
+    discriminator = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type")
+@JsonSubTypes({
+    @Type(value = Car.class, name = Car.TYPE),
+    @Type(value = Ship.class, name = Ship.TYPE)
+})
+abstract public class Vehicle{
+
   private String name;
-  
+
   private String manufacturer;
-  
+
   private String speed;
-  
+
   private double weight;
 
-  public String getType(){
-    return type;
-  }
 
-  public void setType(String type){
-    this.type = type;
-  }
+  @ApiModelProperty(required = true)
+  abstract public String getType();
 
+  @ApiModelProperty
   public String getName(){
     return name;
   }
@@ -38,6 +39,7 @@ public class Vehicle{
     this.name = name;
   }
 
+  @ApiModelProperty
   public String getManufacturer(){
     return manufacturer;
   }
@@ -46,6 +48,7 @@ public class Vehicle{
     this.manufacturer = manufacturer;
   }
 
+  @ApiModelProperty
   public String getSpeed(){
     return speed;
   }
@@ -54,6 +57,7 @@ public class Vehicle{
     this.speed = speed;
   }
 
+  @ApiModelProperty
   public double getWeight(){
     return weight;
   }
@@ -61,7 +65,7 @@ public class Vehicle{
   public void setWeight(double weight){
     this.weight = weight;
   }
-  
-  
+
+
 
 }
