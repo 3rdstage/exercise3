@@ -44,5 +44,8 @@ echo "Execute 'export VAULT_ADDR=\"http://${vault_server}:${vault_port}\"' to ac
 # if necessary, init vault
 # vault operator init vau-key-shares=1 -key-threshold=1
 
-# @IMPORTANT current unseal key : akx68yeE9BKKrCNxtgflvyntDXHYBXjjMONEWi4vxjQ=
+# @IMPORTANT
+#    current unseal key : akx68yeE9BKKrCNxtgflvyntDXHYBXjjMONEWi4vxjQ=
 #    vault operator unseal akx68yeE9BKKrCNxtgflvyntDXHYBXjjMONEWi4vxjQ=
+#    current root token (not initial) : s.shOLsdCQ6R02NSISKJuLpXZB
+#    export VAULT_TOKEN="s.shOLsdCQ6R02NSISKJuLpXZB"
