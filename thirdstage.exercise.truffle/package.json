@@ -2,7 +2,8 @@
   "name": "thirdstage.exercise.truffle",
   "version": "0.1.0",
   "dependencies": {
-    "babel-polyfill": "^6.23.0",
+    "@truffle/hdwallet-provider": "^1.0.27",
+    "babel-polyfill": "^6.26.0",
     "request": "^2.85.0",
     "web3": "0.20.x",
     "zeppelin-solidity": "1.5.0"
@@ -11,7 +12,7 @@
     "babel-plugin-syntax-async-functions": "^6.1.4",
     "babel-plugin-transform-regenerator": "^6.1.4",
     "babel-preset-env": "^1.1.8",
-    "babel-register": "^6.23.0",
+    "babel-register": "^6.26.0",
     "grunt": "~1.0.1",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-nodeunit": "^1.0.0",
