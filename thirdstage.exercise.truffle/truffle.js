@@ -4,8 +4,10 @@
 //  "plugins": ["syntax-async-functions","transform-regenerator"]
 //});
 
+// https://github.com/trufflesuite/truffle/tree/v5.1.5/packages/hdwallet-provider
+// https://iancoleman.io/bip39/
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const mnemonic = "hell bent for leather";
+const mnemonic = "unit ramp wire absent film fox arrest govern ball make sunny fork"; // should be 12 words
 
 const fs = require('fs');
 const ganacheConfig = fs.readFileSync('scripts/ganache-cli.properties').toString();
@@ -24,28 +26,26 @@ module.exports = {
         from: ganacheFrom,
         gasPrice: 0,
         gas: 0x10000000
-      }
-    },
-
-    ropsten: {
-      provider: function(){
-        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/Sqj6qg9ix47UK1EBQQb0");
       },
-      network_id: 3,
-    },
 
-    rinkeby: {
-      provider: function(){
-        return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/Sqj6qg9ix47UK1EBQQb0");
+      ropsten: {
+        provider: () => new HDWalletProvider(mnemonic,"https://ropsten.infura.io/v3/ec117ed9ca2841f2a5ec87f225c2629e"),
+        network_id: '3',
       },
-      network_id: 4,
-    },
 
-    kovan: {
-      provider: function(){
-        return new HDWalletProvider(mnemonic, "https://kovan.infura.io/Sqj6qg9ix47UK1EBQQb0");
+      rinkeby: {
+        provider: function(){
+          return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/ec117ed9ca2841f2a5ec87f225c2629e");
+        },
+        network_id: 4,
       },
-      network_id: 6,
+
+      kovan: {
+        provider: function(){
+          return new HDWalletProvider(mnemonic, "https://kovan.infura.io/v3/ec117ed9ca2841f2a5ec87f225c2629e");
+        },
+        network_id: 6,
+      },
     },
 
     solc: {
