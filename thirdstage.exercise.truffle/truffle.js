@@ -48,10 +48,13 @@ module.exports = {
       },
     },
 
-    solc: {
-      optimizer: {
-        enabled: true,
-        runs: 200
+    compilers: {
+      solc: {
+        version: "^0.4.0 || ^0.5.0",
+        optimizer: {
+          enabled: true,
+          runs: 200
+        }
       }
     }
 };
