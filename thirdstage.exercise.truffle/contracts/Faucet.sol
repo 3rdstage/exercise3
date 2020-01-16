@@ -3,9 +3,9 @@ pragma solidity ^0.5.0;
 
 contract Faucet{
 
-  private address owner;
+  address payable owner;
 
-  constructor(){
+  constructor() public{
     owner = msg.sender;
 
   }
@@ -13,11 +13,11 @@ contract Faucet{
   function withdraw(uint amt) public {
     require(amt <= 100000000000000000);
 
-    msg.sender(amt);
+    //msg.sender(amt);
   }
 
 
-  function() public payable{
+  function() external payable{
 
   }
 

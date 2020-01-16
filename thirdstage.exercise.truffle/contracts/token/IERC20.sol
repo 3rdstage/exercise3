@@ -1,4 +1,4 @@
-program solidity ^0.5.0;
+pragma solidity ^0.5.0;
 
 // The most basic shape of ERC 20 Token
 // References
@@ -9,7 +9,12 @@ program solidity ^0.5.0;
 
 
 /**
- *     spender ----- owner/sender ---- recipient
+ *      Sender -------- recipient
+ *        |
+ *   +---+---+
+ *  |        |
+ * owner   allowee
+ *
  */
 interface IERC20{
 
@@ -18,19 +23,19 @@ interface IERC20{
 
   function balanceOf(address acct) external view returns (uint256);
 
-  // requires caller/spender == owner
+  // requires caller == owner
   function transfer(address recipient, uint256 amt) external returns (bool);
 
-  function allowance(address owner, address spender) external view returns (uint256);
+  function allowance(address owner, address allowee) external view returns (uint256);
 
-  function approve(address spender, uint256 amt) external returns (bool);
+  function approve(address allowee, uint256 amt) external returns (bool);
 
   // This can be used for example to allow a contract to transfer tokens on your behalf and/or to charge fees in sub-currencies.
   // requires allowance(sender, caller) >= amt
   function transferFrom(address sender, address recipient, uint256 amt) external returns (bool);
 
-  event Transfer(address index from, address index to, uint256 value);
+  event Transfer(address indexed from, address indexed to, uint256 value);
 
-  event Approval(address index owner, address index spender, uint256 value);
+  event Approval(address indexed owner, address indexed allowee, uint256 value);
 
 }

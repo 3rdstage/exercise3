@@ -1,4 +1,5 @@
-pragma solidity ^0.4.18;
+//pragma solidity ^0.4.18;
+pragma solidity ^0.5.0;
 
 // https://github.com/truffle-box/metacoin-box/blob/master/contracts/MetaCoin.sol
 
@@ -8,14 +9,14 @@ pragma solidity ^0.4.18;
 contract MetaCoin {
 
   mapping (address => uint) balances;
-  
+
   event Transfer(address indexed _from, address indexed _to, uint256 _val);
-  
-  
-  function MetaCoin() public {
+
+
+  constructor() public {
     balances[tx.origin] = 10000;
   }
-  
+
   /// @notice Get the balance of the specified account
   /// @param addr the address of the account
   /// @return the current balance of the specified account
@@ -31,7 +32,7 @@ contract MetaCoin {
     if (balances[msg.sender] < amt) return false;
     balances[msg.sender] -= amt;
     balances[receiver] += amt;
-    Transfer(msg.sender, receiver, amt);
+    emit Transfer(msg.sender, receiver, amt);
     return true;
   }
 }
