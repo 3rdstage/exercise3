@@ -4,6 +4,7 @@
   "dependencies": {
     "@truffle/hdwallet-provider": "^1.0.27",
     "babel-polyfill": "^6.26.0",
+    "remixd": "^0.1.8-alpha.14",
     "request": "^2.85.0",
     "web3": "^1.2.1",
     "zeppelin-solidity": "1.5.0"
