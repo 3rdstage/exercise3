@@ -10,14 +10,59 @@ import "./IERC20.sol";
  * owner   allowee
  *
  */
-/// @title Simple ERC20 Token
-contract ERC20 is IERC20{
+/// @title Abstract ERC20 Token
+contract AbstractERC20 is IERC20{
+    
+  string private _name;
+  
+  string private _symbol;
+  
+  uint8 private _decimals;
+  
+  bool private _initialized;
+
+  uint256 private _totalSupply;
 
   mapping(address => uint256) private _balances; // balance by account
 
   mapping(address => mapping(address => uint256)) private _allowances; // allowance for each allowee by onwer account  - owner.allowee
 
-  uint256 private _totalSupply;
+  
+  /// @dev Intialize `name` and `symbol` of this Token
+  /// @param name Token name - shouldn't be empty or blank
+  function init(string memory name, string memory symbol) internal returns (bool){
+      require(bytes(name).length > 0, "Empty name is disallowed.");
+      require(bytes(symbol).length > 0, "Empty symbol is disallowed.");
+      assert(!_initialized);  // name, symbol cannot be chaned after initialization
+      
+      _name = name;
+      _symbol = symbol;
+      _initialized = true;
+      return true;
+  }
+  
+  function init(string memory name, string memory symbol, uint8 decimals) internal returns (bool){
+      assert(!_initialized); // name, symbol, decimals cannot be changed after initialization
+      _decimals = decimals;
+      
+      return init(name, symbol);
+  }
+  
+  
+  /// @dev `name()` function defined in EIP 20 (https://eips.ethereum.org/EIPS/eip-20)
+  function name() public view returns(string memory){
+      return _name;
+  }
+    
+  /// @dev `symbol()` function defined in EIP 20 (https://eips.ethereum.org/EIPS/eip-20)
+  function symbol() public view returns(string memory){
+      return _symbol;
+  }
+
+  /// @dev `decimals()` function defined in EIP 20 (https://eips.ethereum.org/EIPS/eip-20)
+  function decimals() public view returns(uint8){
+      return _decimals;
+  }
 
   function totalSupply() public view returns (uint256){
     return _totalSupply;
