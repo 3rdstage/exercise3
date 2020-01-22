@@ -33,6 +33,8 @@ fi
 if [ $refreshes -eq 1 ]; then
   echo "Removing all current data under '${data_dir}'"
   rm -Rf "${data_dir}"
+  sleep 3
+  mkdir -p "${data_dir}"
 fi
 
 cd "${script_dir}"
@@ -77,6 +79,7 @@ ganache-cli --networkId $eth_ver \
             --defaultBalanceEther 1000000 \
             --hardfork petersburg \
             --blockTime 0 \
+            --verbose \
             --db "${data_dir}" >> "${run_dir}"/ganache.log 2>&1 &
 
 tail "${run_dir}"/ganache.log -n 50

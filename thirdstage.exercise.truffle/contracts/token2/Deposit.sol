@@ -24,4 +24,8 @@ contract Deposit{
         
     }
     
+    function balance() public view returns(uint256){
+        return _balances[msg.sender];
+    }
+    
 }

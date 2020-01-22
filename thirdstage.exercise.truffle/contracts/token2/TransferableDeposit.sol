@@ -14,15 +14,15 @@ contract TransferableDeposit{
     
     
     function deposit(address owner, uint256 amt) public returns(uint256){
-        
+        _deposit.deposit(owner, amt);
     }
     
     
     function transfer(address recipient, uint256 amt) public returns(bool){
-        
-        
-        
-    } 
+
+    }
+    
+    
     
     
 }
