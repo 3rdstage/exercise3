@@ -4,22 +4,26 @@ readonly script_dir=$(cd `dirname $0` && pwd)
 readonly run_dir=$(mkdir -p "${script_dir}/../run/ganache" && cd "${script_dir}/../run/ganache" && pwd)
 readonly data_dir=${run_dir}/data
 
-options=$(getopt -o r --long "refresh" --name 'ganache-cli-start-options' -- "$@");
+options=$(getopt -o rb --long "refresh,background" --name 'ganache-cli-start-options' -- "$@");
 
 if [ $? -ne 0 ]; then
   command=${0##*/}
-  echo "Unable to parse command line, which expect '$command [-r|--refresh]'."
+  echo "Unable to parse command line, which expect '$command [-r|--refresh] [-b|--background]'."
   echo ""
-  exit 300
+  exit 400
 fi
 
 eval set -- "$options"
 
 declare refreshes=0   #false
+declare backgrounds=0   #false
 while true; do
   case "$1" in
     -r | --refresh )
       refreshes=1
+      shift ;;
+    -b | --background )
+      backgrounds=1
       shift ;;
     -- ) shift; break ;;
   esac
@@ -46,6 +50,13 @@ readonly eth_mnemonic=`cat ganache-cli.properties | grep -E "^ethereum\.mnemonic
 readonly eth_gas_price=`cat ganache-cli.properties | grep -E "^ethereum\.gasPrice=" | sed -E 's/ethereum\.gasPrice=//'`
 readonly eth_gas_limit=`cat ganache-cli.properties | grep -E "^ethereum\.gasLimit=" | sed -E 's/ethereum\.gasLimit=//'`
 
+# check whether the address is alreasy in use or not
+if [ `netstat -anp tcp | grep "$eth_host:$eth_port" | wc -l` -gt 0 ]; then
+  echo "The address '$eth_host:$eth_port' is already in use."
+  echo "Fail to start ganache-cli."
+  exit 500
+fi
+
 # echo $eth_ver;
 # echo $eth_host;
 # echo $eth_port;
@@ -68,22 +79,35 @@ readonly eth_gas_limit=`cat ganache-cli.properties | grep -E "^ethereum\.gasLimi
 # Options
 #   - gasLimit : The block gas limit (defaults to 0x6691b7)
 #   - gasPrice: The price of gas in wei (defaults to 20000000000)
-ganache-cli --networkId $eth_ver \
-            --host "$eth_host" \
+
+cmd="ganache-cli --networkId $eth_ver \
+            --host '$eth_host' \
             --port $eth_port \
             --gasPrice $eth_gas_price \
             --gasLimit $eth_gas_limit \
-            --mnemonic "$eth_mnemonic" \
+            --mnemonic '$eth_mnemonic' \
             --accounts 3 \
             --secure --unlock 0 --unlock 1 --unlock 2 \
             --defaultBalanceEther 1000000 \
             --hardfork petersburg \
             --blockTime 0 \
             --verbose \
-            --db "${data_dir}" >> "${run_dir}"/ganache.log 2>&1 &
+            --db '${data_dir}' >> '${run_dir}'/ganache.log 2>&1"
 
-tail "${run_dir}"/ganache.log -n 50
-if [ $? -eq 0 ]; then
-  echo "The loacal Ganache has started successfully."
-  echo "The log file is located at '${run_dir}/ganache.log'."
+if [ $backgrounds -eq 0 ]; then
+  echo $cmd
+  eval $cmd
+else
+  cmd=$cmd' &'
+  echo $cmd
+  eval $cmd
+
+  if [ $? -eq 0 ]; then
+    sleep 3
+    tail "${run_dir}"/ganache.log -n 50
+    echo "The loacal Ganache has started."
+    echo "The log file is located at '${run_dir}/ganache.log'."
+  fi
 fi
+
+
