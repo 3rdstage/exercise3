@@ -1,0 +1,37 @@
+# Refer
+#   - https://alethio.gitbook.io/memento/running-memento/via-docker-compose
+#   - https://github.com/Alethio/memento/tree/v1.1.3
+
+version: '3.7'
+services:
+  redis:
+    container_name: memento-redis
+    image: redis:5.0.5-alpine
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"]
+    network_mode: "host"
+    volumes:
+      - ../../run/memento/redis/data:/data
+  postgres:
+    container_name: memento-postgres
+    image: postgres:11.5-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=memento
+      - POSTGRES_DB=memento
+      - POSTGRES_PASSWORD=0229
+    network_mode: "host"
+    volumes:
+      - ../../run/memento/postgresql/data:/var/lib/postgresql/data
+  memento:
+    container_name: memento
+    image: alethio/memento:latest
+    restart: always
+    depends_on:
+      - redis
+      - postgres
+    network_mode: "host"
+    environment:
+      - PG_PASSWORD=0229
+    volumes:
+      - ../../run/memento/config:/config
