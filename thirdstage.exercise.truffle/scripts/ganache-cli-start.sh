@@ -51,8 +51,9 @@ readonly eth_gas_price=`cat ganache-cli.properties | grep -E "^ethereum\.gasPric
 readonly eth_gas_limit=`cat ganache-cli.properties | grep -E "^ethereum\.gasLimit=" | sed -E 's/ethereum\.gasLimit=//'`
 
 # check whether the address is alreasy in use or not
-if [ `netstat -anp tcp | grep "$eth_host:$eth_port" | wc -l` -gt 0 ]; then
-  echo "The address '$eth_host:$eth_port' is already in use."
+if [ `netstat -anp tcp | awk '$4 == "LISTENING" {print $2}' | grep -E "^($eth_host|0.0.0.0):$eth_port$" | wc -l` -gt 0 ]; then
+  readonly pid=`netstat -anop tcp | awk '$4 == "LISTENING" {print $2 " " $5}' | grep -E "^($eth_host|0.0.0.0):$eth_port\s" | head -n 1 | awk '{print $2}'`
+  echo "The address '$eth_host:$eth_port' is already in use by the process of which PID is $pid."
   echo "Fail to start ganache-cli."
   exit 500
 fi

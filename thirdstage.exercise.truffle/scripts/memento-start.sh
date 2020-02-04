@@ -1,1 +1,0 @@
-docker-compose -f  ./scripts/memento/docker-compose.yml up -d
