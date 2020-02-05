@@ -2,12 +2,11 @@
   "name": "thirdstage.exercise.truffle",
   "version": "0.1.0",
   "dependencies": {
+    "@openzeppelin/contracts": "^2.5.0",
     "@truffle/hdwallet-provider": "^1.0.27",
     "babel-polyfill": "^6.26.0",
-    "remixd": "^0.1.8-alpha.14",
     "request": "^2.85.0",
-    "web3": "^1.2.1",
-    "zeppelin-solidity": "1.5.0"
+    "web3": "^1.2.1"
   },
   "devDependencies": {
     "babel-plugin-syntax-async-functions": "^6.1.4",
@@ -24,6 +23,6 @@
     "//": [
       "https://github.com/OpenZeppelin/zeppelin-solidity#getting-started"
     ],
-    "preinstall": "npm install -g truffle@4.1.x @digix/doxity@^0.5.2"
+    "preinstall": "npm install -g truffle@5.1.x remix-ide@0.9.x @digix/doxity@^0.5.2"
   }
 }
