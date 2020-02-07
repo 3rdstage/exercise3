@@ -3,8 +3,9 @@ pragma solidity ^0.5.0;
 import "../../node_modules/@openzeppelin/contracts/drafts/Counters.sol";
 
 /// @title EIP 721 Non-Fungible Token Standard
-/// https://eips.ethereum.org/EIPS/eip-721
-interface IERC721{
+/// @dev refer https://eips.ethereum.org/EIPS/eip-721
+/// @dev refer https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/token/ERC721/IERC721.sol
+contract IERC721{
     
     event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
     
@@ -14,28 +15,28 @@ interface IERC721{
     
     
     /// @notice Count all NFTs of the specified owner
-    function balanceOf(address _onwer) external view returns (uint256);
+    function balanceOf(address _onwer) public view returns (uint256);
     
     
-    function onwerOf(uint256 _tokenId) external view returns (address);
+    function onwerOf(uint256 _tokenId) public view returns (address);
     
     
-    function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable;
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public;
     
-    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes calldata data) external payable;
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory data) public;
     
-    function transferFrom(address _from, address _to, uint256 _tokenId) external payable;
+    function transferFrom(address _from, address _to, uint256 _tokenId) public;
     
-    function approve(address _approved, uint256 _tokenId) external payable;
+    function approve(address _approved, uint256 _tokenId) public;
     
-    function setApprovalForAll(address _operator, bool _approved) external; //toggling
+    function setApprovalForAll(address _operator, bool _approved) public; //toggling
     
-    function getApproved(uint256 _tokenId) external view returns (address);
+    function getApproved(uint256 _tokenId) public view returns (address);
     
-    function isApprovedForAll(address _owner, address _operator) external view returns (bool);
+    function isApprovedForAll(address _owner, address _operator) public view returns (bool);
     
     
-    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+    function supportsInterface(bytes4 interfaceId) public view returns (bool);
     
     
     
