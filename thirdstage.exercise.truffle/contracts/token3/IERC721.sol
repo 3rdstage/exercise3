@@ -18,7 +18,7 @@ contract IERC721{
     function balanceOf(address _onwer) public view returns (uint256);
     
     
-    function onwerOf(uint256 _tokenId) public view returns (address);
+    function ownerOf(uint256 _tokenId) public view returns (address);
     
     
     function safeTransferFrom(address _from, address _to, uint256 _tokenId) public;
