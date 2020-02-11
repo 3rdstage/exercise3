@@ -120,11 +120,18 @@ contract ERC721 is IERC721{
         if(_approvals[_tokenId] != address(0)){ _approvals[_tokenId] = address(0); }
     }
     
-    function transferFrom(address _from, address _to,  uint256 _tokenId) public {
+    function transferFrom(address _from, address _to, uint256 _tokenId) public {
         _transferFrom(_from, _to, _tokenId);
     }
     
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public {
+        _transferFrom(_from, _to, _tokenId);
+    }
     
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory data) public {
+        _transferFrom(_from, _to, _tokenId);
+    }
+
     function _mint(address _to, uint256 _tokenId) private {
         require(_to != address(0), "Unable to mint to ZERO address");
         require(!_existsToken(_tokenId), "Already minted token.");
@@ -158,5 +165,6 @@ contract ERC721 is IERC721{
         
     }
     
+
     
 }

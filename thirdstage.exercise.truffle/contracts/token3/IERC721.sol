@@ -7,11 +7,11 @@ import "../../node_modules/@openzeppelin/contracts/drafts/Counters.sol";
 /// @dev refer https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/token/ERC721/IERC721.sol
 contract IERC721{
     
-    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
     
-    event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
+    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
     
-    event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
     
     
     /// @notice Count all NFTs of the specified owner
