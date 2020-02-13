@@ -132,7 +132,7 @@ contract ERC721 is IERC721{
         _transferFrom(_from, _to, _tokenId);
     }
 
-    function _mint(address _to, uint256 _tokenId) private {
+    function _mint(address _to, uint256 _tokenId) internal {
         require(_to != address(0), "Unable to mint to ZERO address");
         require(!_existsToken(_tokenId), "Already minted token.");
 
