@@ -1,8 +1,31 @@
 #! /bin/bash
 
+# TODO
+#   - Check the availability of the TCP port for Linux
+#   - Setup 'logrotate' for Linux
+
+readonly verbose=1  # 1: true, 0: false - Hard coded yet
+readonly dryrun=0   # 1: true, 0: false - Not Used Yet
+readonly uname=`uname -s`  # OS type
 readonly script_dir=$(cd `dirname $0` && pwd)
-readonly run_dir=$(mkdir -p "${script_dir}/../run/ganache" && cd "${script_dir}/../run/ganache" && pwd)
-readonly data_dir=${run_dir}/data
+
+declare data_dir
+declare log_dir
+case $uname in
+Linux)  #Linux
+  data_dir='/var/lib/ganache-cli'
+  log_dir='/var/log'
+  ;;
+MINGW*)  #Git Bash on Windows
+  readonly run_dir=$(mkdir -p "${script_dir}/../run/ganache" && cd "${script_dir}/../run/ganache" && pwd)
+  data_dir=${run_dir}/data
+  log_dir=${run_dir}
+  ;;
+*)
+  echo "The current system is Unknown of which 'uname -s' shows '$uname'."
+  exit 600
+esac
+
 
 options=$(getopt -o rb --long "refresh,background" --name 'ganache-cli-start-options' -- "$@");
 
@@ -30,15 +53,25 @@ while true; do
 done
 
 if [ ! -d "${data_dir}" ]; then
-  echo "Created data directory on '${data_dir}'"
-  mkdir -p "${data_dir}"
+  echo "Creating data directory on '${data_dir}'"
+  if [ "$uname" == "Linux" ]; then
+    sudo mkdir -p "${data_dir}"
+  else
+    mkdir -p "${data_dir}"
+  fi
 fi
 
 if [ $refreshes -eq 1 ]; then
   echo "Removing all current data under '${data_dir}'"
-  rm -Rf "${data_dir}"
-  sleep 3
-  mkdir -p "${data_dir}"
+  if [ "$uname" == "Linux" ]; then
+    sudo rm -Rf "${data_dir}"
+    sleep 3
+    sudo mkdir -p "${data_dir}"
+  else
+    rm -Rf "${data_dir}"
+    sleep 3
+    mkdir -p "${data_dir}"
+  fi
 fi
 
 cd "${script_dir}"
@@ -50,20 +83,34 @@ readonly eth_mnemonic=`cat ganache-cli.properties | grep -E "^ethereum\.mnemonic
 readonly eth_gas_price=`cat ganache-cli.properties | grep -E "^ethereum\.gasPrice=" | sed -E 's/ethereum\.gasPrice=//'`
 readonly eth_gas_limit=`cat ganache-cli.properties | grep -E "^ethereum\.gasLimit=" | sed -E 's/ethereum\.gasLimit=//'`
 
-# check whether the address is alreasy in use or not
-if [ `netstat -anp tcp | awk '$4 == "LISTENING" {print $2}' | grep -E "^($eth_host|0.0.0.0):$eth_port$" | wc -l` -gt 0 ]; then
-  readonly pid=`netstat -anop tcp | awk '$4 == "LISTENING" {print $2 " " $5}' | grep -E "^($eth_host|0.0.0.0):$eth_port\s" | head -n 1 | awk '{print $2}'`
-  echo "The address '$eth_host:$eth_port' is already in use by the process of which PID is $pid."
-  echo "Fail to start ganache-cli."
-  exit 500
+if [ $verbose -ne 0 ]; then
+  echo "eth_ver: $eth_ver"
+  echo "eth_host: $eth_host"
+  echo "eth_port: $eth_port"
+  echo "eth_mnemonic: $eth_mnemonic"
+  echo "eth_gas_price: $eth_gas_price"
+  echo "eth_gas_limit: $eth_gas_limit"
+  echo "uname: $uname"
 fi
 
-# echo $eth_ver;
-# echo $eth_host;
-# echo $eth_port;
-# echo $eth_mnemonic;
-# echo $eth_gas_price;
-# echo $eth_gas_limit;
+case $uname in
+Linux)  #Linux
+  echo "The current system is 'Linux'"
+  ;;
+MINGW*)  #Git Bash on Windows
+  echo "The curreun system is 'Windows'"
+  # check whether the address is alreasy in use or not
+  if [ `netstat -anp tcp | awk '$4 == "LISTENING" {print $2}' | grep -E "^($eth_host|0.0.0.0):$eth_port$" | wc -l` -gt 0 ]; then
+    readonly pid=`netstat -anop tcp | awk '$4 == "LISTENING" {print $2 " " $5}' | grep -E "^($eth_host|0.0.0.0):$eth_port\s" | head -n 1 | awk '{print $2}'`
+    echo "The address '$eth_host:$eth_port' is already in use by the process of which PID is $pid."
+    echo "Fail to start ganache-cli."
+    exit 500
+  fi
+  ;;
+*)
+  echo "The current system is Unknown of which 'uname -s' shows '$uname'."
+  exit 600
+esac
 
 # Ganache CLI : https://github.com/trufflesuite/ganache-cli#using-ganache-cli
 # BIP 32 : https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
@@ -93,7 +140,20 @@ cmd="ganache-cli --networkId $eth_ver \
             --hardfork petersburg \
             --blockTime 0 \
             --verbose \
-            --db '${data_dir}' >> '${run_dir}'/ganache.log 2>&1"
+            --db '${data_dir}' >> '${log_dir}'/ganache.log 2>&1"
+
+if [ "$uname" == "Linux" ]; then
+  cmd="sudo sh -c \"$cmd\""
+  # cmd="sudo sh -c -- $cmd"
+fi
+
+if [ $dryrun -ne 0 ]; then
+  echo $cmd
+  echo ""
+  echo "This is 'DRY' run."
+  echo "The right above command would be executed, if run again without 'dryrun' option."
+  exit 700
+fi
 
 if [ $backgrounds -eq 0 ]; then
   echo $cmd
@@ -105,9 +165,9 @@ else
 
   if [ $? -eq 0 ]; then
     sleep 3
-    tail "${run_dir}"/ganache.log -n 50
+    tail "${log_dir}"/ganache.log -n 50
     echo "The loacal Ganache has started."
-    echo "The log file is located at '${run_dir}/ganache.log'."
+    echo "The log file is located at '${log_dir}/ganache.log'."
   fi
 fi
 
