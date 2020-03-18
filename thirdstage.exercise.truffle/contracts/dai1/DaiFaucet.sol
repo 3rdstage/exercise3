@@ -9,7 +9,7 @@ pragma solidity ^0.5.9;
 interface DaiToken{
   function transfer(address dest, uint wad) external returns (bool);
   function balanceOf(address owner) external view returns (uint);
-}
+}  
 
 contract owned{
   DaiToken _token;

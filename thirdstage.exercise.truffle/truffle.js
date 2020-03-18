@@ -7,6 +7,7 @@
 // https://github.com/trufflesuite/truffle/tree/v5.1.5/packages/hdwallet-provider
 // https://iancoleman.io/bip39/
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+const PrivateKeyProvider = require("truffle-privatekey-provider");
 const mnemonic = "unit ramp wire absent film fox arrest govern ball make sunny fork"; // should be 12 words
 
 const fs = require('fs');
@@ -46,6 +47,12 @@ module.exports = {
         },
         network_id: 6,
       },
+
+      chainztest: {
+        provider: new PrivateKeyProvider(privateKey, "https://rinkeby.infura.io/"),
+        network_id: 2020
+      }
+
     },
 
     compilers: {
