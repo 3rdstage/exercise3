@@ -7,11 +7,11 @@ import "truffle/DeployedAddresses.sol";
 //   https://github.com/trufflesuite/truffle/blob/beta/lib/testing/Assert.sol
 
 contract TestERC20 {
-    
-    
+
+
     function testTotalSupply() public {
 
-        
+
     }
-    
+
 }

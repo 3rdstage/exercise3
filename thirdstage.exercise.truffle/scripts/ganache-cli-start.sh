@@ -4,10 +4,15 @@
 #   - Check the availability of the TCP port for Linux
 #   - Setup 'logrotate' for Linux
 
-readonly verbose=1  # 1: true, 0: false - Hard coded yet
+readonly verbose=0  # 1: true, 0: false - Hard coded yet
 readonly dryrun=0   # 1: true, 0: false - Not Used Yet
 readonly uname=`uname -s`  # OS type
 readonly script_dir=$(cd `dirname $0` && pwd)
+
+if [ -z "$BIP39_MNEMONIC" ]; then
+  echo "Environmental variable of 'BIP39_MNEMONIC' should be defined to run this script."
+  exit 100
+fi
 
 declare data_dir
 declare log_dir
@@ -25,7 +30,6 @@ MINGW*)  #Git Bash on Windows
   echo "The current system is Unknown of which 'uname -s' shows '$uname'."
   exit 600
 esac
-
 
 options=$(getopt -o rb --long "refresh,background" --name 'ganache-cli-start-options' -- "$@");
 
@@ -79,7 +83,6 @@ cd "${script_dir}"
 readonly eth_ver=`cat ganache-cli.properties | grep -E "^ethereum\.netVersion=" | sed -E 's/ethereum\.netVersion=//'`
 readonly eth_host=`cat ganache-cli.properties | grep -E "^ethereum\.host=" | sed -E 's/ethereum\.host=//'`
 readonly eth_port=`cat ganache-cli.properties | grep -E "^ethereum\.port=" | sed -E 's/ethereum\.port=//'`
-readonly eth_mnemonic=`cat ganache-cli.properties | grep -E "^ethereum\.mnemonic=" | sed -E 's/ethereum\.mnemonic=//'`
 readonly eth_gas_price=`cat ganache-cli.properties | grep -E "^ethereum\.gasPrice=" | sed -E 's/ethereum\.gasPrice=//'`
 readonly eth_gas_limit=`cat ganache-cli.properties | grep -E "^ethereum\.gasLimit=" | sed -E 's/ethereum\.gasLimit=//'`
 
@@ -87,7 +90,6 @@ if [ $verbose -ne 0 ]; then
   echo "eth_ver: $eth_ver"
   echo "eth_host: $eth_host"
   echo "eth_port: $eth_port"
-  echo "eth_mnemonic: $eth_mnemonic"
   echo "eth_gas_price: $eth_gas_price"
   echo "eth_gas_limit: $eth_gas_limit"
   echo "uname: $uname"
@@ -133,11 +135,11 @@ cmd="ganache-cli --networkId $eth_ver \
             --port $eth_port \
             --gasPrice $eth_gas_price \
             --gasLimit $eth_gas_limit \
-            --mnemonic '$eth_mnemonic' \
-            --accounts 3 \
-            --secure --unlock 0 --unlock 1 --unlock 2 \
-            --defaultBalanceEther 1000000 \
-            --hardfork petersburg \
+            --mnemonic '$BIP39_MNEMONIC' \
+            --defaultBalanceEther 10000 \
+            --accounts 10 --secure \
+            --unlock 0 --unlock 1 --unlock 2 --unlock 3 --unlock 4 \
+            --hardfork muirGlacier \
             --blockTime 0 \
             --verbose \
             --db '${data_dir}' >> '${log_dir}'/ganache.log 2>&1"

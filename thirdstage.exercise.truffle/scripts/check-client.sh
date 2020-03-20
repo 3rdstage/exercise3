@@ -41,30 +41,29 @@ echo "Executing some basic JSON RPC methods to '$rpc_addr'"
 echo ""
 
 declare -ar titles=(
-'current client version'
-'current network ID'
-'number of peers currently connected to the client'
-'the current ethereum protocol version'
 'the client coinbase address'
+'current client version'
+'the current ethereum protocol version'
+'number of peers currently connected to the client'
 'whether or not client is actively mining new blocks'
-'the current price per gas in wei'
 'a list of addresses owned by client'
+'current network ID'
+'the current price per gas in wei'
 'the number of most recent block'
 'about the genesis block'
 )
 
 declare -ar data=(
-'{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":11}'
-'{"jsonrpc":"2.0","method":"net_version","params":[],"id":21}'
-'{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":31}'
-'{"jsonrpc":"2.0","method":"eth_protocolVersion","params":[],"id":41}'
-'{"jsonrpc":"2.0","method":"eth_coinbase","params":[],"id":51}'
-'{"jsonrpc":"2.0","method":"eth_mining","params":[],"id":61}'
-'{"jsonrpc":"2.0","method":"eth_gasPrice","params":[],"id":71}'
-'{"jsonrpc":"2.0","method":"eth_accounts","params":[],"id":81}'
+'{"jsonrpc":"2.0","method":"eth_coinbase","params":[],"id":11}'
+'{"jsonrpc":"2.0","method":"web3_clientVersion","params":[],"id":21}'
+'{"jsonrpc":"2.0","method":"eth_protocolVersion","params":[],"id":31}'
+'{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":41}'
+'{"jsonrpc":"2.0","method":"eth_mining","params":[],"id":51}'
+'{"jsonrpc":"2.0","method":"eth_accounts","params":[],"id":61}'
+'{"jsonrpc":"2.0","method":"net_version","params":[],"id":71}'
+'{"jsonrpc":"2.0","method":"eth_gasPrice","params":[],"id":81}'
 '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":91}'
 '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0x0", false],"id":101}'
-
 )
 
 for (( i = 0; i < ${#titles[@]}; i++ )); do
