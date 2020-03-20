@@ -1,14 +1,7 @@
-//require("babel-polyfill");
-//require("babel-register")({
-//  "presets": ["env"],
-//  "plugins": ["syntax-async-functions","transform-regenerator"]
-//});
 
 // https://github.com/trufflesuite/truffle/tree/v5.1.5/packages/hdwallet-provider
 // https://iancoleman.io/bip39/
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-//const mnemonic = "unit ramp wire absent film fox arrest govern ball make sunny fork"; // should be 12 words
-//const mnemonic = process.env.BIP39_MNEMONIC
 
 const fs = require('fs');
 const ganacheConfig = fs.readFileSync('scripts/ganache-cli.properties').toString();
