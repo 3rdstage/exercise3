@@ -16,8 +16,10 @@ npm-debug.log
 .npmrc
 config.gypi
 package-lock.json
+*.md.html
 *.log
 *.orig
 *.bak
 ._*
 .*.swp
+/test/*.abi

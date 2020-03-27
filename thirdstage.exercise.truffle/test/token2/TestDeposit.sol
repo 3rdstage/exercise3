@@ -5,13 +5,13 @@ import "truffle/DeployedAddresses.sol";
 //import "../../contracts/token2/Deposit.sol";
 
 
-contract DepositTest {
-    
-    
-    function testDeposit1() public {   
+contract TestDeposit {
+
+
+    function testDeposit1() public {
        // Deposit deposit = new Deposit();
-        
-        
+
+
     }
-    
+
 }

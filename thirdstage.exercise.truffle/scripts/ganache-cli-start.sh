@@ -141,7 +141,6 @@ cmd="ganache-cli --networkId $eth_ver \
             --unlock 0 --unlock 1 --unlock 2 --unlock 3 --unlock 4 \
             --hardfork muirGlacier \
             --blockTime 0 \
-            --verbose \
             --db '${data_dir}' >> '${log_dir}'/ganache.log 2>&1"
 
 if [ "$uname" == "Linux" ]; then
