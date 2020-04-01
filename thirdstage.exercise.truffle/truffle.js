@@ -22,7 +22,7 @@ module.exports = {
     development: {
       host: ganacheHost,
       port: ganachePort,
-      network_id: ganacheNetVer,
+      network_id: '*',
       from: ganacheFrom,
       gas: 0x10000000,
       gasPrice: 0
