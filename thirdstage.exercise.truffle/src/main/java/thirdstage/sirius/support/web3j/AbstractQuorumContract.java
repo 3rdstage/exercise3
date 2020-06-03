@@ -25,36 +25,36 @@ import org.web3j.quorum.Quorum;
 public abstract class AbstractQuorumContract{
 
   protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-  
+
   private Quorum defaultQuorum;
-    
-  protected Quorum getDefaultQuorum() { return this.defaultQuorum; } 
-  
+
+  protected Quorum getDefaultQuorum() { return this.defaultQuorum; }
+
   private Quorum fallbackQuorum;
-  
+
   protected Quorum getFallbackQuorum() { return this.fallbackQuorum; }
- 
+
   private Quorum quorum;
 
   protected Quorum getQuorum() { return this.quorum; }
-  
+
   @Value("${quorum.from}")
   private String from;
-  
+
   public String getFrom() { return this.from; }
-  
+
   protected AbstractQuorumContract setFrom(@NotEmpty final String from) {
     this.from = from;
     return this;
   }
-  
+
   abstract protected String getAddress();
-  
+
   public AbstractQuorumContract(@Nonnull final Quorum defaultQr, @Nonnull final Quorum fallbackQr) {
     this.defaultQuorum = defaultQr;
     this.fallbackQuorum = fallbackQr;
   }
-  
+
   @PostConstruct
   protected void postConstruct() {
     this.quorum = this.defaultQuorum;

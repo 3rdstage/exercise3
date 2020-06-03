@@ -1,19 +1,19 @@
 {
-"networks" {
-  "test" {
+"networks" : {
+  "test" :  {
     "rpcAddress" : "http://besutest.chainz.network",
     "accounts" : [
       {
-        "privateKey" : "8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63",
-        "address" : "fe3b557e8fb62b89f4916b721be55ceb828dbd73"
+        "privateKey" : "c32f495e82084cbe41d2f7938d9daee620aebe4b9f4f302299f852499d0d6417",
+        "address" : "e458c4BCA91829ce0249E4CE091201f6495A06eF"
        },
        {
-        "privateKey" : "c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3",
-        "address" : "627306090abaB3A6e1400e9345bC60c78a8BEf57"
+        "privateKey" : "b19fbaaf909d45d25d9aa28e099b4a0619fa302bc1075a70dcea5b5d645d19a7",
+        "address" : "816BCf7bCcD441ADc1cb1CB94EF92cf9277c4aaa"
        },
        {
-        "privateKey" : "ae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f",
-        "address" : "f17f52151EbEF6C7334FAD080c5704D77216b732"
+        "privateKey" : "3d03cf988134071a6e63cef6a1b46582b2beff5128bae6a00decec66d84d39fc",
+        "address" : "a97B40A7c679aCdfaE98977Bf0958785D4D87bB2"
        }
     ]
   }
