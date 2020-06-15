@@ -18,7 +18,7 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;
 
-public class KeyPairGenerationTest{
+public class Web3jCryptoTest{
 
   final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
