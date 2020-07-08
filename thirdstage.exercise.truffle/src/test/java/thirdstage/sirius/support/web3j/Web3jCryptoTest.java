@@ -1,29 +1,24 @@
 package thirdstage.sirius.support.web3j;
 
-import java.util.List;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Map;
-import java.util.HashMap;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.utils.Numeric;
 
+@TestInstance(Lifecycle.PER_CLASS)
 public class Web3jCryptoTest{
 
   final private Logger logger = LoggerFactory.getLogger(this.getClass());
