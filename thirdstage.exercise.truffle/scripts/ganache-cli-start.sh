@@ -26,6 +26,11 @@ MINGW*)  #Git Bash on Windows
   data_dir=${run_dir}/data
   log_dir=${run_dir}
   ;;
+Darwin*) #Bash on macOS
+  readonly run_dir=$(mkdir -p "${script_dir}/../run/ganache" && cd "${script_dir}/../run/ganache" && pwd)
+  data_dir=${run_dir}/data
+  log_dir=${run_dir}
+  ;;
 *)
   echo "The current system is Unknown of which 'uname -s' shows '$uname'."
   exit 600
@@ -109,6 +114,9 @@ MINGW*)  #Git Bash on Windows
     exit 500
   fi
   ;;
+Darwin*) #Bash on macOS
+  echo "The current system is 'macOS'"
+  ;;
 *)
   echo "The current system is Unknown of which 'uname -s' shows '$uname'."
   exit 600
@@ -118,14 +126,6 @@ esac
 # BIP 32 : https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 # BIP 39 : https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 #
-# Accounts
-#   - 0xC5776C5d4ba76dD38424A160927c6B7054b55edD
-#   - 0x99322780C19B664e9902Ff1031549da575De8F3B
-#   - 0xf0f0717dB9387ea3B095dE1FF43786C63DC93e45
-# Private keys
-#   - 0xbbd0e1d8507416b8c64e88f63b4534969b9d88e4a79ebc67f4abff122f28cfb7
-#   - 0xf8c91da1e73f5601a25cbffdac303138ffac30eeeda2680f1853b6ce325ac01b
-#   - 0x572775a6686f4b5d3b26c46133e7419e97b88b5ba1db9e0f5d3ff9a109916a47
 # Options
 #   - gasLimit : The block gas limit (defaults to 0x6691b7)
 #   - gasPrice: The price of gas in wei (defaults to 20000000000)
