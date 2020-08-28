@@ -36,6 +36,14 @@ Darwin*) #Bash on macOS
   exit 600
 esac
 
+
+# check whether GNU getopt is available or not
+if [ `getopt --test; echo $?` -ne 4 ]; then
+  echo "The avaiable 'getopt' is not GNU getopt which supports long options."
+  echo "For MacOS, install 'gnu-getopt' refering 'https://formulae.brew.sh/formula/gnu-getopt'."
+  exit 410
+fi
+
 options=$(getopt -o rb --long "refresh,background" --name 'ganache-cli-start-options' -- "$@");
 
 if [ $? -ne 0 ]; then
@@ -52,6 +60,7 @@ declare backgrounds=0   #false
 while true; do
   case "$1" in
     -r | --refresh )
+      echo "refresh specified"
       refreshes=1
       shift ;;
     -b | --background )
@@ -139,7 +148,6 @@ cmd="ganache-cli --networkId $eth_ver \
             --defaultBalanceEther 10000 \
             --accounts 10 --secure \
             --unlock 0 --unlock 1 --unlock 2 --unlock 3 --unlock 4 \
-            --hardfork muirGlacier \
             --blockTime 0 \
             --db '${data_dir}' >> '${log_dir}'/ganache.log 2>&1"
 

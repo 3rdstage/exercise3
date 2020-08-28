@@ -39,7 +39,7 @@ contract CarefulMath {
     /**
     * @dev Integer division of two numbers, truncating the quotient.
     */
-    function divUInt(uint a, uint b) internal pure returns (MathError, uint) {
+      function divUInt(uint a, uint b) internal pure returns (MathError, uint) {
         if (b == 0) {
             return (MathError.DIVISION_BY_ZERO, 0);
         }
