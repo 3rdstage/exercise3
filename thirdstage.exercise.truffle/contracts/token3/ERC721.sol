@@ -140,8 +140,18 @@ contract ERC721 is IERC721, ERC165{
     _safeTransferFrom(_from, _to, _tokenId, _data);
   }
 
+  // intenal with no authority or privilege consideration
   function _mint(address _to, uint256 _tokenId) internal {
     // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/token/ERC721/ERC721.sol#L258
+
+    require(_to != address(0), "Transfering to ZERO account is illegal");
+    require(!_existsToken(_tokenId), "Token has already been minted.");
+
+    _owners[_tokenId] = _to;
+    _counts[_to].increment();
+
+
+    emit Transfer(address(0), _to, _tokenId);
   }
 
 

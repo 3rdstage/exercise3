@@ -148,6 +148,7 @@ cmd="ganache-cli --networkId $eth_ver \
             --defaultBalanceEther 10000 \
             --accounts 10 --secure \
             --unlock 0 --unlock 1 --unlock 2 --unlock 3 --unlock 4 \
+            -k 'constantinople' \
             --blockTime 0 \
             --db '${data_dir}' >> '${log_dir}'/ganache.log 2>&1"
 
