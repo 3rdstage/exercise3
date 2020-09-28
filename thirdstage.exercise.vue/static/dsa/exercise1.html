@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standard Template</title>
+<style type="text/css">
+/* local styles here */
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dsa-sdk@latest/build/dsa.min.js"></script>
+<script>
+
+if(window.ethereum){
+  window.web3 = new Web3(window.ethereum)
+
+}else if(window.web3){
+  window.web3 = new Web3(window.currentProvider)
+}else {
+  window.web3 = new Web3('http://127.0.0.1:8545')
+}
+
+console.log(web3)
+
+web3.setProvider('http://127.0.0.1:8545')
+web3.eth.getAccounts().then(console.log)
+
+web3.eth.getAccounts().then(value => console.log(value))
+
+
+
+console.log(web3)
+
+
+
+
+</script>
+</head>
+<body>
+
+
+
+
+</body>
+</html>
