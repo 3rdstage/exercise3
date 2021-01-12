@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.corrosion.run.CargoRunDelegate">
+    <stringAttribute key="ARGUMENTS" value=""/>
+    <stringAttribute key="OPTIONS" value=" --example ${resource_name}"/>
+    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="thirdstage.exercise.rust"/>
+    <stringAttribute key="org.eclipse.debug.core.ATTR_WORKING_DIRECTORY" value="thirdstage.exercise.rust"/>
+    <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+        <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+    </listAttribute>
+</launchConfiguration>
