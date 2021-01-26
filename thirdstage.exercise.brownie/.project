@@ -6,31 +6,14 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-<<<<<<< HEAD
 			<name>org.python.pydev.PyDevBuilder</name>
-=======
-			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
->>>>>>> 91440dd550d7969c8d1be3c95ebed8624aba8e46
-			<arguments>
-			</arguments>
 		</buildCommand>
 		<buildCommand>
-<<<<<<< HEAD
 			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
-=======
-			<name>org.python.pydev.PyDevBuilder</name>
->>>>>>> 91440dd550d7969c8d1be3c95ebed8624aba8e46
-			<arguments>
-			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
-<<<<<<< HEAD
-		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
-		<nature>org.python.pydev.pythonNature</nature>
-=======
 		<nature>org.python.pydev.pythonNature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
->>>>>>> 91440dd550d7969c8d1be3c95ebed8624aba8e46
 	</natures>
 </projectDescription>
