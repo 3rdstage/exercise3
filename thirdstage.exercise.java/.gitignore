@@ -1,0 +1,66 @@
+# references
+#   https://git-scm.com/docs/gitignore
+#   https://github.com/github/gitignore
+
+# source version control related
+CVS/
+.svn/
+.hg
+
+# IDEs or tools related
+/.idea/
+/.vscode/
+.gradle/
+
+# directories for intermediate or final compiled artifacts
+/bin/
+/target/
+/build/
+/output/
+/Debug/
+/Release/
+/x86/
+/x64/
+/obj/
+
+# dependencies
+/node_modules/
+/pkg/
+
+# generated artifacts
+/reports/
+/_site/
+.apt_generated/
+.atp_generated_tests/
+
+# runtime outputs
+/run/
+/log/
+/logs/
+/test-output/
+*.log
+npm-debug.log
+
+# backups, caches, or temporary artifacts
+.~*
+._*
+*.bak
+.cache*
+.*.swp
+*.md.html
+package-lock.json
+Gemfile.lock
+.sass-cache
+__pycache__/
+packer_cache/
+
+# misc
+config.gypi
+.npmrc
+.jekyll-metadata
+.DS_Store
+.lock-wscript
+.wafpickle-N
+
+# build outputs of Remix-IDE for smart contracts - https://remix-ide.readthedocs.io/en/latest/contract_metadata.html
+contracts/**/artifacts/

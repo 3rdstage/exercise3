@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<configuration debug="true" scan="true" scanPeriod="180 seconds">
+ 
+   <!-- For more on JMX configuration, refer http://logback.qos.ch/manual/jmxConfig.html -->
+   <jmxConfigurator/>
+ 
+   <property name="_LOG_FILE_DIR" value="${log.file.dir:-${LOG_BASE:-${TEMP:-${user.home}}}}" />
+   <property name="_LOG_FILE_NAME" value="${log.file.name:-logback}" /> <!-- excluding path and extension -->
+   <property name="_LOG_TIMEZONE" value="${log.timezone:-Asia/Seoul}"/>
+   <property name="_LOG_PID" value="${log.pid:-false}" />
+   <property name="_LOG_LEVEL_ROOT" value="${log.level.root:-${log.level.default:-DEBUG}}"/>
+   <property name="_LOG_LEVEL_SPRING" value="${log.level.spring:-${log.level.default:-INFO}}"/>
+   <property name="_LOG_LEVEL_MYBATIS" value="${log.level.mybatis:-${log.level.default:-INFO}}"/>
+   <property name="_LOG_LEVEL_JETTY" value="${log.level.jetty:-${log.level.default:-INFO}}" />
+   <property name="_LOG_LEVEL_AKKA" value="${log.level.akka:-${log.level.default:-DEBUG}}" />
+   <property name="_LOG_LEVEL_AKKA_CLUSTER_HEARTBEAT" value="${log.level.akka.clusterHeartBeat:-OFF}"/>
+   <property name="_LOG_LEVEL_APACHE_HTTP" value="${log.level.apache.http:-${log.level.default:-INFO}}" />
+   <property name="_LOG_LEVEL_APACHE_HTTP_WIRE" value="${log.level.apache.http.wire:-${log.level.default:-DEBUG}}" />
+   <property name="_LOG_LEVEL_WEB3J" value="${log.level.web3j:-${log.level.default:-INFO}}" />
+   <property name="_LOG_LEVEL_MONGODB" value="${log.level.mongodb:-${log.level.default:-INFO}}" />
+ 
+   <if condition='property("_LOG_PID").trim().equals("true")'>
+      <then>
+         <!-- For more on conversion pattern, refer http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout -->
+         <property name="_PATTERN_HEADER" value="[%d{yy/MM/dd HH:mm:ss, ${_LOG_TIMEZONE}}|%-5.-5p|%X{pid}|%-15.-15t|%40.40c{2}]" />
+         <!-- %M is not particularly fast. Thus, it should be uses only in test -->
+         <property name="_PATTERN_HEADER_METHOD" value="[%d{yy/MM/dd HH:mm:ss, ${_LOG_TIMEZONE}}|%-5.-5p|%X{pid}|%-15.-15t|%40.40c{2}|%M]" />
+      </then>
+      <else>
+         <property name="_PATTERN_HEADER" value="[%d{yy/MM/dd HH:mm:ss, ${_LOG_TIMEZONE}}|%-5.-5p|%-15.-15t|%40.40c{2}]" />
+         <property name="_PATTERN_HEADER_METHOD" value="[%d{yy/MM/dd HH:mm:ss, ${_LOG_TIMEZONE}}|%-5.-5p|%-15.-15t|%40.40c{2}|%M]" />
+      </else>
+   </if>
+ 
+   <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+         <level>DEBUG</level>
+      </filter>
+      <encoder>
+         <pattern>${_PATTERN_HEADER} %m%n</pattern>
+      </encoder>
+   </appender>
+   <!-- For more on RollingFileAppender, refer http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+   <appender name="DRFA" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <!-- Do NOT specify file element to use prudent mode -->
+      <prudent>true</prudent>
+      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+         <fileNamePattern>${_LOG_FILE_DIR}/${_LOG_FILE_NAME}.%d{yyyy-MM-dd, ${_LOG_TIMEZONE}}.log</fileNamePattern>
+         <maxHistory>10</maxHistory>
+      </rollingPolicy>
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+         <level>DEBUG</level>
+      </filter>
+      <encoder>
+         <pattern>${_PATTERN_HEADER} %m%n</pattern>
+      </encoder>
+   </appender>
+ 
+   <root level="${_LOG_LEVEL_ROOT}">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </root>
+ 
+   <logger name="org.springframework" level="${_LOG_LEVEL_SPRING}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="org.apache.ibatis" level="${_LOG_LEVEL_MYBATIS}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+  <logger name="org.mybatis.spring" level="${_LOG_LEVEL_MYBATIS}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="org.eclipse.jetty" level="${_LOG_LEVEL_JETTY}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="org.eclipse.jetty.http.HttpParser" level="${_LOG_LEVEL_JETTY}" additivity="false">
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="org.eclipse.jetty.webapp.WebAppClassLoader" level="${_LOG_LEVEL_JETTY}" additivity="false">
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="org.hibernate.validator" level="WARN" additivity="false">
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="org.eclipse.jdt.internal.junit" level="WARN" additivity="false">
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="akka" level="${_LOG_LEVEL_AKKA}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="akka.cluster.ClusterHeartbeatSender" level="${_LOG_LEVEL_AKKA_CLUSTER_HEARTBEAT}" additivity="false">
+      <appender-ref ref="DRFA" />
+   </logger>
+ 
+   <logger name="org.apache.http" level="${_LOG_LEVEL_APACHE_HTTP}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+   
+   <logger name="org.apache.http.wire" level="${_LOG_LEVEL_APACHE_HTTP_WIRE}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+   
+   <logger name="org.web3j" level="${_LOG_LEVEL_WEB3J}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>
+   
+   <!-- https://mongodb.github.io/mongo-java-driver/4.2/driver/reference/logging/ -->
+   <logger name="org.mongodb.driver" level="${_LOG_LEVEL_MONGODB}" additivity="false">
+      <appender-ref ref="Console" />
+      <appender-ref ref="DRFA" />
+   </logger>   
+   
+</configuration>
