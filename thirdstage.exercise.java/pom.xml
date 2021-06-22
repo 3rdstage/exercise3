@@ -32,7 +32,7 @@
     <checkstyle.skip>true</checkstyle.skip>
     <dependencies.release.updatePolicy>never</dependencies.release.updatePolicy> <!-- always | daily | never -->
     <!-- versions for Java SDK and dependencies -->
-    <java.version>1.8</java.version>
+    <java.version>1.9</java.version>
     <jsr305.version>3.0.2</jsr305.version> <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
     <validation-api.version>2.0.1.Final</validation-api.version> <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
     <hibernate-validator.version>6.1.2.Final</hibernate-validator.version> <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
@@ -46,6 +46,7 @@
     <commons-lang3.version>3.9</commons-lang3.version> <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
     <commons-validator.version>1.6</commons-validator.version> <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
     <commons-collections4.version>4.4</commons-collections4.version> <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+    <jaxb.version>3.0.1</jaxb.version>
     <typesafe-config.version>1.3.1</typesafe-config.version>
     <mybatis.version>3.5.1</mybatis.version> <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
     <jjwt.version>0.10.7</jjwt.version> <!-- https://mvnrepository.com/artifact/io.jsonwebtoken -->
@@ -502,6 +503,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>
       <version>${commons-collections4.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>${jaxb.version}</version>
     </dependency>
     <!-- For more typesafe config, refer https://github.com/typesafehub/config -->
     <dependency>
