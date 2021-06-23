@@ -1,4 +1,4 @@
-package thirdstage.sirius.support.web3j;
+package thirdstage.exercise.web3j;
 
 import java.util.List;
 import java.math.BigInteger;

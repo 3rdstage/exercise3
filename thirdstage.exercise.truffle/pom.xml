@@ -43,7 +43,8 @@
     <commons.lang3.version>3.9</commons.lang3.version>
     <commons.collections4.version>4.4</commons.collections4.version>
     <json-path.version>2.4.0</json-path.version>
-    <web3j.version>4.5.18</web3j.version>
+    <web3j.version>4.8.4</web3j.version>
+    <web3j-unit.version>4.8.1</web3j-unit.version>
     <web3j.quorum.version>0.9.0</web3j.quorum.version> <!-- https://mvnrepository.com/artifact/org.web3j/quorum -->
     <!-- version for Maven plugins -->
     <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version> <!-- latest stable 3.7.0 -->
@@ -62,18 +63,8 @@
   <repositories>
     <!-- For more repositories, refer https://mvnrepository.com/repos -->
     <repository>
-      <id>central1</id>
-      <url>http://repo1.maven.org/maven2/</url>
-      <releases>
-        <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>central2</id>
-      <url>http://repo2.maven.org/maven2/</url>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
       <releases>
         <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
       </releases>
@@ -91,12 +82,27 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>spring-libs-milestone</id>
+      <url>https://repo.spring.io/libs-milestone</url>
+      <releases>
+        <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jcenter-snapshots</id>
+      <name>jcenter</name>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
   </repositories>
-
+ 
   <pluginRepositories>
     <pluginRepository>
-      <id>central1</id>
-      <url>http://repo1.maven.org/maven2/</url>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
       <releases>
         <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
       </releases>
@@ -105,8 +111,8 @@
       </snapshots>
     </pluginRepository>
     <pluginRepository>
-      <id>central2</id>
-      <url>http://repo2.maven.org/maven2/</url>
+      <id>spring-plugins</id>
+      <url>https://repo.spring.io/plugins-release/</url>
       <releases>
         <updatePolicy>${dependencies.release.updatePolicy}</updatePolicy>
       </releases>
@@ -531,6 +537,24 @@
       <groupId>org.web3j</groupId>
       <artifactId>quorum</artifactId>
       <version>${web3j.quorum.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.web3j</groupId>
+      <artifactId>web3j-unit</artifactId>
+      <version>${web3j-unit.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.web3j</groupId>
+          <artifactId>web3j-evm</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.web3j</groupId>
+      <artifactId>web3j-evm</artifactId>
+      <version>${web3j.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/io.reactivex/rxjava -->
     <dependency>
