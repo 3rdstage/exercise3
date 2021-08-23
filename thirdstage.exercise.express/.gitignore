@@ -13,7 +13,7 @@ CVS/
 .gradle/
 
 # directories for intermediate or final compiled artifacts
-# /bin/
+# /bin/ 
 /target/
 /build/
 /output/
