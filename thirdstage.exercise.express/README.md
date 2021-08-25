@@ -9,4 +9,6 @@ $ curl http://localhost:3000/rest/messages
 
 $ curl http://localhost:3000/rest/messages -X POST -H "Content-Type:application/json" -d '{"text": "Hello, World!"}' 
 
+$ curl http://localhost:3000/eth/basic | jq .
+
 ~~~~

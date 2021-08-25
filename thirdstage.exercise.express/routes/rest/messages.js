@@ -4,13 +4,13 @@ const { v4: uuidv4 } = require('uuid');
 
 let messages = {};
 
-router.get('/', (req, res) => {
+router.get('/messages', (req, res) => {
   res.set('Content-Type', 'application/json');
   res.send(JSON.stringify(Object.values(messages), null, 2) + '\n');
   
 });
 
-router.post('/', (req, res) => {
+router.post('/messages', (req, res) => {
   const id = uuidv4();
   const msg = {
     id,
@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
   res.send(JSON.stringify(msg, null, 2) + '\n');
 });
 
-router.delete('/:msgId', (req, res) => {
+router.delete('/messages/:msgId', (req, res) => {
   const {
     [req.params.msgId] : msg,
     ...others
