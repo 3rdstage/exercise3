@@ -21,7 +21,7 @@ router.get('/basic', async (req, res) => {
     }
   }
   
-  res.set("Content-Type", "application/json");
+  res.header("Content-Type", "application/json");
   res.send(basic);
 });
 

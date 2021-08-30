@@ -1,3 +1,5 @@
-const basicRouter = require('./basic');
 
-module.exports = [basicRouter];
+module.exports = [
+  require('./basic'),
+  require('./test-contract')
+]
