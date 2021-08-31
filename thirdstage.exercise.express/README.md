@@ -11,4 +11,6 @@ $ curl http://localhost:3000/rest/messages -X POST -H "Content-Type:application/
 
 $ curl http://localhost:3000/eth/basic | jq .
 
+$ curl -H "Accept: application/json" 'http://localhost:3000/eth/test-contract/sum?a=10&b=20' | jq .
+
 ~~~~
