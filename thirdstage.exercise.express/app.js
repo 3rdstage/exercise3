@@ -17,6 +17,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const logRequestStart = (req, res, next) => {
+    console.info(`${req.method} ${req.originalUrl}`);
+    next();
+}
+
+app.use(logRequestStart);
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/rest', restRouters);

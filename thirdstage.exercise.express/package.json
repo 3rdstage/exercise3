@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "@3rdstage/smart-contracts": "file:../../smart-contracts/3rdstage-smart-contracts-0.1.1.tgz",
     "config": "^3.3.6",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -14,8 +15,7 @@
     "js-yaml": "^4.1.0",
     "morgan": "~1.9.1",
     "uuid": "^8.3.2",
-    "web3": "^1.5.2",
-    "@3rdstage/smart-contracts": "file:../../smart-contracts/3rdstage-smart-contracts-0.1.0-snapshot.tgz"
+    "web3": "^1.5.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

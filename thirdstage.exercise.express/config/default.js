@@ -7,19 +7,19 @@ module.exports = {
   },
   
   web3: {
-    url: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+    url: `wss://kovan.infura.io/ws/v3/${process.env.INFURA_PROJECT_ID}`,
     from: '0xb009cd53957c0D991CAbE184e884258a1D7b77D9'
   },
   
   smartContracts: {
     web3TestContract: {
       addresses: {
-        kovan: '0x821BAf1411Bdc650d7DA59619eE7ac191dd0C19E'
+        kovan: '0x78E9099A7ab23a7a5616Df1da5AB151E22f398b1'
       }
     },
     solidityTestContract: {
       addresses: {
-        kovan: '0xAcD4458768Ee476b3Fffaa59D3e5d885b78EA4Da'
+        kovan: '0x1b25c314a3c36AeA84F586FB1362e30eD63007e9'
       }
     }    
   },
