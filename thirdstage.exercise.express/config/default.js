@@ -7,7 +7,8 @@ module.exports = {
   },
   
   web3: {
-    url: `wss://kovan.infura.io/ws/v3/${process.env.INFURA_PROJECT_ID}`,
+    //url: `wss://kovan.infura.io/ws/v3/${process.env.INFURA_PROJECT_ID}`,
+    url: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
     from: '0xb009cd53957c0D991CAbE184e884258a1D7b77D9'
   },
   

@@ -1,27 +1,19 @@
 const fs = require('fs');
 const config = require('config');
 const router = require("express-promise-router")();
+const request = require('request');
 
-const Web3 = require('web3');
-//https://web3js.readthedocs.io/en/v1.3.6/web3.html#configuration
-//const web3 = new Web3(
-//  new Web3.providers.HttpProvider(config.web3.url),
-//  { keepAlive: true, withCredentials: false, timeout: 20000} 
-//);
-const web3Provider = new Web3.providers.WebsocketProvider(config.web3.url, {
-  clientConfig: {
-    maxReceivedFrameSize: 100000000,   // bytes - default: 1MiB
-    maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
-    keepalive: true,
-    keepaliveInterval: 60000 // ms
-  }
-});
-const web3 = new Web3(web3Provider);
-web3.eth.Contract.defaultAccount = config.get('web3.from');
+let web3;
+let contract;
 
-const abi = require('@3rdstage/smart-contracts/build/truffle/Web3TestContract.json').abi;
-const contractAddr = config.get('smartContracts.web3TestContract.addresses.kovan');
-const contract = new web3.eth.Contract(abi, contractAddr);
+function init(_web3, _db){
+  
+  web3 = _web3;
+  const abi = require('@3rdstage/smart-contracts/build/truffle/Web3TestContract.json').abi;
+  const contractAddr = config.get('smartContracts.web3TestContract.addresses.kovan');
+
+  contract = new web3.eth.Contract(abi, contractAddr);
+}
 
 router.get('/test-contract/months', async (req, res) => {
 
@@ -67,12 +59,11 @@ router.post('/test-contract/eth', async (req, res) => {
 router.post('/test-contract/counter', async (req, res) => {
   
   const func = contract.methods.countUp().encodeABI();
-  
-  console.log(contractAddr);
+  //console.log(contract.options.address);
   
   const signed = await web3.eth.accounts.signTransaction({
     from : config.testAccounts[0].address,
-    to: contractAddr,
+    to: contract.options.address,
     gas: 2000000,
     data: func
   }, config.testAccounts[0].key);
@@ -87,4 +78,7 @@ router.post('/test-contract/counter', async (req, res) => {
 });
 
 
-module.exports = router;
+module.exports = (_web3, _db) => {
+  init(_web3, _db);
+  return router;
+};

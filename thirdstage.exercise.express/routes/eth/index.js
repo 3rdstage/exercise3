@@ -1,5 +1,5 @@
 
-module.exports = [
-  require('./basic'),
-  require('./test-contract')
-]
+module.exports = (web3, db) => {
+  return [ require('./basic'), require('./test-contract')(web3, db) ];
+}
+
