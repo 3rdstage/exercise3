@@ -14,14 +14,10 @@ module.exports = {
   
   smartContracts: {
     web3TestContract: {
-      addresses: {
-        kovan: '0x78E9099A7ab23a7a5616Df1da5AB151E22f398b1'
-      }
+      address: '0x78E9099A7ab23a7a5616Df1da5AB151E22f398b1' // kovan
     },
     solidityTestContract: {
-      addresses: {
-        kovan: '0x1b25c314a3c36AeA84F586FB1362e30eD63007e9'
-      }
+      address: '0x1b25c314a3c36AeA84F586FB1362e30eD63007e9' // kovan
     }    
   },
   

@@ -3,17 +3,10 @@ const config = require('config');
 const router = require("express-promise-router")();
 const request = require('request');
 
-let web3;
-let contract;
-
-function init(_web3, _db){
-  
-  web3 = _web3;
-  const abi = require('@3rdstage/smart-contracts/build/truffle/Web3TestContract.json').abi;
-  const contractAddr = config.get('smartContracts.web3TestContract.addresses.kovan');
-
-  contract = new web3.eth.Contract(abi, contractAddr);
-}
+const web3 = require('../../loaders/web3');
+const abi = require('@3rdstage/smart-contracts/build/truffle/Web3TestContract.json').abi;
+const contractAddr = config.get('smartContracts.web3TestContract.address');
+const contract = new web3.eth.Contract(abi, contractAddr);
 
 router.get('/test-contract/months', async (req, res) => {
 
@@ -77,8 +70,4 @@ router.post('/test-contract/counter', async (req, res) => {
   
 });
 
-
-module.exports = (_web3, _db) => {
-  init(_web3, _db);
-  return router;
-};
+module.exports = router;
