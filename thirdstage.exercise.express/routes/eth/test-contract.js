@@ -60,14 +60,14 @@ router.post('/test-contract/counter', async (req, res) => {
     gas: 2000000,
     data: func
   }, config.testAccounts[0].key);
-  
+
   console.log(signed);
-  
+
   const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-  
+
   res.header("Content-Type", "application/json");
   res.send(result);  
-  
+
 });
 
 module.exports = router;
