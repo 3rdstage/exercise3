@@ -20,6 +20,8 @@
     "web3": "^1.5.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "ethereumjs-wallet": "^1.0.2",
+    "bip39": "^3.0.4"
   }
 }
