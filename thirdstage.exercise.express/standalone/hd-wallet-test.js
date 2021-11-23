@@ -2,17 +2,22 @@ const { hdkey } = require('ethereumjs-wallet'); // https://www.npmjs.com/package
 const bip39 = require("bip39"); // https://www.npmjs.com/package/bip39
 
 // https://dev.to/dongri/ethereum-wallet-sample-code-10o2
-const mnemonic = 'forest unveil solar vapor innocent furnace finish logic fix foil record coast'
-const parentKey = hdkey.fromMasterSeed(bip39.mnemonicToSeedSync(mnemonic)).derivePath("m/44'/60'/0'/0");
+const mnemonic = 'narrow fiber erode bomb moment cube culture year acquire lamp provide uncover sword domain video'
+const rootKey = hdkey.fromMasterSeed(bip39.mnemonicToSeedSync(mnemonic));
+const parentKey = rootKey.derivePath("m/44'/60'/0'/0");
 
-const wallets = [];
+const ethKeyPairs = {};
+ethKeyPairs.menomic = mnemonic;
+ethKeyPairs.baseKey = parentKey.getWallet().getPrivateKeyString();
+ethKeyPairs.keyPairs = [];
 for(let i = 0; i < 10; i++){
-  wallets.push(parentKey.deriveChild(i).getWallet());
+  let wallet = parentKey.deriveChild(i).getWallet();
+  let keyPair = {};
+  keyPair.privateKey = wallet.getPrivateKeyString();
+  keyPair.publicKey = wallet.getPublicKeyString();
+  keyPair.address = wallet.getChecksumAddressString();
+  ethKeyPairs.keyPairs.push(keyPair);
 }
+console.log(JSON.stringify(ethKeyPairs, null, 2));
 
-console.log(`Mnemonic : ${mnemonic}`);
-for(i in wallets){
-  console.log(`  Account : ${i}th`)
-  console.log(`    Private Key : ${wallets[i].getPrivateKeyString()}`);
-  console.log(`    Address     : ${wallets[i].getChecksumAddressString()}`);
-}
+
