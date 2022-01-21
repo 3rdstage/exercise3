@@ -14,7 +14,7 @@ public class PatternSamples{
 
     if(concatenated == null || concatenated.length() == 0) return concatenated;
 
-    final Pattern ptrn = Pattern.compile("\\d{3,}");
+    final Pattern ptrn = Pattern.compile("\\d{7,}");
     final Matcher mtchr = ptrn.matcher(concatenated);
 
     int prevEnd = 0;
@@ -31,7 +31,8 @@ public class PatternSamples{
     }
     masked.append(concatenated.substring(prevEnd, concatenated.length()));
 
-    logger.debug("unmaked: {}\nmasked: {}", concatenated, masked.toString());
+    logger.debug("unmasked: {}", concatenated);
+    logger.debug("masked  : {}", masked.toString());
 
     return masked.toString();
   }

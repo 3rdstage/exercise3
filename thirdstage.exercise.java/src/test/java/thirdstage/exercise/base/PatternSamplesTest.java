@@ -11,9 +11,8 @@ public class PatternSamplesTest{
   @Test
   public void testMaskSubscriberNoOnly() {
 
-    final String unmasked = "12345(?) 223334($) 892356(@@)";
-    final String masked = testee.maskSubscriberNoOnly(unmasked);
-
+    String unmasked = "12345(?) 223334($) 892356(@@)";
+    String masked = testee.maskSubscriberNoOnly(unmasked);
 
     Assertions.assertEquals(unmasked.length(), masked.length());
     Assertions.assertEquals(StringUtils.countMatches(unmasked, '('),
@@ -24,6 +23,11 @@ public class PatternSamplesTest{
     Assertions.assertEquals(unmasked.substring(25, 29), masked.substring(25, 29));
     Assertions.assertNotEquals(masked, unmasked);
 
+    unmasked = " <strike>12345</strike>(?) <strike>223334($)</strike> <emp>892356[@@]</emp>";
+    masked = testee.maskSubscriberNoOnly(unmasked);
+
+    unmasked = " <strike>12345</strike>(?) <strike>2233343819308393819($)</strike> <emp>550001234238[@@]</emp>";
+    masked = testee.maskSubscriberNoOnly(unmasked);
 
 
   }
