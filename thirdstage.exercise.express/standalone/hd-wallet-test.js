@@ -2,7 +2,8 @@ const { hdkey } = require('ethereumjs-wallet'); // https://www.npmjs.com/package
 const bip39 = require("bip39"); // https://www.npmjs.com/package/bip39
 
 // https://dev.to/dongri/ethereum-wallet-sample-code-10o2
-const mnemonic = 'narrow fiber erode bomb moment cube culture year acquire lamp provide uncover sword domain video'
+//const mnemonic = 'narrow fiber erode bomb moment cube culture year acquire lamp provide uncover sword domain video'
+const mnemonic = 'income hollow youth join frog attract east claw slush blame sure stand'
 const rootKey = hdkey.fromMasterSeed(bip39.mnemonicToSeedSync(mnemonic));
 const parentKey = rootKey.derivePath("m/44'/60'/0'/0");
 
