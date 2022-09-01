@@ -7,13 +7,19 @@ const mnemonic = 'myth like bonus scare over problem client lizard pioneer submi
 ethers.utils.isValidMnemonic(mnemonic);
 
 const hdnode = ethers.utils.HDNode.fromMnemonic(mnemonic);
-const basePath : string = ethers.utils.defaultPath;
+const basePathPrefix : string = ethers.utils.defaultPath.slice(0, -1);
 
 console.log(`Default Path : ${ethers.utils.defaultPath}`);
-console.log(`Base Path: ${basePath}`);
+console.log(`Base Path Prefix: ${basePathPrefix}`);
 console.log(`Current Path : ${hdnode.path}`);
 
-const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+const wallet0 = ethers.Wallet.fromMnemonic(mnemonic);
+const wallets = [];
+
+for(let i = 0; i < 20; i++){
+  
+}
+
 
 console.log('End of Exercise');
 
