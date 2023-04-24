@@ -24,6 +24,7 @@ CVS/
 /x64/
 /obj/
 /package/
+/dist/
 
 # dependencies
 /node_modules/*

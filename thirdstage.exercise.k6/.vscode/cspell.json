@@ -1,0 +1,71 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "consolas", // Fonts
+    "lucida",
+    "menlo",
+    "webp", // Extensions
+    "websocket", // Techonology Geneal
+    "reentrancy",
+    "emscripten", // https://emscripten.org/
+    "addn", // `bn.js`
+    "subn",
+    "pickone", // `chance.js`
+    "pickset",
+    "varchar", // Database, DBMS
+    "varchar2",
+    "innodb", // MySQL, MariaDB
+    "curdate",
+    "timestampadd",
+    "rlike",
+    "keccak", // Blockchain
+    "secp256k1",
+    "ipfs",
+    "soulbound",
+    "bitcoin",
+    "ethereum",
+    "solana",
+    "struct", // Ethereum
+    "bytecode",
+    "yellowpaper",
+    "erc",
+    "ierc",
+    "inheritdoc",
+    "vyper",
+    "remixd",
+    "solhint",
+    "Mythril",
+    "MythX",
+    "ConsenSys",
+    "OpenZeppelin",
+    "plantuml", // PlantUML
+    "startuml",
+    "enduml",
+    "skinparam",
+    "startmindmap",
+    "endmindmap",
+    "addr", // General Abbreviations
+    "addrs",
+    "contr", // contract
+    "contrs",
+    "descr", // description
+    "fctr", // factory
+    "rslt" // result
+  ],
+  "flagWords": [
+    "hte"
+  ],
+  "patterns": [
+    { "name" : "ipfs-url", "pattern": "/(?:ipfs|http|https)://.*Qm[0-9A-Za-z]*/"}
+  ],
+  "ignoreRegExpList": ["ipfs-url"],
+  "overrides": [
+    {
+      // https://jshint.com/docs/options/
+      "filename": ".jshintrc",
+      "words": [
+        "esversion", "forin", "latedef", "nofunc", "noarg", "nonew", "quotmark"]
+    }
+  ]
+}
