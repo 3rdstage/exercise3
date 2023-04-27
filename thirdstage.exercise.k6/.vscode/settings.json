@@ -46,7 +46,7 @@
   "tslint.enable": false,
   "tslint.exclude": "tsconfig.json",
 
-  "eslint.enable": false,
+  "eslint.enable": true,
 
   "plantuml.fileExtensions": ".pu,.puml,.plantuml",
   "plantuml.exportSubFolder": false,
