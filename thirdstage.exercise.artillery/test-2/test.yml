@@ -1,0 +1,24 @@
+
+# cspell:word vusers
+# https://www.artillery.io/docs/
+
+config:
+  target: "https://en.wikipedia.org/wiki"
+  phases:
+    - duration : 10
+      arrivalRate : 2
+      maxVusers: 10
+  processor: "./processor.js"
+  variables:
+    keyword:
+      - "Java_(programming_language)"
+      - "JavaScript"
+      - "Python_(programming_language)"
+      - "Rust_(programming_language)"
+      - "Go_(programming_language)"
+scenarios:
+  - name : "Popular programming languages"
+    flow:
+      - get:
+          url: "/{{ keyword }}"
+          beforeRequest: "logRandomWord"

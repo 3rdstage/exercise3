@@ -1,0 +1,12 @@
+{
+  "name": "test-3",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "chance": "^1.1.11",
+    "ethers": "^6.3.0"
+  }
+}

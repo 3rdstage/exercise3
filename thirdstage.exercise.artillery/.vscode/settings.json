@@ -41,8 +41,5 @@
 
   "maven.executable.preferMavenWrapper" : false,
 
-  
-  "cSpell.enableFiletypes": [
-    "yaml"
-  ]
+
 }

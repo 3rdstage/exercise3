@@ -1,4 +1,6 @@
 {
+  // https://streetsidesoftware.com/vscode-spell-checker/docs/configuration/
+
   "version": "0.2",
   "language": "en",
   "words": [
@@ -33,5 +35,30 @@
     "descr", // description
     "fctr", // factory
     "rslt" // result
+  ],
+  "enableFiletypes": [
+    "yaml"
+  ],
+  "ignorePaths": [ ],
+  "patterns": [
+    { "name" : "ipfs-url", "pattern": "/(?:ipfs|http|https)://.*Qm[0-9A-Za-z]*/"}
+  ],
+  "ignoreRegExpList": ["ipfs-url"],
+  "languageSettings": [
+    {
+      "languageId": "python",
+      "allowCompoundWords": true,
+      "dictionaries": [
+        "python"
+      ]
+    }
+  ],
+  "overrides": [
+    {
+      // https://jshint.com/docs/options/
+      "filename": ".jshintrc",
+      "words": [
+        "esversion", "forin", "latedef", "nofunc", "noarg", "nonew", "quotmark"]
+    }
   ]
 }

@@ -26,7 +26,7 @@ CVS/
 /package/
 
 # dependencies
-/node_modules/*
+node_modules/
 /pkg/
 
 # generated artifacts
