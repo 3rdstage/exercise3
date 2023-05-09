@@ -1,0 +1,24 @@
+{
+  // https://www.typescriptlang.org/tsconfig
+  // https://code.visualstudio.com/docs/languages/jsconfig
+  // https://github.com/microsoft/TypeScript/wiki/JavaScript-Language-Service-in-Visual-Studio
+
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2020"],
+    "sourceMap": true,
+    "strict": true,
+    "alwaysStrict": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "skipLibCheck": true,
+    "typeRoots": ["node_modules/@types", "./types"],
+    "types": ["node", "chai", "mocha", "chance", "truffle-contracts"]
+  },
+  // "include": ["types/**/*.ts", "migrations/**/*.ts", "test/**/*.ts"],
+  // "exclude": ["node_modules", "dist", "build", "cache", "artifacts"]
+}
