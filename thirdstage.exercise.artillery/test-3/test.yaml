@@ -4,9 +4,9 @@
 config:
   target: "https://en.wikipedia.org/wiki"
   phases:
-    - duration : 10
+    - duration : 6
       arrivalRate : 2
-      maxVusers: 10
+      maxVusers: 4
   processor: "./processor.js"
   variables:
     keyword:
@@ -21,3 +21,10 @@ scenarios:
       - get:
           url: "/{{ keyword }}"
           beforeRequest: "logBlockHeight"
+          ifTrue: false
+      - get:
+          url: "/{{ keyword }}"
+          beforeRequest: "getComptrollerCompAddress"
+      - get:
+          url: "/{{ keyword }}"
+          beforeRequest: "getComptrollerMarketCount"
