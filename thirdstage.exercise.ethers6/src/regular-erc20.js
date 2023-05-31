@@ -12,8 +12,14 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
 
 (async() => {
   const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
-  const wallet = ethers.Wallet.fromPhrase(process.env.BIP39_MNEMONIC, provider);
-  console.log(`Generated Account : ${wallet.address}`);
+
+  const parentWallet = ethers.HDNodeWallet.fromPhrase(process.env.BIP39_MNEMONIC, '', "m/44'/60'/0'/0");
+  const wallets = [];
+  for(let i = 0, wallet; i < 10; i++){
+    wallet = parentWallet.deriveChild(i).connect(provider);
+    console.log(`Account ${i} : ${wallet.address}, ${wallet.path}`);
+    wallets.push(wallet);
+  }
 
   const meta = JSON.parse(fs.readFileSync('contracts/RegularERC20.json'));
   const abi = JSON.stringify(meta.abi);
@@ -23,8 +29,8 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
   //console.log(typeof(bytecode));
   //console.log(abi);
 
-  const options = {gasLimit : 100000, gasPrice: 0, from: wallet.address};
-  const factory = new ethers.ContractFactory(abi, bytecode, wallet);
+  const options = {gasLimit : 100000, gasPrice: 0, from: wallets[0].address};
+  const factory = new ethers.ContractFactory(abi, bytecode, wallets[0]);
   const contract = await factory.deploy('Rainbow Tokens', 'RGB');
 
 
