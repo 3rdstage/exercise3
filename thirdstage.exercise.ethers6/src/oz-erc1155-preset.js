@@ -1,5 +1,4 @@
-
-// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol
+// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.sol
 
 const ethers = require("ethers");
 const fs = require('fs');
@@ -24,7 +23,7 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
     wallets.push(wallet);
   }
 
-  const meta = JSON.parse(fs.readFileSync('contracts/ERC721PresetMinterPauserAutoId.json'));
+  const meta = JSON.parse(fs.readFileSync('contracts/ERC1155PresetMinterPauser.json'));
   const abi = JSON.stringify(meta.abi);
   const bytecode = meta.bytecode;
 
@@ -34,15 +33,13 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
 
   const options = {gasLimit : 100000, gasPrice: 0, from: wallets[0].address};
   const factory = new ethers.ContractFactory(abi, bytecode, wallets[0]);
-  const contract = await factory.deploy('Deep Sky', 'OBJ', '');
+  const contract = await factory.deploy('http://nft.org/collections/1131/');
 
   console.log(`Contract Deployed`)
   console.log(Object.keys(contract));
   const props = [];
   props.push(["Address", await contract.getAddress()]);
-  props.push(["Name", await contract.name()]);
-  props.push(["Symbol", await contract.symbol()]);
-  props.push(["Total Supply", await contract.totalSupply()]);
+  props.push(["URI", await contract.uri(1)]);
 
   console.table(props);
 
@@ -52,14 +49,15 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
 
   console.log(`Balances: initial`)
   const balances = [];
+  const type = 1;
   for(const w of wallets){
-    balances.push({"Account": w.address, "Balance": await contract.balanceOf(w.address)});
+    balances.push({"Account": w.address, "Type 1 Balance": await contract.balanceOf(w.address, type)});
   }
   console.table(balances);
 
   for(let i = 0, tx; i < n; i++){
     //tx = await contract.mint.send(wallets[i].address);
-    tx = await contract.mint(wallets[i].address);
+    tx = await contract.mint(wallets[i].address, type, 1000, '0x99');
 
     await tx.wait();
   }
@@ -69,7 +67,7 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
   console.log(`Balances: after initial mint`)
   balances.length = 0;
   for(const w of wallets){
-    balances.push({"Account": w.address, "Balance": await contract.balanceOf(w.address)});
+    balances.push({"Account": w.address, "Type 1 Balance": await contract.balanceOf(w.address, type)});
   }
   console.table(balances);
 

@@ -1,0 +1,25 @@
+
+// cspell:words
+// cspell:ignore sectnums, imagesdir
+
+= Ethers v6 Samples
+:toc:
+:sectnums:
+:imagesdir: ./
+
+== Architecture Guidelines
+
+* Create `ContractFactory` instance providing `ContractRunner` instance
+** `interface ContractRunner`
+** `interface Signer extends ContractRunner`
+** `abstract class AbstractSigner implements Signer`
+** `class BaseWallet extends AbstractSigner`
+* Create `Contract` instance using `ContractFactory`
+
+
+---
+
+== Chapter 2
+
+
+---
