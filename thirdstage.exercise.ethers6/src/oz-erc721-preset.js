@@ -14,6 +14,7 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
 
 (async() => {
   const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
+  provider.pollingInterval = 300;
 
   const parentWallet = ethers.HDNodeWallet.fromPhrase(process.env.BIP39_MNEMONIC, '', "m/44'/60'/0'/0");
   const wallets = [];
@@ -63,8 +64,6 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
 
     await tx.wait();
   }
-
-  await contract.mint.send
 
   console.log(`Balances: after initial mint`)
   balances.length = 0;
