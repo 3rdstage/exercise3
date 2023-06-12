@@ -19,7 +19,17 @@
 
 ---
 
-== Chapter 2
+== References
+
+=== Ethers v6 Class Model
+
+* Contract/Signer/Walllet
+
+image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-classes.svg[Contract/Signer/Wallet,800]
+
+* Provider
+
+image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-providers-classes.svg[Provider,800]
 
 
 ---
