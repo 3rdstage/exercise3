@@ -1,7 +1,9 @@
 
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol
 
-const ethers = require("ethers");
+import { Provider, ContractFactory, Contract } from "ethers";
+import { ethers } from "ethers";
+//import { fs } from 'fs';
 const fs = require('fs');
 
 const eth = new ethers.JsonRpcProvider(
@@ -16,7 +18,7 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
   const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
   provider.pollingInterval = 300;
 
-  const parentWallet = ethers.HDNodeWallet.fromPhrase(process.env.BIP39_MNEMONIC, '', "m/44'/60'/0'/0");
+  const parentWallet = ethers.HDNodeWallet.fromPhrase(process.env.BIP39_MNEMONIC!, '', "m/44'/60'/0'/0");
   const wallets = [];
   const n = 10;
   for(let i = 0, wallet; i < n; i++){
@@ -34,8 +36,10 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
   //console.log(abi);
 
   const options = {gasLimit : 100000, gasPrice: 0, from: wallets[0].address};
-  const factory = new ethers.ContractFactory(abi, bytecode, wallets[0]);
-  const contract = await factory.deploy('Deep Sky', 'OBJ', '');
+  const factory: ContractFactory = new ethers.ContractFactory(abi, bytecode, wallets[0]);
+
+  // @@TODO How to remove 'any'? Refer @typechain/ethers6
+  const contract: any = await factory.deploy('Deep Sky', 'OBJ', '');
 
   console.log(`Contract Deployed`)
   console.log(Object.keys(contract));
@@ -47,8 +51,8 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
 
   console.table(props);
 
-  console.log(`Contract Runner: ${Object.keys(contract.runner)}`);
-  const network = await contract.runner.provider.getNetwork();
+  console.log(`Contract Runner: ${Object.keys(contract.runner!)}`);
+  const network = await contract.runner?.provider?.getNetwork();
   console.log(`Network - name: ${network.name}, chain ID: ${network.chainId}`);
 
   console.log(`Balances: initial`)

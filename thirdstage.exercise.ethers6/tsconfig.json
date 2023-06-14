@@ -16,8 +16,8 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "skipLibCheck": true,
-    "typeRoots": ["node_modules/@types", "./types"],
-    "types": ["node", "chai", "mocha", "chance", "truffle-contracts"]
+    "typeRoots": ["node_modules/@types", "node_modules/ethers/types"],
+    "types": ["node"]
   },
   // "include": ["types/**/*.ts", "migrations/**/*.ts", "test/**/*.ts"],
   // "exclude": ["node_modules", "dist", "build", "cache", "artifacts"]
