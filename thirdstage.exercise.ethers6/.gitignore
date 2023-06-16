@@ -36,6 +36,7 @@ CVS/
 .atp_generated_tests/
 /artifacts/
 /types/
+/docs/
 
 # runtime outputs
 /run/

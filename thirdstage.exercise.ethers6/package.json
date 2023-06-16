@@ -5,8 +5,11 @@
   "description": "",
   "devDependencies": {
     "@truffle/hdwallet-provider": "^1.7.0",
+    "@typechain/ethers-v6": "^0.4.0",
     "ethers": "^6.3.0",
     "ganache": "^7.8.0",
+    "typechain": "^8.2.0",
+    "typedoc": "^0.24.8",
     "web3-providers-http": "^1.9.0",
     "web3-providers-ws": "^1.9.0"
   },
@@ -20,6 +23,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-types": "typechain --always-generate-overloads --target=ethers-v6 'contracts/*.json'",
+    "generate-typedoc": "npx typedoc types/ethers-contracts",
     "ganache": "./scripts/ganache-start.sh",
     "ganache-refreshed": "./scripts/ganache-start.sh -r",
     "ganache-log": "tail -n 100 ./run/ganache/ganache.log"

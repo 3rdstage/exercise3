@@ -16,9 +16,9 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "skipLibCheck": true,
-    "typeRoots": ["node_modules/@types", "node_modules/ethers/types"],
-    "types": ["node"]
+    "typeRoots": ["node_modules/@types", "node_modules/ethers/types", "./types"],
+    "types": ["node", "ethers-contracts"]
   },
-  // "include": ["types/**/*.ts", "migrations/**/*.ts", "test/**/*.ts"],
-  // "exclude": ["node_modules", "dist", "build", "cache", "artifacts"]
+  "include": ["types/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", "dist", "build", "cache", "artifacts"]
 }
