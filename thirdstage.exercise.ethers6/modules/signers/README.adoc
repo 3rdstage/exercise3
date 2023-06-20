@@ -1,0 +1,8 @@
+
+= Signers
+
+* An isolated place where private keys are confined and not accessible from outside.
+    * `KeyStore` ?
+    * `Vault` ?
+    * `Wallet` ?
+    * `MultiWallet` ?
