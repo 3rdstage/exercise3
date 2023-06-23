@@ -1,8 +1,191 @@
+// cspell:word sectnums imagesdir autowidth hyperledger besu kroki plantuml pygments highlightjs
+// cspell:ignore
+
 
 = Signers
+:toc:
+:sectnums:
+:imagesdir: ./
+:kroki-fetch-diagram:
+:source-highlighter: highlightjs
 
 * An isolated place where private keys are confined and not accessible from outside.
-    * `KeyStore` ?
-    * `Vault` ?
-    * `Wallet` ?
-    * `MultiWallet` ?
+** `KeyStore` ?
+** `Vault` ?
+** `Wallet` ?
+** `MultiWallet` ?
+
+* Ethers' `Singer` or `Wallet` represents a *_single_* account which
+is not fit for injection.
+
+
+== Implementations
+
+=== `BaseWallet.sendTransaction`
+
+[source,javascript]
+----
+
+abstract class AbstractSigner{
+
+  ...
+  async sendTransaction(tx: TransactionRequest): Promise<TransactionResponse> {
+    const provider = checkProvider(this, "sendTransaction");
+
+    const pop = await this.populateTransaction(tx);
+    delete pop.from;
+    const txObj = Transaction.from(pop);
+    return await provider.broadcastTransaction(await this.signTransaction(txObj));
+  }
+  ...
+}
+
+
+class BaseWallet extends AbstractSigner{
+
+  ...
+
+  async signTransaction(tx: TransactionRequest): Promise<string> {
+
+    // Replace any Addressable or ENS name with an address
+    const { to, from } = await resolveProperties({
+      to: (tx.to ? resolveAddress(tx.to, this.provider): undefined),
+      from: (tx.from ? resolveAddress(tx.from, this.provider): undefined)
+    });
+
+    if (to != null) { tx.to = to; }
+    if (from != null) { tx.from = from; }
+    if (tx.from != null) {
+      assertArgument(getAddress(<string>(tx.from)) === this.address,
+        "transaction from address mismatch", "tx.from", tx.from);
+      delete tx.from;
+    }
+
+    // Build the transaction
+    const btx = Transaction.from(<TransactionLike<string>>tx);
+    btx.signature = this.signingKey.sign(btx.unsignedHash);
+
+    return btx.serialized;
+  }
+
+  async signMessage(message: string | Uint8Array): Promise<string> {
+    return this.signMessageSync(message);
+  }
+
+  signMessageSync(message: string | Uint8Array): string {
+    return this.signingKey.sign(hashMessage(message)).serialized;
+  }
+}
+
+
+class Transaction{
+
+  ...
+
+  get unsignedHash(): string {
+      return keccak256(this.unsignedSerialized);
+  }
+
+  get unsignedSerialized(): string {
+    switch (this.inferType()) {
+      case 0:
+        return _serializeLegacy(this);
+      case 1:
+        return _serializeEip2930(this);
+      case 2:
+        return _serializeEip1559(this);
+    }
+
+    assert(false, "unsupported transaction type", "UNSUPPORTED_OPERATION", { operation: ".unsignedSerialized" });
+  }
+
+}
+
+
+function encodeRlp(object: RlpStructuredData): string {
+  let result = "0x";
+  for (const v of _encode(object)) {
+    result += nibbles[v >> 4];
+    result += nibbles[v & 0xf];
+  }
+  return result;
+}
+
+function _encode(object: Array<any> | string): Array<number> {
+  if (Array.isArray(object)) {
+    let payload: Array<number> = [];
+    object.forEach(function(child) {
+      payload = payload.concat(_encode(child));
+    });
+
+    if (payload.length <= 55) {
+      payload.unshift(0xc0 + payload.length)
+      return payload;
+    }
+
+    const length = arrayifyInteger(payload.length);
+    length.unshift(0xf7 + length.length);
+
+    return length.concat(payload);
+  }
+
+  const data: Array<number> = Array.prototype.slice.call(getBytes(object, "object"));
+
+  if (data.length === 1 && data[0] <= 0x7f) {
+    return data;
+
+  } else if (data.length <= 55) {
+    data.unshift(0x80 + data.length);
+    return data;
+  }
+
+  const length = arrayifyInteger(data.length);
+  length.unshift(0xb7 + length.length);
+
+  return length.concat(data);
+}
+
+
+class SigningKey {
+
+  ...
+
+  sign(digest: BytesLike): Signature {
+    assertArgument(dataLength(digest) === 32, "invalid digest length", "digest", digest);
+
+    const [ sigDer, recid ] = secp256k1.signSync(getBytesCopy(digest), getBytesCopy(this.#privateKey), {
+      recovered: true,
+      canonical: true
+    });
+
+    const sig = secp256k1.Signature.fromHex(sigDer);
+    return Signature.from({
+      r: toBeHex("0x" + sig.r.toString(16), 32),
+      s: toBeHex("0x" + sig.s.toString(16), 32),
+      v: (recid ? 0x1c: 0x1b)
+    });
+  }
+}
+
+----
+
+== More
+
+* `SimpleSigner` : deal with only strict transactions
+** `ContractRunner` <- `Signer` <- `AbstractSigner` <- `BaseWallet` <- `Wallet`
+** `ContractRunner` <- `SimpleSigner`
+
+* `MessageSigner` : signing only message
+
+* `SecureWallet` : has no local private-key or in-memory plain private key
+** `SecureWallet` extends `AbstractSigner` (which has no private key yet)
+
+* `AbstractContractRunner` -> `ContractRunner`
+** `TestOnlyContractRunner` -> `AbstractContractRunner`
+** `SecureContractRunner` -> `AbstractContractRunner`
+** `MessageSigner`
+
+* `Signer` <>---> `SecurityModule`
+** `SigningModule` is not for a specific key or account
+** `NoSecurityModule` (not really vault)
+** `KeyStore` is only for secure key hold but not for signing

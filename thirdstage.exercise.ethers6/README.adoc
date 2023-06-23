@@ -6,6 +6,8 @@
 :toc:
 :sectnums:
 :imagesdir: ./
+:stylesdir: ./
+:stylesheet: ./custom.css
 
 == Architecture Guidelines
 
@@ -23,17 +25,20 @@
 
 === Ethers v6 Class Model
 
-* Contract/Signer/Walllet
+* Contract/Signer/Wallet
 
-[.white]
+[.whiteboard]
 ====
 
-image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-classes.svg[Contract/Signer/Wallet,800]
+image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-classes.png[.whiteboard,Contract/Signer/Wallet,800,.whiteboard]
 ====
 
 * Provider
 
-image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-providers-classes.svg[Provider,800]
+[.whiteboard]
+====
 
+image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-providers-classes.svg[.whiteboard,Provider,800]
+====
 
 ---
