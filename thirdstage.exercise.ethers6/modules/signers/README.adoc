@@ -1,7 +1,6 @@
 // cspell:word sectnums imagesdir autowidth hyperledger besu kroki plantuml pygments highlightjs
 // cspell:ignore
 
-
 = Signers
 :toc:
 :sectnums:
@@ -185,7 +184,10 @@ class SigningKey {
 ** `SecureContractRunner` -> `AbstractContractRunner`
 ** `MessageSigner`
 
-* `Signer` <>---> `SecurityModule`
+* `Signer` <>---&gt; `SecurityModule`
 ** `SigningModule` is not for a specific key or account
 ** `NoSecurityModule` (not really vault)
 ** `KeyStore` is only for secure key hold but not for signing
+
+* `Contract` <>---&gt; `ContractRunner` &lt;|--- `Signer` <>---&gt; `SecurityModule`
+** How to inject?
