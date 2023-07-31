@@ -41,7 +41,7 @@ console.log(`Message Prefix : '${ethers.MessagePrefix}'`);
   // @@TODO How to remove 'any'? Refer @typechain/ethers6
   const contract: any = await factory.deploy('Deep Sky', 'OBJ', '');
 
-  console.log(`Contract Deployed`)
+  console.log(`Contract Deployed`);
   console.log(Object.keys(contract));
   const props = [];
   props.push(["Address", await contract.getAddress()]);

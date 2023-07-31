@@ -35,18 +35,18 @@
     "run/besu/data/**": true
   },
 
-  "javascript.validate.enable": true,
-  "typescript.validate.enable": true,
+  "javascript.validate.enable": false,
+  "typescript.validate.enable": false,
   "javascript.format.insertSpaceAfterKeywordsInControlFlowStatements": false,
   "typescript.format.insertSpaceAfterKeywordsInControlFlowStatements": false,
+  "js/ts.implicitProjectConfig.checkJs": false,
 
-  "jshint.enable" : false,
+  "jshint.enable" : true,
   "jshint.config": ".jshintrc",
-
   "tslint.enable": false,
   "tslint.exclude": "tsconfig.json",
 
-  "eslint.enable": false,
+  "eslint.enable": true,
 
   "plantuml.fileExtensions": ".pu,.puml,.plantuml",
   "plantuml.exportSubFolder": false,

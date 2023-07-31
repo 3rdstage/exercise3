@@ -27,18 +27,12 @@
 
 * Contract/Signer/Wallet
 
-[.whiteboard]
-====
-
-image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-classes.png[.whiteboard,Contract/Signer/Wallet,800,.whiteboard]
-====
+[.white-background]
+image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-classes.png[.whiteboard,Contract/Signer/Wallet,800]
 
 * Provider
 
-[.whiteboard]
-====
-
-image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-providers-classes.svg[.whiteboard,Provider,800]
-====
+[.white-background]
+image::https://raw.githubusercontent.com/3rdstage/models/main/ethereum/ethers/ethers6-providers-classes.svg[Provider,800]
 
 ---
