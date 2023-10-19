@@ -29,13 +29,15 @@ dependencies {
 
   implementation 'org.avaje.composite:logback:1.1'
   implementation 'org.postgresql:postgresql:42.5.1'
-  implementation 'io.ebean:ebean:13.11.0'
+  implementation 'io.ebean:ebean:13.22.1'
+  // https://mvnrepository.com/artifact/org.postgresql/postgresql
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.4'
 
   // apt query bean generation
-  annotationProcessor 'io.ebean:querybean-generator:13.11.0'
+  annotationProcessor 'io.ebean:querybean-generator:13.22.1'
 
   testImplementation 'io.avaje:junit:1.1'
-  testImplementation 'io.ebean:ebean-test:13.11.0'
+  testImplementation 'io.ebean:ebean-test:13.22.1'
 }
 
 test {

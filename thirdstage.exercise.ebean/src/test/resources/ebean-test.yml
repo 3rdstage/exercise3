@@ -1,0 +1,12 @@
+
+datasource:
+  default: postgres
+
+ebean:
+  ddl:
+    generate: true
+    run: false
+  test:
+    platform: postgres
+    ddlMode: dropCreate # none | dropCreate | migrations | create
+  migration.run: true

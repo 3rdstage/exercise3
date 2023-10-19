@@ -1,0 +1,11 @@
+
+
+* https://antoniogoncalves.org/2014/12/11/generating-database-schemas-with-jpa-2-1/
+* https://thorben-janssen.com/standardized-schema-generation-data-loading-jpa-2-1/
+
+* https://www.javatpoint.com/hibernate-with-annotation
+** Hibernate 5.x
+
+* https://thorben-janssen.com/standardized-schema-generation-data-loading-jpa-2-1/#examples
+* 
+

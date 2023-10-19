@@ -1,0 +1,219 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>thirdstage.exercise</groupId>
+  <artifactId>thirdstage.exercise.hibernate6</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>Hibernate 6 Sample</name>
+  <description>...</description>
+
+  <developers>
+    <developer>
+      <id>3rdstage</id>
+      <name>Sangmoon Oh</name>
+      <email>halfface@chollian.net</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- control build behavior -->
+    <skipTests>false</skipTests>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.site.skip>false</maven.site.skip> <!-- consumed by maven-site-plugin -->
+    <maven.site.deploy.skip>true</maven.site.deploy.skip> <!-- consumed by maven-site-plugin -->
+    <generateProjectInfo>false</generateProjectInfo> <!-- consumed by maven-site-plugin -->
+    <generateReports>true</generateReports> <!-- consumed by maven-site-plugin -->
+    <maven.javadoc.skip>false</maven.javadoc.skip>
+    <maven.javadoc.failOnWarnings>false</maven.javadoc.failOnWarnings>
+    <swagger-codegen.skip>true</swagger-codegen.skip>
+    <doclint>none</doclint>
+    <findbugs.skip>true</findbugs.skip>
+    <checkstyle.skip>true</checkstyle.skip>
+    <dependencies.release.updatePolicy>never</dependencies.release.updatePolicy> <!-- always | daily | never -->
+    <!-- versions for Java SDK and dependencies -->
+    <java.version>11</java.version>
+    <jsr305.version>3.0.2</jsr305.version> <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
+    <validation-api.version>2.0.1.Final</validation-api.version> <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+    <hibernate-validator.version>6.1.2.Final</hibernate-validator.version> <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+    <slf4j.version>1.7.30</slf4j.version> <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <logback.version>1.2.3</logback.version> <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+    <janino.version>3.1.0</janino.version> <!-- https://mvnrepository.com/artifact/org.codehaus.janino/janino -->
+    <junit5.version>5.6.1</junit5.version> <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
+    <testng.version>6.9.10</testng.version>
+    <mockito.version>3.3.3</mockito.version> <!-- https://mvnrepository.com/artifact/org.mockito -->
+    <commons-lang3.version>3.9</commons-lang3.version> <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+    <commons-validator.version>1.6</commons-validator.version> <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
+    <commons-collections4.version>4.4</commons-collections4.version> <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+    <typesafe-config.version>1.3.1</typesafe-config.version>
+    <swagger.version>2.0.8</swagger.version> <!-- https://mvnrepository.com/artifact/io.swagger.core.v3 -->
+    <springfox-swagger2.version>2.9.2</springfox-swagger2.version> <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+    <mybatis.version>3.5.1</mybatis.version> <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+    <jjwt.version>0.10.7</jjwt.version> <!-- https://mvnrepository.com/artifact/io.jsonwebtoken -->
+    <web3j.version>4.5.17</web3j.version> <!-- https://mvnrepository.com/artifact/org.web3j -->
+    <okhttp.version>4.3.1</okhttp.version>
+    <!-- version for Maven plugins -->
+    <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
+    <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+    <maven-site-plugin.version>3.9.0</maven-site-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
+    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+    <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+    <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version> <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/findbugs-maven-plugin -->
+    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
+    <duplicate-finder-maven-plugin.version>1.4.0</duplicate-finder-maven-plugin.version> <!-- https://mvnrepository.com/artifact/org.basepom.maven/duplicate-finder-maven-plugin -->
+    <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-eclipse-plugin -->
+    <web3j-maven-plugin.version>4.5.11</web3j-maven-plugin.version> <!-- https://mvnrepository.com/artifact/org.web3j/web3j-maven-plugin -->
+    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+    <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version> <!-- https://github.com/kongchen/swagger-maven-plugin -->
+    <swagger-codegen-maven-plugin.version>3.0.0-rc1</swagger-codegen-maven-plugin.version> <!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
+    <swagger-codegen-maven-plugin.v3.version>3.0.10</swagger-codegen-maven-plugin.v3.version> <!-- https://mvnrepository.com/artifact/io.swagger.codegen.v3/swagger-codegen-maven-plugin -->
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+  </properties>
+
+  <repositories>
+    <!-- For more repositories, refer https://mvnrepository.com/repos -->
+    <repository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+      <releases><updatePolicy>${dependencies.release.updatePolicy}</updatePolicy></releases>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+    <repository>
+      <id>java.net.public</id>
+      <url>https://maven.java.net/content/groups/public/</url>
+      <releases><updatePolicy>${dependencies.release.updatePolicy}</updatePolicy></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <!-- core -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <inherited>true</inherited>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+<dependency>
+    <groupId>org.hibernate.orm</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>6.3.1.Final</version>
+    <type>pom</type>
+</dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api -->
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+    <version>1.0.2.Final</version>
+</dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.5.4</version>
+    </dependency>
+
+    <dependency>
+      <!-- JSR 305: Annotations for Software Defect Detection (https://jcp.org/en/jsr/detail?id=305) -->
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>${jsr305.version}</version>
+    </dependency>
+    <dependency>
+      <!-- JSR 330: Dependency Injection for Java -->
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+    <dependency>
+      <!-- JSR 349: Bean Validation 1.1 (https://jcp.org/en/jsr/detail?id=349) -->
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>${validation-api.version}</version>
+    </dependency>
+    <dependency>
+      <!-- Hibernate Validator -->
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${hibernate-validator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>janino</artifactId>
+      <version>2.7.8</version>
+    </dependency>
+    <dependency>
+      <!-- https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven -->
+      <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine/5.5.1 -->
+      <!-- 'junit-jupiter-engine' depends on 'junit-jupiter-api' -->
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons-lang3.version}</version>
+    </dependency>
+    <!-- For more typesafe config, refer https://github.com/typesafehub/config -->
+    <dependency>
+      <groupId>com.typesafe</groupId>
+      <artifactId>config</artifactId>
+      <version>${typesafe-config.version}</version>
+    </dependency>
+  </dependencies>
+</project>
