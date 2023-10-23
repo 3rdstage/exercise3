@@ -9,7 +9,7 @@ public class SchemaScript {
     System.out.println("Generating DDL script.");
 
     Persistence.createEntityManagerFactory("sto"); 
-    Persistence.generateSchema("sto", null);
+    //Persistence.generateSchema("sto", null);
   }
   
 }
