@@ -1,5 +1,7 @@
 
 
+=== JPA/Hibernate DDL Generation
+
 * https://antoniogoncalves.org/2014/12/11/generating-database-schemas-with-jpa-2-1/
 * https://thorben-janssen.com/standardized-schema-generation-data-loading-jpa-2-1/
 
@@ -7,5 +9,35 @@
 ** Hibernate 5.x
 
 * https://thorben-janssen.com/standardized-schema-generation-data-loading-jpa-2-1/#examples
-* 
+
+
+=== JPA/Hibernate Annotations
+
+* https://stackoverflow.com/questions/4102449/how-to-annotate-mysql-autoincrement-field-with-jpa-annotations[How to annotate MYSQL autoincrement field with JPA annotations]
+
+* https://dev.to/yugabyte/jpa-and-postgresql-text-2ma6[JPA and PostgreSQL text]
+
+* https://stackoverflow.com/questions/3405229/specifying-an-index-non-unique-key-using-jpa[Specifying an Index (Non-Unique Key) Using JPA]
+** `@Table.indexes`, `@Index`
+
+* https://jpa-buddy.com/blog/the-ultimate-guide-on-composite-ids-in-jpa-entities/[The Ultimate Guide on Composite IDs in JPA Entities] (21 March 2022, JPA Buddy)
+
+* https://www.tutorialspoint.com/jpa/jpa_entity_relationships.htm[JPA - Entity Relationships]
+
+* https://stackoverflow.com/questions/6608812/jpa-give-a-name-to-a-foreign-key-on-db[JPA: Give a name to a Foreign Key on DB?]
+
+* https://stackoverflow.com/questions/3585034/how-to-map-a-composite-key-with-jpa-and-hibernate[How to map a composite key with JPA and Hibernate?]
+
+* https://stackoverflow.com/questions/49404915/jpa-how-to-change-order-of-columns-in-primary-key[JPA: how to change order of columns in primary key]
+
+* https://www.pranaybathini.com/2022/03/creating-compsite-keys-spring-data-jpa.html[Creating Composite Primary Keys with @IdClass and @EmbeddedId Annotations in Spring Data JPA]
+
+=== Spec and APIs
+
+* https://jakarta.ee/specifications/persistence/3.0/jakarta-persistence-spec-3.0.html[Jakarta Persistence 3.0 Spec] (September 08, 2020)
+
+* https://docs.jboss.org/hibernate/jpa/2.2/api/overview-summary.html[JPA 2.2 API]
+* https://jakarta.ee/specifications/persistence/3.0/apidocs/jakarta.persistence/module-summary[Jakarta Persistence 3.0 API]
+* https://docs.jboss.org/hibernate/orm/6.3/javadocs/[Hibernate v6.3 API]
+* https://docs.jboss.org/hibernate/orm/5.6/javadocs/[Hibernate v5.6 API]
 

@@ -1,15 +1,21 @@
 package thirdstage.exercise.hibernate6;
 
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceProperty;
+import jakarta.persistence.PersistenceUnit;
 
 public class SchemaScript {
+
 
   public static void main(String... args){
 
     System.out.println("Generating DDL script.");
 
-    Persistence.createEntityManagerFactory("sto"); 
-    //Persistence.generateSchema("sto", null);
+    Persistence.generateSchema("sto", null);
+
   }
   
 }

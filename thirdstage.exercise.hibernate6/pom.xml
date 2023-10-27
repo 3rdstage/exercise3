@@ -114,19 +114,21 @@
   </build>
 
   <dependencies>
-<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-<dependency>
-  <groupId>org.hibernate</groupId>
-  <artifactId>hibernate-core</artifactId>
-  <version>5.6.13.Final</version>
-</dependency>
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.3.1.Final</version>
+    </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api -->
+    <!--
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.1-api</artifactId>
-    <version>1.0.2.Final</version>
-</dependency>
+      <version>1.0.2.Final</version>
+    </dependency>
+  -->
 
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -135,29 +137,47 @@
     </dependency>
 
     <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+  </dependency>
+
+  <dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+    <version>2.0.1.final</version>
+  </dependency>
+
+    <dependency>
       <!-- JSR 305: Annotations for Software Defect Detection (https://jcp.org/en/jsr/detail?id=305) -->
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>${jsr305.version}</version>
     </dependency>
-    <dependency>
       <!-- JSR 330: Dependency Injection for Java -->
+      <!--
+      <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>1</version>
     </dependency>
+  -->
+        <!-- JSR 349: Bean Validation 1.1 (https://jcp.org/en/jsr/detail?id=349) -->
+<!--
     <dependency>
-      <!-- JSR 349: Bean Validation 1.1 (https://jcp.org/en/jsr/detail?id=349) -->
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <version>${validation-api.version}</version>
     </dependency>
-    <dependency>
+  -->
       <!-- Hibernate Validator -->
-      <groupId>org.hibernate</groupId>
+      <!--
+      <dependency>
+      <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>${hibernate-validator.version}</version>
+      <version>8.0.1.Final</version>
     </dependency>
+  -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

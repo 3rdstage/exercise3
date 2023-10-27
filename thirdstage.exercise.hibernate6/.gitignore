@@ -68,3 +68,6 @@ config.gypi
 .lock-wscript
 .wafpickle-N
 /*.tgz
+
+# specific
+/scripts/*.postgres.sql
