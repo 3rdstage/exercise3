@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
-@Entity(name = "AccountType")
-@Table(name = "AccountType")
+@Entity
+@Table
 public class AccountType extends Code {
 
 
