@@ -1,5 +1,7 @@
 package thirdstage.exercise.hibernate6;
 
+import java.time.LocalDate;
+
 import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.Column;
@@ -38,6 +40,23 @@ public class Account {
   @JoinColumn(name = "type_cd")
   @Comment("address type from code table - usually one of EOA, Proxy or other application defined types")
   private AccountType type;
+
+  @Column(name = "pub_key", length = 130)
+  private String publicKey;
+
+  @Column(name = "veiled_prv_key", length = 300)
+  private String veiledPrivateKey;
+
+  @Column
+  private boolean isValid;
+
+  @Column
+  private LocalDate createdAt;
+
+  @Column
+  private LocalDate invalidAt;
+
+
 
 
 }
