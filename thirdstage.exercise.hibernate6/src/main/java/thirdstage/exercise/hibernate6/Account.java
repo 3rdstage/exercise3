@@ -3,6 +3,8 @@ package thirdstage.exercise.hibernate6;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +27,7 @@ public class Account {
 
   @Id
   @Column(name = "addr", length = 42)
+  @JdbcTypeCode(SqlTypes.CHAR)
   @Comment("account address in 40 length hexadecimal with 0x prefix")
   private String address;
   

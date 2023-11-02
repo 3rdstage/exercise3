@@ -288,3 +288,135 @@
     drop table if exists contract cascade;
 
     drop table if exists contract_src cascade;
+
+    alter table if exists account 
+       drop constraint if exists FKrbqftcsnryxxx2abi9avga5ib;
+
+    alter table if exists account 
+       drop constraint if exists FKqfv5ra636hx3b6mo6tksxbiu3;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk1;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk2;
+
+    drop table if exists account cascade;
+
+    drop table if exists chain cascade;
+
+    drop table if exists code cascade;
+
+    drop table if exists contract cascade;
+
+    drop table if exists contract_src cascade;
+
+    alter table if exists account 
+       drop constraint if exists FKrbqftcsnryxxx2abi9avga5ib;
+
+    alter table if exists account 
+       drop constraint if exists FKqfv5ra636hx3b6mo6tksxbiu3;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk1;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk2;
+
+    drop table if exists account cascade;
+
+    drop table if exists chain cascade;
+
+    drop table if exists code cascade;
+
+    drop table if exists contract cascade;
+
+    drop table if exists contract_src cascade;
+
+    alter table if exists account 
+       drop constraint if exists FKrbqftcsnryxxx2abi9avga5ib;
+
+    alter table if exists account 
+       drop constraint if exists FKqfv5ra636hx3b6mo6tksxbiu3;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk1;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk2;
+
+    drop table if exists account cascade;
+
+    drop table if exists chain cascade;
+
+    drop table if exists code cascade;
+
+    drop table if exists contract cascade;
+
+    drop table if exists contract_src cascade;
+
+    alter table if exists account 
+       drop constraint if exists FKrbqftcsnryxxx2abi9avga5ib;
+
+    alter table if exists account 
+       drop constraint if exists FKqfv5ra636hx3b6mo6tksxbiu3;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk1;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk2;
+
+    drop table if exists account cascade;
+
+    drop table if exists chain cascade;
+
+    drop table if exists code cascade;
+
+    drop table if exists contract cascade;
+
+    drop table if exists contract_src cascade;
+
+    alter table if exists account 
+       drop constraint if exists FKrbqftcsnryxxx2abi9avga5ib;
+
+    alter table if exists account 
+       drop constraint if exists FKqfv5ra636hx3b6mo6tksxbiu3;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk1;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk2;
+
+    drop table if exists account cascade;
+
+    drop table if exists chain cascade;
+
+    drop table if exists code cascade;
+
+    drop table if exists contract cascade;
+
+    drop table if exists contract_src cascade;
+
+    alter table if exists account 
+       drop constraint if exists FKrbqftcsnryxxx2abi9avga5ib;
+
+    alter table if exists account 
+       drop constraint if exists FKqfv5ra636hx3b6mo6tksxbiu3;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk1;
+
+    alter table if exists contract 
+       drop constraint if exists contract_fk2;
+
+    drop table if exists account cascade;
+
+    drop table if exists chain cascade;
+
+    drop table if exists code cascade;
+
+    drop table if exists contract cascade;
+
+    drop table if exists contract_src cascade;

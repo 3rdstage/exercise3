@@ -1,15 +1,21 @@
 package thirdstage.exercise.hibernate6;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity(name = "contract_src")
 @Table(
@@ -34,10 +40,12 @@ public class ContractSource {
   @Column(length = 50)
   private String scrVer;
 
-  @Lob
+  @Basic
+  @JdbcTypeCode(SqlTypes.CLOB)
   private String abi;
 
   @Column
-  private LocalDate createdAt;
+  @Temporal(TemporalType.TIMESTAMP)
+  private LocalDateTime createdAt;
 
 }
