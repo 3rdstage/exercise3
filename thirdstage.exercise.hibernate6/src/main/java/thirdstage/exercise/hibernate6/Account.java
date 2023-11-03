@@ -45,6 +45,7 @@ public class Account {
   private AccountType type;
 
   @Column(name = "pub_key", length = 130)
+  @JdbcTypeCode(SqlTypes.CHAR)
   private String publicKey;
 
   @Column(name = "veiled_prv_key", length = 300)
@@ -54,9 +55,11 @@ public class Account {
   private boolean isValid;
 
   @Column
+  @JdbcTypeCode(SqlTypes.TIMESTAMP)
   private LocalDate createdAt;
 
   @Column
+  @JdbcTypeCode(SqlTypes.TIMESTAMP)
   private LocalDate invalidAt;
 
 
