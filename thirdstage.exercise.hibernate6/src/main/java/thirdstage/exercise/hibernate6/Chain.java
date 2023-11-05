@@ -4,6 +4,8 @@ package thirdstage.exercise.hibernate6;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +39,7 @@ public class Chain{
   private boolean isValid = true;
 
   @Column(name = "descr", nullable = true)
+  @JdbcTypeCode(SqlTypes.LONGVARCHAR)
   @Comment("description for this chain")
   private String description;
 

@@ -17,7 +17,7 @@
     
     <class>thirdstage.exercise.hibernate6.Contract</class>
     
-
+    <!-- https://jakarta.ee/specifications/persistence/3.0/jakarta-persistence-spec-3.0.html#a12384 -->
     <properties>
       <!-- database connection settings -->
       <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5432/postgres" />
@@ -27,6 +27,10 @@
       <!-- schema generation -->
       <property name="jakarta.persistence.schema-generation.database.action" value="none" />
       <property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create" />
+      <!--
+      <property name="jakarta.persistence.schema-generation.create-source" value="mapping"/>
+      <property name="jakarta.persistence.schema-generation.drop-source" value="mapping"/>
+      -->
       <property name="jakarta.persistence.schema-generation.scripts.drop-target" value="scripts/drop-script.postgres.sql"/>
       <property name="jakarta.persistence.schema-generation.scripts.create-target" value="scripts/create-script.postgres.sql"/>
 
@@ -38,6 +42,7 @@
       <property name="hibernate.physical_naming_strategy" value="org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy" />
       <!-- column ordering : since Hibernate 6.2 - https://docs.jboss.org/hibernate/orm/6.2/javadocs/org/hibernate/cfg/AvailableSettings.html#COLUMN_ORDERING_STRATEGY -->
       <property name="hibernate.column_ordering_strategy" value="legacy" />
+      <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
     </properties>
   </persistence-unit>
 </persistence>
