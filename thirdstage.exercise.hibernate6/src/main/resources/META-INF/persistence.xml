@@ -25,12 +25,11 @@
       <property name="jakarta.persistence.jdbc.password" value="" />
 
       <!-- schema generation -->
+      <property name="jakarta.persistence.create-database-schemas" value="false" />
+      <property name="jakarta.persistence.sql-load-script-source" value="scripts/init-schema.postgres.sql" />
+
       <property name="jakarta.persistence.schema-generation.database.action" value="none" />
       <property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create" />
-      <!--
-      <property name="jakarta.persistence.schema-generation.create-source" value="mapping"/>
-      <property name="jakarta.persistence.schema-generation.drop-source" value="mapping"/>
-      -->
       <property name="jakarta.persistence.schema-generation.scripts.drop-target" value="scripts/drop-script.postgres.sql"/>
       <property name="jakarta.persistence.schema-generation.scripts.create-target" value="scripts/create-script.postgres.sql"/>
 
