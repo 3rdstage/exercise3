@@ -23,6 +23,7 @@
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.site.skip>false</maven.site.skip> <!-- consumed by maven-site-plugin -->
     <maven.site.deploy.skip>true</maven.site.deploy.skip> <!-- consumed by maven-site-plugin -->
+    <exec.skip>false</exec.skip> <!-- consumed by exec-maven-plugin -->
     <generateProjectInfo>false</generateProjectInfo> <!-- consumed by maven-site-plugin -->
     <generateReports>true</generateReports> <!-- consumed by maven-site-plugin -->
     <maven.javadoc.skip>false</maven.javadoc.skip>
@@ -65,7 +66,7 @@
     <duplicate-finder-maven-plugin.version>1.4.0</duplicate-finder-maven-plugin.version> <!-- https://mvnrepository.com/artifact/org.basepom.maven/duplicate-finder-maven-plugin -->
     <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version> <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-eclipse-plugin -->
     <web3j-maven-plugin.version>4.5.11</web3j-maven-plugin.version> <!-- https://mvnrepository.com/artifact/org.web3j/web3j-maven-plugin -->
-    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version> <!-- https://github.com/kongchen/swagger-maven-plugin -->
     <swagger-codegen-maven-plugin.version>3.0.0-rc1</swagger-codegen-maven-plugin.version> <!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
     <swagger-codegen-maven-plugin.v3.version>3.0.10</swagger-codegen-maven-plugin.v3.version> <!-- https://mvnrepository.com/artifact/io.swagger.codegen.v3/swagger-codegen-maven-plugin -->
@@ -102,10 +103,11 @@
           <target>${java.version}</target>
         </configuration>
       </plugin>
+      <!-- https://www.mojohaus.org/exec-maven-plugin/ -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>${exec-maven-plugin.version}</version>
           <configuration>
             <mainClass>thirdstage.exercise.hibernate6.SchemaScript</mainClass>
           </configuration>

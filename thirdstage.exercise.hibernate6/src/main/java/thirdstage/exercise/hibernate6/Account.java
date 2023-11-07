@@ -2,6 +2,8 @@ package thirdstage.exercise.hibernate6;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.Check;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -28,6 +30,7 @@ public class Account {
   @Id
   @Column(name = "addr", length = 42)
   @JdbcTypeCode(SqlTypes.CHAR)
+  @Check(name = "eth_acct_chk_addr", constraints = "addr ~ '^(?-i)0x[0-9a-f]+$'")
   @Comment("account address in 40 length hexadecimal with 0x prefix")
   private String address;
   
@@ -56,6 +59,7 @@ public class Account {
 
   @Column
   @JdbcTypeCode(SqlTypes.TIMESTAMP)
+  @ColumnDefault("LOCALTIMESTAMP")
   private LocalDate createdAt;
 
   @Column

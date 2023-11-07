@@ -43,6 +43,7 @@
       <!-- column ordering : since Hibernate 6.2 - https://docs.jboss.org/hibernate/orm/6.2/javadocs/org/hibernate/cfg/AvailableSettings.html#COLUMN_ORDERING_STRATEGY -->
       <property name="hibernate.column_ordering_strategy" value="legacy" />
       <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+      <property name="hibernate.default_schema" value="st-api" />      
     </properties>
   </persistence-unit>
 </persistence>
