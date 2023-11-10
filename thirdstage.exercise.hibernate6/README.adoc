@@ -41,3 +41,13 @@
 
 * https://jakarta.ee/specifications/persistence/3.0/jakarta-persistence-spec-3.0.html#persistence-xml-file[`persitence.xml`]
 
+=== Misc
+
+* https://www.ibm.com/docs/en/aix/7.1?topic=locales-understanding-locale-environment-variables[Understanding locale environment variables]
+** `LANG`, `LC_ALL`, `LC_COLLATE`, `LC_CTYPE`
+* https://en.wikipedia.org/wiki/Collation[Collation] (Wikipedia)
+* https://en.wikipedia.org/wiki/Information_schema[Information Schema] (Wikipedia)
+** __an ANSI-standard set of read-only views that provide information about all of the tables, views, columns, and procedures in a database.__
+
+* https://aws.amazon.com/blogs/database/manage-collation-changes-in-postgresql-on-amazon-aurora-and-amazon-rds/[Manage collation changes in PostgreSQL on Amazon Aurora and Amazon RDS]
+** __A collation is a set of rules that defines how text is ordered. Collations work alongside character encodings, such as UTF-8, to define how each character should be ordered.__

@@ -71,3 +71,4 @@ config.gypi
 
 # specific
 /scripts/*.postgres.sql
+!/scripts/init-schema.postgres.sql
