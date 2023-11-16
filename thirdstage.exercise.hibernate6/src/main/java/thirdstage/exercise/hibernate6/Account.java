@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @IdClass(ChainAndAddress.class)
-//@Table(name = "eth_acct")
+@Table(name = "eth_acct")
 public class Account {
 
   @Id

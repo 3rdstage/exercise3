@@ -1,38 +1,34 @@
+/* 
+  * Preconditions
+      * Users of 'chainz-admin' and 'st-api-user' exist
+      * Catalog 'chainz' exists
+      * User 'chainz-admin' is owner of catalog 'chainz'
+      * Logined as 'chainz-admin' on catalog 'chainz'
+*/
 
-/* https://www.postgresql.org/docs/16/sql-createuser.html */
-CREATE ROLE "admin" WITH
-  LOGIN
-  SUPERUSER
-  INHERIT
-  CREATEDB
-  CREATEROLE
-  REPLICATION
-  CONNECTION LIMIT 3
-  PASSWORD 'postgres4u';
+SET ROLE "chainz-admin";
 
-CREATE ROLE "chainz-admin" WITH
-  LOGIN
-  NOSUPERUSER
-  NOCREATEDB
-  CREATEROLE
-  NOREPLICATION
-  CONNECTION LIMIT 5
-  PASSWORD 'chainz-admin-secret';
+/* https://www.postgresql.org/docs/current/sql-createschema.html */
+CREATE SCHEMA IF NOT EXISTS "st-api"
+  AUTHORIZATION "chainz-admin";
 
-CREATE ROLE "st-api-user" WITH
-  LOGIN
-  NOSUPERUSER
-  NOCREATEDB
-  NOCREATEROLE
-  NOREPLICATION
-  CONNECTION LIMIT -1
-  PASSWORD 'chainz-admin-secret';
+/* By chainz-admin */
+GRANT CONNECT 
+  ON DATABASE "chainz" 
+  TO "st-api-user";
+
+GRANT USAGE 
+  ON SCHEMA "st-api" 
+  TO "st-api-user";
+
+/* https://www.postgresql.org/docs/16/sql-alterdefaultprivileges.html */
+ALTER DEFAULT PRIVILEGES IN SCHEMA "st-api" 
+  GRANT SELECT, INSERT, UPDATE, DELETE 
+    ON TABLES TO "st-api-user";
+
+/* Both 'alter default privileges' and 'grant' will be reflectec */
+SELECT *
+  FROM information_schema.role_table_grants
+  WHERE grantee = 'st-api-user';
 
 
-/* https://www.postgresql.org/docs/16/sql-createdatabase.html */
-CREATE DATABASE "chainz" WITH
-  OWNER = "chainz-admin"
-  ENCODING = 'UTF8'
-  TEMPLATE = "template0"
-  LOCALE = "ko_KR.UTF-8"
-  CONNECTION LIMIT = -1;

@@ -51,3 +51,7 @@
 
 * https://aws.amazon.com/blogs/database/manage-collation-changes-in-postgresql-on-amazon-aurora-and-amazon-rds/[Manage collation changes in PostgreSQL on Amazon Aurora and Amazon RDS]
 ** __A collation is a set of rules that defines how text is ordered. Collations work alongside character encodings, such as UTF-8, to define how each character should be ordered.__
+
+* https://stackoverflow.com/questions/40759177/postgresql-show-all-the-privileges-for-a-concrete-user[PostgreSQL: Show all the privileges for a concrete user]
+
+* https://stackoverflow.com/questions/44429178/change-default-schema-for-user[Change default schema for user]
