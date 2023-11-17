@@ -9,7 +9,7 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 @Entity
-@Table
+@Table(name = "eth_acct_type")
 public class AccountType extends Code {
 
 

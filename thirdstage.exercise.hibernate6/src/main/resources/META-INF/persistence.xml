@@ -21,8 +21,8 @@
     <properties>
       <!-- database connection settings -->
       <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5432/postgres" />
-      <property name="jakarta.persistence.jdbc.user" value="3rdstage" />
-      <property name="jakarta.persistence.jdbc.password" value="" />
+      <property name="jakarta.persistence.jdbc.user" value="postgres" />
+      <property name="jakarta.persistence.jdbc.password" value="postgres4u" />
 
       <!-- schema generation -->
       <property name="jakarta.persistence.create-database-schemas" value="false" />

@@ -39,7 +39,7 @@ public class Chain{
   private boolean isValid = true;
 
   @Column(name = "descr", nullable = true)
-  @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+  @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
   @Comment("description for this chain")
   private String description;
 

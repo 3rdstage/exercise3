@@ -40,8 +40,8 @@ public class ContractSource {
   @Column(length = 50)
   private String scrVer;
 
-  @Basic
-  @JdbcTypeCode(SqlTypes.CLOB)
+  @Column
+  @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
   private String abi;
 
   @Column
