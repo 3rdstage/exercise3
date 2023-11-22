@@ -26,7 +26,7 @@ public class ContractSource {
   @Id
   private Integer id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 50)
   @Comment("contract type such as ERC1400 ERC1400_FACTORY or et al")
   private String type;
 
@@ -44,7 +44,7 @@ public class ContractSource {
   @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
   private String abi;
 
-  @Column
+  @Column(precision = 3)
   @Temporal(TemporalType.TIMESTAMP)
   private LocalDateTime createdAt;
 

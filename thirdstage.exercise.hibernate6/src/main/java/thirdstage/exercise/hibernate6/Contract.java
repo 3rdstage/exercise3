@@ -1,6 +1,7 @@
 package thirdstage.exercise.hibernate6;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -14,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @IdClass(ChainAndAddress.class)
@@ -33,19 +36,23 @@ public class Contract {
 
   @ManyToOne
   @JoinColumn(name = "contr_src_id",
+    nullable = false,
     foreignKey = @ForeignKey(name = "contract_fk2"))
   @Comment("contract source of this contract instance")
   private ContractSource source;
 
-  @Column
+  @Column(precision = 3)
   @Comment("when this contract deployed")
-  private LocalDate deployedAt;
+  @Temporal(TemporalType.TIMESTAMP)
+  private LocalDateTime deployedAt;
 
-  @Column(name = "deployer_addr")
+  @Column(name = "deployer_addr", length = 42)
+  @JdbcTypeCode(SqlTypes.CHAR)
   @Comment("deployer who signed the contract deployment transaction")
   private String deployerAddress;
   
-  @Column
+  @Column(length = 66)
+  @JdbcTypeCode(SqlTypes.CHAR)
   @Comment("deployment transaction hash in 64 length hexadecimal with 0x prefix")
   private String deployTxHash;
 
