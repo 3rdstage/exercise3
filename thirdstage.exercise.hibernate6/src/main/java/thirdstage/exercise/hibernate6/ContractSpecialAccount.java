@@ -23,7 +23,7 @@ import jakarta.persistence.TemporalType;
   indexes = {
     @Index(name = "contr_spcl_acct_fk2_idx", columnList = "chain_id,acct_addr")
   })
-@IdClass(ChainAndAddress.class) // removable?
+//@IdClass(ChainAndAddress.class) // removable?
 @Comment("account granted special privileges for a contract")
 public class ContractSpecialAccount {
 

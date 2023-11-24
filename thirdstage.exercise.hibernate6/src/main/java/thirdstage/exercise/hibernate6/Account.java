@@ -1,12 +1,13 @@
 package thirdstage.exercise.hibernate6;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.Check;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.dialect.MariaDBDialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
@@ -35,7 +36,12 @@ public class Account {
   @Id
   @Column(name = "addr", length = 42)
   @JdbcTypeCode(SqlTypes.CHAR)
-  @Check(name = "eth_acct_chk_addr", constraints = "addr ~ '^(?-i)0x[0-9a-f]+$'")
+  @DialectOverride.Check(dialect = PostgreSQLDialect.class,
+    override = @Check(name = "eth_acct_chk_addr", 
+                      constraints = "addr ~ '(?ec)^0x[0-9a-f]+$'"))
+  @DialectOverride.Check(dialect = MariaDBDialect.class,
+    override = @Check(name = "eth_acct_chk_addr",
+                      constraints = "`addr` RLIKE '^(?-i)0x[0-9a-f]+$'"))
   @Comment("account address in 40 length hexadecimal with 0x prefix")
   private String address;
   

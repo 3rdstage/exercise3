@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.dialect.MariaDBDialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
@@ -59,7 +62,10 @@ public class Subtask {
 
   @Column(nullable = false, precision = 3)
   @Temporal(TemporalType.TIMESTAMP)
-  @ColumnDefault("CURRENT_TIMESTAMP(3)")
+  @DialectOverride.ColumnDefault(dialect = PostgreSQLDialect.class,
+    override = @ColumnDefault("CURRENT_TIMESTAMP(3)"))
+  @DialectOverride.ColumnDefault(dialect = MariaDBDialect.class,
+    override = @ColumnDefault("CURRENT_TIMESTAMP()"))
   private LocalDateTime startedAt;
 
   @Column(precision = 3)

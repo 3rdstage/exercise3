@@ -9,6 +9,7 @@ import org.hibernate.id.ForeignGenerator;
 import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
