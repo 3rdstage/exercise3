@@ -27,7 +27,14 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(indexes = {
-  @Index(name = "security_idx1", columnList = "name")
+  @Index(name = "security_uk1", unique = true, 
+    columnList = "chain_id,contr_addr"),
+  @Index(name = "security_fk2_idx", columnList = "chain_id,init_holder"),
+  @Index(name = "security_fk3_idx", columnList = "chain_id,issuer"),
+  @Index(name = "security_idx1", columnList = "name"),
+  @Index(name = "security_idx2", columnList = "registered_at"),
+  @Index(name = "security_idx3", columnList = "symbol"),
+  @Index(name = "security_idx4", columnList = "provider_code")
 })
 @Comment("a financial instrument that holds some type of monetary value, such as stock, bond, or derivative")
 public class Security {

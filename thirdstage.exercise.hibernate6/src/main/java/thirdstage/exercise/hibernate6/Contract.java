@@ -3,8 +3,12 @@ package thirdstage.exercise.hibernate6;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.dialect.MariaDBDialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.id.ForeignGenerator;
 import org.hibernate.type.SqlTypes;
 
@@ -32,6 +36,12 @@ public class Contract {
   @Id
   @Column(name = "addr", length=42)
   @JdbcTypeCode(SqlTypes.CHAR)
+  @DialectOverride.Check(dialect = PostgreSQLDialect.class,
+    override = @Check(name = "contract_chk_addr", 
+                      constraints = "addr ~ '(?ec)^0x[0-9a-f]+$'"))
+  @DialectOverride.Check(dialect = MariaDBDialect.class,
+    override = @Check(name = "contract_chk_addr",
+                      constraints = "`addr` RLIKE '^(?-i)0x[0-9a-f]+$'"))
   @Comment("contract address in 40 length hexadecimal with 0x prefix")
   private String address;
 
