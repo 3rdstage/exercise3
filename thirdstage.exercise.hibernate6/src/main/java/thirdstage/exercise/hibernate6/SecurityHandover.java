@@ -57,9 +57,9 @@ public class SecurityHandover {
   @ManyToOne
   @JoinColumns(
     value = {
-      @JoinColumn(name = "chain_id", nullable = false,
+      @JoinColumn(name = "chain_id",
         referencedColumnName = "chain_id"),
-      @JoinColumn(name = "sender_addr", nullable = true,
+      @JoinColumn(name = "sender_addr",
         referencedColumnName = "addr")
     },
     foreignKey = @ForeignKey(name = "scrty_handover_fk2")
@@ -71,9 +71,9 @@ public class SecurityHandover {
   @ManyToOne
   @JoinColumns(
     value = {
-      @JoinColumn(name = "chain_id", nullable = false,
+      @JoinColumn(name = "chain_id",
         referencedColumnName = "chain_id"),
-      @JoinColumn(name = "recipient_addr", nullable = true,
+      @JoinColumn(name = "recipient_addr",
         referencedColumnName = "addr")
     },
     foreignKey = @ForeignKey(name = "scrty_handover_fk3")
@@ -82,7 +82,7 @@ public class SecurityHandover {
   private Account recipient;
 
   
-  @Column(nullable = false)
+  @Column
   @Comment("amount of tokens transferred, issued or redeemed")
   private int amount;
 
@@ -97,6 +97,7 @@ public class SecurityHandover {
   @Comment("Ethereum transaction hash (in 64 length hexadecimal with 0x prefix)")
   private String txHash;
 
+  @ManyToOne
   @JoinColumn(name = "trace_id",
     foreignKey = @ForeignKey(name = "scrty_handover_fk4"))
   @Comment("to trace async task for this handover")

@@ -33,6 +33,7 @@ public class SecurityHolder {
   private Security security;
 
   @Id
+  @ManyToOne
   @JoinColumns(
     value = {
       @JoinColumn(name = "chain_id", referencedColumnName = "chain_id"),
